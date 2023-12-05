@@ -6,8 +6,9 @@ const candASchema = mongoose.Schema({
     decision:{type:String,required:true},    
     remarque:{type:String,required:true},
     tessiture:{type:String,required:true},
-  //  candidat:{ type: mongoose.Schema.Types.ObjectId, ref: 'candidat' },
-  //  audition:{ type: mongoose.Schema.Types.ObjectId, ref: 'audition' }
+    candidat:{ type: mongoose.Schema.Types.ObjectId, ref:'Candidat'},
+   audition:{ type: mongoose.Schema.Types.ObjectId, ref:'Audition'}
 
   });
 module.exports = mongoose.model("CandA", candASchema);
+

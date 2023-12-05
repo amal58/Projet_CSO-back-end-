@@ -3,6 +3,8 @@ const CandA=require("../models/candidatAudition")
 
 const fetchCandAs =(req,res)=>{
     CandA.find()
+    .populate("Candidat")
+    .populate("Audition")    
       .then((candAs) =>
         res.status(200).json({
           model: candAs,
@@ -19,6 +21,8 @@ const fetchCandAs =(req,res)=>{
 
   const getCandAById=(req,res)=>{
     CandA.findOne({_id:req.params.id})
+    .populate("Candidat")
+    .populate("Audition")    
     .then((candAs) => {
       if(!candAs){
         res.status(404).json({
@@ -28,7 +32,7 @@ const fetchCandAs =(req,res)=>{
       }
   
      res.status(200).json({
-      model: candA,
+      model: candAs,
       message:"objet trouve"
      })
    })
