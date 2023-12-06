@@ -1,5 +1,7 @@
 const express = require ("express")
 const app= express()
+const OeuvreRoutes=require("./routes/oeuvre")
+
 const mongoose = require('mongoose')
 
 mongoose
@@ -15,6 +17,7 @@ mongoose
   });
 
   app.use(express.json())
+  app.use("/Oeuvre",OeuvreRoutes)
 
 
 
