@@ -1,28 +1,28 @@
-const CandA=require("../models/candidatAudition")
-
+const CandA =require("../models/candidatAudition")
+const audition = require("../models/audition");
 
 const fetchCandAs =(req,res)=>{
     CandA.find()
-    .populate("Candidat")
-    .populate("Audition")    
+    .populate("audition")    
       .then((candAs) =>
         res.status(200).json({
           model: candAs,
           message: "success",
         })
       )
-  
       .catch((error) => {
         res.status(400).json({
           error: error.message,
           message: "probleme d'extraction",
         });
-      });}
+      });
+    }
 
-  const getCandAById=(req,res)=>{
+
+  
+    const getCandAById=(req,res)=>{
     CandA.findOne({_id:req.params.id})
-    .populate("Candidat")
-    .populate("Audition")    
+    .populate("audition")    
     .then((candAs) => {
       if(!candAs){
         res.status(404).json({
@@ -45,7 +45,9 @@ const fetchCandAs =(req,res)=>{
    });
   }
   
- const addCandA= (req, res) => {
+ 
+ 
+  const addCandA= (req, res) => {
     const candA = new CandA(req.body);
     candA
       .save()

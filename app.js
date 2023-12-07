@@ -2,10 +2,11 @@ const express = require ("express")
 const app= express()
 const mongoose = require('mongoose')
 
-const canARoutes=require("./routes/candidatAudition")
+const candARoutes=require("./routes/candidatAudition");
+const nodemon = require("nodemon");
 
 mongoose
-.connect("mongodb://127.0.0.1:27017/database", {
+.connect("mongodb://localhost:27017/database", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -17,7 +18,7 @@ mongoose
   });
 
   app.use(express.json())
-  app.use("/api/cand",canARoutes)
+  app.use("/api/cand",candARoutes)
 
 
 

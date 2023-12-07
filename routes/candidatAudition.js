@@ -12,8 +12,7 @@ router.get("/",candAController.fetchCandAs)
   router.post("/",candAController.addCandA)
    
 
-//modifier
-router.patch("/:id",candAController.UpdateCandA)
+ router.patch("/:id",candAController.UpdateCandA)
 
 
 router.delete("/:id",candAController.DeleteCandA)
