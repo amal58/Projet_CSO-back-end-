@@ -14,19 +14,11 @@ const personneSchema = mongoose.Schema({
   situationPro: { type: String, required: true },
   role: {
     type: String,
-    enum: ['manager', 'admin', 'chefChoeur', 'chefPupitre', 'choriste', 'condidat'],
+    enum: ['manager', 'admin', 'choriste', 'candidat'],
     required: true,
+    
   },
 });
-
-const Personne = mongoose.model('Personne', personneSchema);
-
-const choristeSchema = new mongoose.Schema({
-  status: { type: String, required: true, enum: ['inactif', 'junior', 'senior', 'veteran', 'eliminer'] },
-  typePupitre: { type: String, enum: ['Base', 'Alto', 'Tenor', 'Soprano'], required: true },
-});
+module.exports = mongoose.model("Personne", personneSchema);
 
 
-const Choriste = Personne.discriminator('Choriste', choristeSchema);
-
-module.exports = Choriste;
