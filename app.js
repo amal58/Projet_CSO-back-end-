@@ -3,6 +3,7 @@ const app= express()
 const mongoose = require('mongoose')
 
 const candARoutes=require("./routes/candidatAudition");
+const concertRoutes=require("./routes/concert");
 const nodemon = require("nodemon");
 
 mongoose
@@ -19,6 +20,7 @@ mongoose
 
   app.use(express.json())
   app.use("/api/cand",candARoutes)
+  app.use("/api/concert",concertRoutes)
 
 
 
