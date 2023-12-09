@@ -1,69 +1,14 @@
 const excel = require('exceljs');
 const Concert =require("../models/concert")
-// const Oeuvre =require("../models/") 
-// const Repetition =require("../models/") 
-// const Choriste =require("../models/") 
-
-// ****************************
-
-
-const addConcertsFromExcel = (req, res) => {
-  const { filePath } = req.body; // Ensure the Excel file path is included in the request body
-
-  const workbook = new excel.Workbook();
-  workbook.xlsx.readFile(filePath)
-    .then(() => {
-      const worksheet = workbook.getWorksheet(1); // Assume data is in the first sheet
-
-      const concertsToAdd = [];
-
-      worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber > 1) { // Ignore header row
-          const date = row.getCell(1).value;
-          const lieu = row.getCell(2).value;
-          const affiche = row.getCell(3).value;
-          const programme = row.getCell(4).value;
-          const repetition = row.getCell(5).value;
-          const choriste = row.getCell(6).value;
-
-          concertsToAdd.push({
-            date,
-            lieu,
-            affiche,
-            programme,
-            repetition,
-            choriste,
-          });
-        }
-      });
-
-      // Add concerts to the database
-      return Concert.create(concertsToAdd);
-    })
-    .then((addedConcerts) => {
-      res.status(201).json({
-        model: addedConcerts,
-        message: "Concerts added from Excel successfully",
-      });
-    })
-    .catch((error) => {
-      console.error('Error adding concerts from Excel:', error.message);
-      res.status(500).json({
-        error: error.message,
-        message: "Internal Server Error",
-      });
-    });
-};
-
-
-// **************************
-
+const oeuvre=require("../models/oeuvre")
+const repetition =require("../models/repitition") 
+const choriste =require("../models/choriste") 
 
 const fetchConcert =(req,res)=>{
     Concert.find()
-    .populate("Oeuvre")    
-    .populate("Repetition")    
-    .populate("Choriste")    
+    .populate("programme")    
+    .populate("repetition")    
+    .populate("choriste")    
       .then((concerts) =>
         res.status(200).json({
           model: concerts,
@@ -82,9 +27,9 @@ const fetchConcert =(req,res)=>{
   
     const getConcertById=(req,res)=>{
     Concert.findOne({_id:req.params.id})
-    .populate("Oeuvre")    
-    .populate("Repetition")    
-    .populate("Choriste")  
+     .populate("programme")    
+     .populate("repetition")    
+     .populate("choriste")  
     .then((concerts) => {
       if(!concerts){
         res.status(404).json({
@@ -166,12 +111,71 @@ const DeleteConcert=(req, res) => {
       });
   }
 
+
+// ****************************
+
+const addProgramExcel = (req, res) => {
+  try {
+    const filePath = decodeURIComponent(req.params.filePath);
+
+    const workbook = new excel.Workbook();
+    workbook.xlsx.readFile(filePath)
+      .then(() => {
+        const worksheet = workbook.getWorksheet(1);
+
+        const programmeToAdd = [];
+
+        worksheet.eachRow((row, rowNumber) => {
+          if (rowNumber > 1) {
+            const oeuvreId = row.getCell(1).value;
+            programmeToAdd.push(oeuvreId);
+          }
+        });
+
+        const concertData = {
+          date: req.body.date,
+          lieu: req.body.lieu,
+          affiche: req.body.affiche,
+          repetition: req.body.repetition,
+          choriste: req.body.choriste,
+          programme: programmeToAdd,
+        };
+
+        const concert = new Concert(concertData);
+        return concert.save();
+      })
+      .then((savedConcert) => {
+        res.status(201).json({
+          model: savedConcert,
+          message: "Concert créé avec succès depuis Excel",
+        });
+      })
+      .catch((error) => {
+        console.error('Erreur lors de la création du concert depuis Excel :', error);
+        res.status(500).json({
+          error: error.message,
+          message: "Erreur interne du serveur",
+        });
+      });
+  } catch (error) {
+    console.error('Erreur lors de la récupération du chemin du fichier :', error.message);
+    res.status(500).json({
+      error: error.message,
+      message: "Erreur interne du serveur",
+    });
+  }
+};
+
+
+// **************************
+
+
  module.exports={
     fetchConcert:fetchConcert,
     addConcert:addConcert,
     getConcertById:getConcertById,
     UpdateConcert:UpdateConcert,
     DeleteConcert:DeleteConcert,
-    addConcertsFromExcel: addConcertsFromExcel,
+    addProgramExcel: addProgramExcel,
 
  }
