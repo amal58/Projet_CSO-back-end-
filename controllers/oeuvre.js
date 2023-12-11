@@ -1,6 +1,6 @@
 const Oeuvre = require("../models/oeuvre")
 
-const AjoutOeuvre = (req, res) => {
+exports.AjoutOeuvre = (req, res) => {
     const oeuvre = new Oeuvre(req.body);
     oeuvre.save().then(() =>
       res.status(201).json({
@@ -9,7 +9,7 @@ const AjoutOeuvre = (req, res) => {
       })
     );
   }
-const AfficherToutOeuvre = (req, res) => {
+exports.AfficherToutOeuvre = (req, res) => {
     Oeuvre.find()
       .then((Oeuvres) =>
         res.status(200).json({
@@ -26,8 +26,7 @@ const AfficherToutOeuvre = (req, res) => {
       });
       
   }
-  
-const AfficheUneOeuvre = (req, res) => {
+exports.AfficheUneOeuvre = (req, res) => {
 Oeuvre.findOne({ _id: req.params.id })
   .then((Oeuvre) => {
     if (!Oeuvre) {
@@ -49,7 +48,7 @@ Oeuvre.findOne({ _id: req.params.id })
     });
   });
 }
-const MiseAjourOeuvre= (req, res) => {
+exports.MiseAjourOeuvre= (req, res) => {
     Oeuvre.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
       .then((Oeuvre) => {
         if (!Oeuvre) {
@@ -71,7 +70,7 @@ const MiseAjourOeuvre= (req, res) => {
       );
   }
 
-const SuppOeuvre = async (req, res) => {
+exports.SuppOeuvre = async (req, res) => {
     try {
       await Oeuvre.deleteOne({ _id: req.params.id });
       res.status(200).json({ message: "oeuvre supprimée" });
@@ -82,10 +81,3 @@ const SuppOeuvre = async (req, res) => {
 
 
 
-  module.exports = {
-    AjoutOeuvre : AjoutOeuvre ,
-    AfficherToutOeuvre : AfficherToutOeuvre ,
-    MiseAjourOeuvre : MiseAjourOeuvre ,
-    AfficheUneOeuvre : AfficheUneOeuvre ,
-    SuppOeuvre : SuppOeuvre ,
-}

@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 
 // Sous-schéma pour représenter une partie de l'œuvre
 const PartieSchema = mongoose.Schema({
-  aChoeur: { type: Boolean, default: false },
-  pupitres: [{ type: String }],
+  pupitres: [{ type: mongoose.Schema.Types.ObjectId,ref: 'Personne',required: true,}],
 });
 
 // Schéma principal pour l'œuvre musicale
@@ -14,8 +13,8 @@ const OeuvreSchema = mongoose.Schema({
   arrangeurs: [{ type: String, required: true }],
   genre: { type: String, required: true },
   presence: { type: Boolean, default: false },
-  partition: [{ type: String, required: false }],
   paroles: [{ type: String, required: false }],
+  concertP:[{ type: mongoose.Schema.Types.ObjectId,ref: 'Concert',required: true,}],
   parties: [PartieSchema], // Utilisation du sous-schéma pour représenter les parties
 });
 
