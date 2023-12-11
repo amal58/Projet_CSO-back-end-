@@ -14,6 +14,7 @@ mongoose
     console.error("Error connecting to MongoDB", error);
   });
 
+  
   app.use(express.json())
 
 
