@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const Joi = require('joi');
 const personneSchema = mongoose.Schema({
   email: { type: String, required: true, unique: true },
   nom: { type: String, required: true },
@@ -16,9 +16,13 @@ const personneSchema = mongoose.Schema({
     type: String,
     enum: ['manager', 'admin', 'choriste', 'candidat'],
     required: true,
-    
   },
+  etat: { type:String,enum:['confirmer','infirmer'], default:'infirmer' },
+  etatconge: { type:String,enum:['inactif','actif'], default:'active' },
 });
+
+
+
 module.exports = mongoose.model("Personne", personneSchema);
 
 
