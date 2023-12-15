@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const excel = require('exceljs');
 const Concert =require("../models/concert")
 const oeuvre=require("../models/oeuvre")
@@ -7,7 +9,7 @@ const choriste =require("../models/choriste")
 const fetchConcert =(req,res)=>{
     Concert.find()
     .populate("programme")    
-    .populate("repetition")    
+   .populate("repetition")    
     .populate("choriste")    
       .then((concerts) =>
         res.status(200).json({
@@ -167,6 +169,10 @@ const addProgramExcel = (req, res) => {
 };
 
 
+
+
+
+
 // **************************
 
 
@@ -177,5 +183,6 @@ const addProgramExcel = (req, res) => {
     UpdateConcert:UpdateConcert,
     DeleteConcert:DeleteConcert,
     addProgramExcel: addProgramExcel,
+
 
  }
