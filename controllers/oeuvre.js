@@ -1,14 +1,43 @@
+const mongoose = require('mongoose');
 const Oeuvre = require("../models/oeuvre")
 
-exports.AjoutOeuvre = (req, res) => {
+  // Fonction pour ajouter un œuvre avec validation
+exports.AjoutOeuvre = async (req, res) => {
+  try {
     const oeuvre = new Oeuvre(req.body);
-    oeuvre.save().then(() =>
-      res.status(201).json({
-        model: Oeuvre,
-        message: "Oeuvre crée !",
-      })
-    );
+    await oeuvre.validate();
+
+    // Save the document to the database
+    await oeuvre.save();
+
+    res.status(201).json({
+      model: Oeuvre,
+      message: "Oeuvre créée !",
+    });
+  } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      const validationErrors = {};
+
+      // Accumulate validation errors without interrupting execution
+      for (const field in error.errors) {
+        if (error.errors.hasOwnProperty(field)) {
+          validationErrors[field] = error.errors[field].message;
+        }
+      }
+
+      // Send the accumulated validation errors as part of the response
+      res.status(400).json({
+        error: "Erreur de validation",
+        validationErrors,
+      });
+    } else {
+      console.error("Erreur lors de la création de l'œuvre :", error.message);
+      res.status(500).json({
+        error: "Erreur lors de la création de l'œuvre",
+      });
+    }
   }
+};
 exports.AfficherToutOeuvre = (req, res) => {
     Oeuvre.find()
       .then((Oeuvres) =>

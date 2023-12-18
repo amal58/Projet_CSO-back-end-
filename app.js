@@ -1,11 +1,14 @@
 const express = require ("express")
 const app= express()
+
 const OeuvreRoutes=require("./routes/oeuvre")
+//const personneRoutes = require('./routes/personne');
 
 const mongoose = require('mongoose')
+const dbName = "projetCSO"; // Remplacez ceci par le nom réel de votre base de données
 
 mongoose
-.connect("mongodb://127.0.0.1:27017/database", {
+.connect('mongodb+srv://p92934700:7RoxD6S97xxp1Dea@cluster0.peomj36.mongodb.net/projetCSO', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -18,6 +21,7 @@ mongoose
 
   app.use(express.json())
   app.use("/Oeuvre",OeuvreRoutes)
+  //app.use('/api/candidats', personneRoutes);
 
 
 
