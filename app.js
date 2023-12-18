@@ -5,7 +5,8 @@ const OeuvreRoutes=require("./routes/oeuvre")
 //const personneRoutes = require('./routes/personne');
 
 const mongoose = require('mongoose')
-const dbName = "projetCSO"; // Remplacez ceci par le nom réel de votre base de données
+const concertRoutes=require("./routes/concert");
+const repetitionRoutes = require('./routes/repetition');
 
 mongoose
 .connect('mongodb+srv://p92934700:7RoxD6S97xxp1Dea@cluster0.peomj36.mongodb.net/projetCSO', {
@@ -21,6 +22,9 @@ mongoose
 
   app.use(express.json())
   app.use("/Oeuvre",OeuvreRoutes)
+  app.use("/api/concert",concertRoutes)
+  app.use('/api/repetitions', repetitionRoutes);
+
   //app.use('/api/candidats', personneRoutes);
 
 
