@@ -9,7 +9,7 @@ const concertSchema = new mongoose.Schema({
   choristePC: [
     {
       choriste: { type: mongoose.Schema.Types.ObjectId, ref: 'Choriste' ,required: true },
-      presence: { type: Number,enum:[0,1] ,default: 0 ,required: true }, // Nouveau champ pour stocker la présence
+      presence: { type: Number,enum:[0,1] ,default: 0 }, // Nouveau champ pour stocker la présence
     }
   ] 
 });
