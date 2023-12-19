@@ -9,6 +9,5 @@ const choristeSchema = mongoose.Schema({
     chefpupitre:{type:Boolean, required:true ,default:false},  
     chefchoeur:{type:Boolean,required:true,default:false},
     etatconge: { type:String,enum:['inactif','actif'], default:'actif'},
-    
 });
 module.exports = mongoose.model("Choriste",choristeSchema);
