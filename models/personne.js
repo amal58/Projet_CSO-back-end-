@@ -12,13 +12,12 @@ const personneSchema = mongoose.Schema({
   telephone: { type: String, required: true },
   cin: { type: String, required: true },
   situationPro: { type: String, required: true },
-  role: {
+  role: {  
     type: String,
-    enum: ['manager', 'admin', 'choriste', 'candidat'],
+    enum: ['manager','choriste','admin', 'candidat'],
     required: true,
   },
   etat: { type:String,enum:['confirmer','infirmer'], default:'infirmer' },
-  etatconge: { type:String,enum:['inactif','actif'], default:'active' },
 });
 
 

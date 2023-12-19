@@ -15,7 +15,6 @@ exports.createCongeAndSendNotification = async (req, res) => {
 
     // Envoyer une notification en temps réel
     notificationService.sendNotification(savedConge);
-
     res.status(201).json({
       model: savedConge,
       message: 'Demande de congé créée avec succès et notification envoyée.',
@@ -42,8 +41,6 @@ exports.getAllCongeNotifications = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-
 
 // Fonction pour traiter ultérieurement les notifications
 exports.processCongeNotifications = async () => {

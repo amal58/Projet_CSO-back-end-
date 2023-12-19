@@ -5,7 +5,7 @@ const congeSchema = new mongoose.Schema({
   duree: { type: Number, required: true },
   datedebut: { type: Date, required: true },
   etat: { type: String, enum: ['en attente', 'accepte'], default: 'en attente' },
-  candidat: { type: mongoose.Schema.Types.ObjectId, ref: 'Personne', required: true },
+  choriste: { type: mongoose.Schema.Types.ObjectId, ref: 'Choriste', required: true },
   processed: { type: Boolean, default: false },
 });
 
@@ -14,7 +14,7 @@ const congeValidationSchema = Joi.object({
   duree: Joi.number().required(),
   datedebut: Joi.date().required(),
   etat: Joi.string().valid('en attente', 'accepte').default('en attente'),
-  candidat: Joi.string().required(), 
+  choriste: Joi.string().required(), 
 });
 
 

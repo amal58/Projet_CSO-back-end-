@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const repetitionRoutes = require('./routes/repetition');
 const congeRoutes = require('./routes/conge');
 const candidatRoutes = require('./routes/candidat');
+const choristeRoutes = require('./routes/choriste');
 const cron = require('node-cron');
 const congeController = require('./controllers/conge');
 
@@ -21,7 +22,7 @@ cron.schedule('0 */2 * * *', () => {
 
 
 mongoose
-.connect("mongodb://127.0.0.1:27017/data", {
+.connect('mongodb+srv://p92934700:7RoxD6S97xxp1Dea@cluster0.peomj36.mongodb.net/projetCSO', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -37,6 +38,8 @@ mongoose
 
   app.use('/api/repetitions', repetitionRoutes);
   app.use('/api/conge', congeRoutes);
+  
   app.use('/api/candidats', candidatRoutes);
+  app.use('/api/choristes', choristeRoutes);
 
 module.exports=app
