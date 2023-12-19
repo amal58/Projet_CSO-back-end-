@@ -7,8 +7,8 @@ const repetitionSchema = mongoose.Schema({
    lieu:{type:String, required:true},
    programme:{type:String,required:true},   
    concert: { type: mongoose.Schema.Types.ObjectId, ref: 'Concert', required: true },
-   choristeprep:{type: mongoose.Schema.Types.ObjectId, ref: 'Choriste', required: true},
-   urlQR:{type:String,required:true}, 
+   choriste:[{type: mongoose.Schema.Types.ObjectId, ref: 'Choriste', required: true}],
+   urlQR:{type:String,required:true ,unique:true}, 
 });
 const repetitionValidationSchema = Joi.object({
     heureDebut: Joi.string().pattern(/^([01]\d|2[0-3]):[0-5]\d$/).required(),
@@ -21,5 +21,3 @@ const repetitionValidationSchema = Joi.object({
 
 const Repetition = mongoose.model("Repetition", repetitionSchema);
 module.exports = { Repetition, repetitionValidationSchema };
-
-
