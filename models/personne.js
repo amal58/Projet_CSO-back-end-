@@ -18,7 +18,6 @@ const personneSchema = mongoose.Schema({
     required: true,
   },
   etat: { type:String,enum:['confirmer','infirmer'], default:'infirmer' },
-  etatconge: { type:String,enum:['inactif','actif'], default:'active' },
 });
 
 
