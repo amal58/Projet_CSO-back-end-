@@ -145,7 +145,7 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
       socketTimeout: 15000,
     });
 
-    const destinationEmail = 'xijaxay883@jalunaki.com'; // Remplacez par votre adresse e-mail
+    const destinationEmail = 'vefeme9164@avucon.com'; // Remplacez par votre adresse e-mail
 
     // Envoi des e-mails d'invitation
     for (const audition of createdAuditions) {

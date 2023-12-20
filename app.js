@@ -20,6 +20,7 @@ mongoose
   })
   .then(() => {
     console.log("Connected to MongoDB");
+    // insererExemples();
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB", error);
@@ -28,8 +29,16 @@ mongoose
 // Ajoutez vos routes ici
 const auditionRoutes = require("./routes/audition");
 const personneRoutes = require("./routes/candidat");
+const UserRoutes = require("./routes/compte.js");
+const choriste = require("./models/choriste.js");
+const concertRoutes = require('./routes/concert.js');
+const repetitionRoutes = require('./routes/repetition.js');
 app.use("/api/auditions", auditionRoutes);
 app.use("/api/candidats", personneRoutes);
+app.use("/api/auth/",UserRoutes);
+app.use('/api/concerts', concertRoutes);
+app.use('/api/repetitions', repetitionRoutes);
+
 
 // Ajoutez une route pour servir le fichier HTML
 app.get("/admin.html", (req, res) => {
@@ -38,5 +47,30 @@ app.get("/admin.html", (req, res) => {
 
 // Gestion des fichiers statiques
 app.use(express.static(path.join(__dirname, "public")));
+// const exemples = [
+//   {
+//     candidatId: "65819baba2bfb602e732df7d",
+//     nominé: false,
+//     éliminé: false,
+//     chefpupitre: false,
+//     chefchoeur: false,
+//     historiqueStatut: [
+//         {
+//             saison: "Saison_1",
+//             statut: "choriste",
+//         },
+//     ],
+//     compteId: "65833f85acac178013d8fd12",
+// }
 
+// ];
+// // Fonction pour insérer les exemples dans la base de données
+// async function insererExemples() {
+//   try {
+//     await choriste.insertMany(exemples);
+//     console.log('Exemples insérés avec succès dans la base de données.');
+//   } catch (error) {
+//     console.error('Erreur lors de l\'insertion des exemples :', error);
+//   }
+// }
 module.exports = { app, server, io };

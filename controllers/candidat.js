@@ -80,7 +80,7 @@ exports.getCandidatsBySexe = async (req, res) => {
     }
   };
   // Planifiez l'envoi de notifications chaque jour à 10h00
-cron.schedule('38 14 * * *', async () => {
+cron.schedule('23 20 * * *', async () => {
   try {
     // Récupérez les nouveaux candidats ajoutés entre 10h d'hier et 10h d'aujourd'hui
     const dateDebut = new Date();
