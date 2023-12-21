@@ -3,9 +3,9 @@ const Joi = require("joi");
 
 
 
-const absencePresenceSchema = new mongoose.Schema({
+const absenceSchema = new mongoose.Schema({
   etat: { type: Boolean, default: false },  // true: présent, false: absent par défaut
-  CurrentDate: { type: Date.now},
+  CurrentDate: { type: Date, default: Date.now },
   RaisonAbsence: { type:String },
   RaisonPresenceManuel: { type:String },
   choriste: { type: mongoose.Schema.Types.ObjectId, ref: 'Choriste', required: true },
@@ -16,9 +16,10 @@ const absencePresenceSchema = new mongoose.Schema({
 // Joi validation schema
 const absenceValidationSchema = Joi.object({
   etat: Joi.boolean().default(false),
-  RaisonAbsence: Joi.string(),
-  RaisonPresenceManuel: Joi.string(),
-  choriste: Joi.string().required(), 
+  RaisonAbsence: Joi.string().allow(''),
+  RaisonPresenceManuel: Joi.string().allow(''),
+
+   
 });
 
 const Absence = mongoose.model("Absence", absenceSchema);

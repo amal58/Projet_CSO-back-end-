@@ -3,7 +3,7 @@ const Joi = require('joi');
 const repetitionSchema = mongoose.Schema({
    heureDebut:{type:String, required:true},
    heureFin:{type:String, required:true},
-   date :{type:Date, required:true},
+   date :{type:Date, required:true,unique: true },
    lieu:{type:String, required:true},
    programme:{type:String,required:true},   
    concert: { type: mongoose.Schema.Types.ObjectId, ref: 'Concert', required: true },

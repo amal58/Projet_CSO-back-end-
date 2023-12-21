@@ -10,6 +10,7 @@ const choristeSchema = mongoose.Schema({
     raisonÉlimination: { type: String },
     chefpupitre:{type:Boolean, required:true ,default:false},  
     chefchoeur:{type:Boolean,required:true,default:false},
+    confirmationStatus: { type: String, default: 'En attente de confirmation' },
     historiqueStatut: [
       {
         saison: { type: String,required:true },

@@ -33,6 +33,8 @@ const UserRoutes = require("./routes/compte.js");
 const choriste = require("./models/choriste.js");
 const concertRoutes = require('./routes/concert.js');
 const repetitionRoutes = require('./routes/repetition.js');
+const absenceRoutes = require('./routes/absence.js');
+app.use("/api/absences", absenceRoutes);
 app.use("/api/auditions", auditionRoutes);
 app.use("/api/candidats", personneRoutes);
 app.use("/api/auth/",UserRoutes);

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken")
 const User = require('../models/compte.js');
 
-const { response } = require("../app");
+const { response } = require("../app.js");
 module.exports.loggedMiddleware = (req, res, next) => {
   try {
     //split:convertir chaine en table
@@ -43,6 +43,31 @@ module.exports.isadmin = (req, res, next)=>{
       res.status(401).json({error:error.message})
     }
   }
+  async function getUserIdFromRequest(req) {
+    const authorizationHeader = req.headers.authorization;
+  
+    if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+      return null; // Token manquant dans l'en-tête Authorization
+    }
+  
+    const token = authorizationHeader.split(' ')[1];
+  
+    try {
+      const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); // Remplacez 'RANDOM_TOKEN_SECRET' par votre clé secrète JWT
+      console.log('Contenu du jeton décodé :', decoded);
+  
+      // Assurez-vous que le token correspond à un compte existant dans la base de données
+      const compte = await User.findOne({ _id: decoded.userId });
+  
+      if (!compte) {
+        return null; // Le compte associé au token n'existe pas
+      }
+  
+      return decoded.userId; // Retourne l'ID du compte
+    } catch (error) {
+      return null; // La vérification du token a échoué, retourne null ou gère l'erreur selon vos besoins
+    }
+  }
 
-  module.exports.validateSignup = validateSignup;
+  module.exports.getUserIdFromRequest = getUserIdFromRequest;
 
