@@ -11,7 +11,7 @@ router.get("/:id",concertController.getConcertById)
   
 router.post("/",concertController.addConcert)
 
-router.post("/excel/:filePath",concertController.addProgramExcel)
+router.post("/excel",concertController.addProgramExcel)
    
 router.patch("/:id",concertController.UpdateConcert)
 

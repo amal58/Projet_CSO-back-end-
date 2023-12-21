@@ -1,10 +1,14 @@
 const express = require ("express")
 const app= express()
 const mongoose = require('mongoose')
+const nodemon = require("nodemon");
 
 const candARoutes=require("./routes/candidatAudition");
 const concertRoutes=require("./routes/concert");
-const nodemon = require("nodemon");
+const chefpupitreRoutes=require("./routes/chefpupitre");
+const historiqueRoutes=require("./routes/consulterHistorique");
+const congeRoutes=require("./routes/conges");
+
 
 mongoose
 .connect("mongodb://localhost:27017/database", {
@@ -21,7 +25,9 @@ mongoose
   app.use(express.json())
   app.use("/api/cand",candARoutes)
   app.use("/api/concert",concertRoutes)
-
+  app.use("/api/chef",chefpupitreRoutes)
+  app.use("/api/historique", historiqueRoutes)
+  app.use("/api/conge", congeRoutes)
 
 
 module.exports=app
