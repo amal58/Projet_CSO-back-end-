@@ -48,24 +48,6 @@ const fetchCandAs =(req,res)=>{
   
  
  
-  // const addCandA= (req, res) => {
-  //   const candA = new CandA(req.body);
-  //   candA
-  //     .save()
-  //     .then(() =>
-  //       res.status(201).json({
-  //         model: candA,
-  //         message: "Created!",
-  //       })
-  //     )
-  //     .catch((error) => {
-  //       res.status(400).json({
-  //         error: error.message,
-  //         message: "Données invalides",
-  //       });
-  //     });
-  // }
-
 
   const addCandA = (req, res) => {
     // Valider les données entrantes avec Joi
@@ -97,29 +79,6 @@ const fetchCandAs =(req,res)=>{
 
 
 
-
-
-//modifier
-// const UpdateCandA=(req, res) => {
-//     CandA.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
-//       .then((candA) => {
-//         if (!candA) {
-//           res.status(404).json({
-//             message: "candidat audition not found ",
-//           });
-//           return;
-//         }
-//         res.status(200).json({
-//           model: candA,
-//           message: "candidat audition updated",
-//         });
-//       })
-//       .catch((error) =>
-//         res.status(400).json({
-//           error: error.message,
-//           message: "candidat audition not correct",
-//         })
-//       );}
 
 
 const UpdateCandA = (req, res) => {
