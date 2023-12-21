@@ -5,9 +5,17 @@ const choristeSchema = mongoose.Schema({
         ref: 'CandAud',
         required: true,
       },
-    status: { type: String, required: true, enum: ['junior', 'senior', 'veteran', 'eliminer','choriste'] },
+    nominé: { type: Boolean, default: false },
+    éliminé: { type: Boolean, default: false },
+    raisonÉlimination: { type: String },
     chefpupitre:{type:Boolean, required:true ,default:false},  
     chefchoeur:{type:Boolean,required:true,default:false},
-    etatconge: { type:String,enum:['inactif','actif'], default:'actif'},
-});
-module.exports = mongoose.model("Choriste",choristeSchema);
+    historiqueStatut: [
+      {
+        saison: { type: String,required:true },
+        statut: { type: String, required: true, enum: ['choriste','junior', 'senior', 'veteran', 'inactif'] },
+        }],
+        compte: { type: mongoose.Schema.Types.ObjectId, ref: 'Compte', required: true },
+      })
+
+  module.exports = mongoose.model("Choriste",choristeSchema);
