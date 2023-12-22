@@ -32,7 +32,7 @@ exports.createConcert = (req, res, next) => {
 // Fonction pour générer une chaîne de caractères aléatoire pour l'URLQR
 function generateRandomURL() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let randomURL = 'https://';
+    let randomURL = 'https:';
 
     for (let i = 0; i < 10; i++) {
         randomURL += characters.charAt(Math.floor(Math.random() * characters.length));

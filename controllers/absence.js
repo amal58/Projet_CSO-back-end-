@@ -204,7 +204,78 @@ async function sendConfirmationEmail(choristeEmail, dateConcert, confirmationLin
     }
   };
 
+  exports.modifyChoristeState = async (req, res) => {
+    // Valider les données de la requête si nécessaire
+  
+    try {
+      // Récupérer les paramètres de l'URL
+      const { concertId, urlQR } = req.params;
+      console.log('ID du concert:', concertId);
+      console.log('URL QR:', urlQR);
+  
+      // Récupérer l'ID du choriste à partir de la requête
+      const compteId = await getUserIdFromRequest(req);
+      console.log('ID du compte:', compteId);
+  
+      if (!compteId) {
+        return res.status(401).json({ error: 'Token invalide ou expiré' });
+      }
+  
+      // Trouver le choriste correspondant à l'ID du compte
+      const choriste = await Choriste.findOne({ compteId });
+  
+      if (!choriste) {
+        return res.status(404).json({ error: 'Choriste non trouvé' });
+      }
+  
+      // Rechercher l'absence correspondant au choriste et au concert
+      const absence = await Absence.findOne({
+        choriste: choriste._id,
+        concert: concertId,
+      });
+  
+      // Vérifier si l'absence existe
+      if (!absence) {
+        return res.status(404).json({ error: 'Absence non trouvée pour les paramètres fournis' });
+      }
+  
+      // Vérifier si l'URL QR correspond à celui du concert
+      const concert = await Concert.findOne({ _id: concertId });
+  
+      if (!concert || concert.urlQR !== urlQR) {
+        return res.status(400).json({ error: "L'URL QR ne correspond pas à celui du concert" });
+      }
+  
+      // Mettre à jour l'état de l'absence
+      await Absence.findOneAndUpdate(
+        { _id: absence._id },
+        { $set: { etat: true } },
+        { new: true } // Pour renvoyer le document mis à jour
+      );
+  
+      res.json({
+        message: "État de l'absence modifié avec succès !",
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 
+  exports.getChoristesDispo = async (req, res) => {
+    try {
+      const { concertId } = req.params;
+  
+      // Recherche des choristes absents pour le concert spécifié
+      const absentChoristes = await Absence.find({ concert: concertId, etat: false })
+        .populate('choriste') // Assurez-vous que vous avez une référence correcte dans votre modèle Absence
+        .select('choriste'); // Sélectionnez uniquement le champ 'choriste' dans le résultat
+  
+      res.json({ absentChoristes });
+    } catch (error) {
+      console.error('Erreur lors de la récupération des choristes absents :', error);
+      res.status(500).json({ error: 'Erreur interne du serveur' });
+    }
+  };
 
 function isSameDate(date1, date2) {
     return date1.getFullYear() === date2.getFullYear() &&
