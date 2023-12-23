@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require('joi');
-const personneSchema = mongoose.Schema({
+const personneSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   nom: { type: String, required: true },
   prenom: { type: String, required: true },
@@ -12,12 +12,7 @@ const personneSchema = mongoose.Schema({
   telephone: { type: String, required: true },
   cin: { type: String, required: true },
   situationPro: { type: String, required: true },
-  createdAt: { type: Date,default: Date.now },
-  role: {
-    type: String,
-    enum: [ 'choriste', 'candidat'],default:'candidat'},
-   
-   
+  createdAt: { type: Date,default: Date.now }, 
 });
 
 module.exports = mongoose.model("Personne", personneSchema);
