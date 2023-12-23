@@ -9,7 +9,7 @@ exports.generateAuditions = async (req, res, next) => {
     const plageHoraireFin = new Date(`${dateDebut}T${heureFin}`);
 
     // Trouver tous les candidats
-    const candidats = await Personne.find({ role: 'candidat' });
+    const candidats = await Personne.find();
 
     // Générer les auditions
     const auditions = [];
