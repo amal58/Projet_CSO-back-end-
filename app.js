@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const candARoutes=require('./routes/candidatAudition')
 const auditionRoutes = require('./routes/audition');
 const personneRoutes = require('./routes/personne');
+const choristeRoutes = require('./routes/choriste');
 mongoose
 .connect("mongodb://127.0.0.1:27017/data", {
   useNewUrlParser: true,
@@ -21,5 +22,6 @@ mongoose
   app.use('/api/auditions', auditionRoutes); 
   app.use("/api/cand",candARoutes)
   app.use('/api/candidats', personneRoutes);
+  app.use('/api/choriste', choristeRoutes);
 
 module.exports=app

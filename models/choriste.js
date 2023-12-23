@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const choristeSchema = new mongoose.Schema({
     candidatId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'CandAud',
+        ref: 'Personne',
       },
     role:{type:String , enum:['admin' , 'choriste' , 'Manager','chefpupitre','chefchoeur']},
     login:{type:String},
