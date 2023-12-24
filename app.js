@@ -58,10 +58,11 @@ app.use(express.static(path.join(__dirname, "public")));
 //     chefchoeur: false,
 //     historiqueStatut: [
 //         {
-//             saison: "Saison_1",
+//             saison: "1",
 //             statut: "choriste",
 //         },
 //     ],
+//     password:"kjkgbhbjbglhhkhkug"
 //     compteId: "65833f85acac178013d8fd12",
 // }
 

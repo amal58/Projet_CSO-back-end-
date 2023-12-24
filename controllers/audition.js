@@ -10,7 +10,7 @@ exports.generateAuditions = async (req, res, next) => {
     const plageHoraireFin = new Date(`${dateDebut}T${heureFin}`);
 
     // Trouver tous les candidats
-    const candidats = await Personne.find({ role: 'candidat' });
+    const candidats = await Personne.find();
 
     // Générer les auditions
     const auditions = [];
@@ -45,31 +45,30 @@ exports.generateAuditions = async (req, res, next) => {
     // Configuration du transporteur nodemailer
     const transporter = nodemailer.createTransport({
       host: 'smtp-mail.outlook.com',
-      secureConnection:false,
+      secureConnection: false,
       port: 587,
-      tls:{
-        ciphers:'SSLv3',
+      tls: {
+        ciphers: 'SSLv3',
       },
       auth: {
-        user: 'simaatest@outlook.com',
+        user: 'pourtestsima@outlook.com',
         pass: 'SIMAA test2012',
       },
       // Ajoutez ces options pour augmenter le délai d'attente (en millisecondes)
       connectionTimeout: 5000,
       greetingTimeout: 10000,
       socketTimeout: 15000,
-
     });
 
-    const destinationEmail = 'hesemi6841@mcenb.com'; // Remplacez par votre adresse e-mail
+    const destinationEmail = 'saadsimaa@gmail.com'; // Remplacez par votre adresse e-mail
 
     // Envoi des e-mails d'invitation
     for (const audition of createdAuditions) {
       const candidat = await Personne.findById(audition.candidat);
 
       const mailOptions = {
-        from: 'simaatest@outlook.com',
-        to: destinationEmail,
+        from: 'pourtestsima@outlook.com',
+        to: candidat.email,
         subject: 'Invitation à audition',
         text: `Cher ${candidat.prenom},\n\nVous êtes invité(e) à participer à l'audition le ${audition.date} à ${audition.heureDebut}.\n\nCordialement,\nVotre équipe d'audition`,
       };
@@ -91,12 +90,13 @@ exports.generateAuditions = async (req, res, next) => {
   }
 };
 
+
 exports.generateAdditionalAuditions = async (req, res, next) => {
   try {
     const { listeCandidats, nombreCandidatsParHeure, heureDebut, heureFin, dateDebut } = req.body;
 
     // Trouver les candidats correspondant aux e-mails
-    const candidats = await Personne.find({ role: 'candidat', email: { $in: listeCandidats } });
+    const candidats = await Personne.find({ email: { $in: listeCandidats } });
 
     // Générer les auditions
     const auditions = [];
@@ -136,7 +136,7 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
         ciphers: 'SSLv3',
       },
       auth: {
-        user: 'simaatest@outlook.com',
+        user: 'pourtestsima@outlook.com',
         pass: 'SIMAA test2012',
       },
       // Ajoutez ces options pour augmenter le délai d'attente (en millisecondes)
@@ -145,14 +145,14 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
       socketTimeout: 15000,
     });
 
-    const destinationEmail = 'vefeme9164@avucon.com'; // Remplacez par votre adresse e-mail
+    const destinationEmail = 'saadsimaa@gmail.com'; // Remplacez par votre adresse e-mail
 
     // Envoi des e-mails d'invitation
     for (const audition of createdAuditions) {
       const candidat = await Personne.findById(audition.candidat);
 
       const mailOptions = {
-        from: 'simaatest@outlook.com',
+        from: 'pourtestsima@outlook.com',
         to: destinationEmail,
         subject: 'Invitation à audition',
         text: `Cher ${candidat.prenom},\n\nVous êtes invité(e) à participer à l'audition le ${audition.date} à ${audition.heureDebut}.\n\nCordialement,\nVotre équipe d'audition`,
@@ -197,7 +197,7 @@ exports.getAuditionsForCandidate = async (req, res, next) => {
     // Trouver le candidat
     const candidat = await Personne.findById(candidatId);
 
-    if (!candidat || candidat.role !== 'candidat') {
+    if (!candidat) {
       return res.status(404).json({
         message: 'Candidat non trouvé',
       });

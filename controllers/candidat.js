@@ -59,7 +59,7 @@ exports.getCandidatsBySexe = async (req, res) => {
  
   exports.AjoutCandidat = async (req, res) => {
     try {
-      req.body.role = 'candidat';
+      // req.body.role = 'candidat';
       const newCandidat = new Personne(req.body);
       await newCandidat.save();
   
@@ -91,7 +91,7 @@ cron.schedule('23 20 * * *', async () => {
     dateFin.setHours(15, 0, 0, 0); // 10h du matin
 
     const nouveauxCandidats = await Personne.find({
-      role: 'candidat',
+      // role: 'candidat',
       createdAt: {
         $gte: dateDebut,
         $lt: dateFin,
