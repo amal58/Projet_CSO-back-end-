@@ -1,6 +1,6 @@
 const CandA =require("../models/candidatAudition")
 const Audition =require("../models/audition")
-const choriste =require("../models/choriste")
+const Choriste =require("../models/choriste")
 const nodemailer =require("nodemailer")
 const path = require('path');
 const secretKey = 'your-secret-key';
@@ -18,10 +18,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-var passwords = generator.generate({
-	length: 10,
-	numbers: true
-});
+
 
 const fetchCandAs =(req,res)=>{
     CandA.find()
@@ -148,10 +145,13 @@ const fetchCandAs =(req,res)=>{
     const updatet = {ConfirmedEmail:"confirmer" }
     const updateaudition= await CandA.findOneAndUpdate({audition:verify.audition}, {ConfirmedEmail:"confirmer"},{new:true})
     const existUser= exitaudition.audition.candidat._id
-
+    const passwords = generator.generate({
+      length: 10,
+      numbers: true
+    });
     const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(passwords, salt);
-    const User= new choriste ({
+    const User= new Choriste ({
       role:"choriste",
       candidatId:existUser,
       historiqueStatut:[
@@ -254,10 +254,12 @@ console.log(response)
       tab.push(Basse[i])
     }
     
-    tab.map(elem=>{
-      const confirmationToken = jwt.sign({ audition: elem.audition }, secretKey, { expiresIn: '1d' });
-    console.log(confirmationToken);
-    
+    tab.map(async(elem)=>{
+      const existChoriste= await Choriste.findOne({candidatId:elem.audition.candidat._id})
+      console.log(existChoriste)
+      if(!existChoriste){
+      const confirmationToken =await  jwt.sign({ audition: elem.audition }, secretKey, { expiresIn: '1d' });
+      console.log(confirmationToken);
       transporter.sendMail({
         from: "amal ",
         to: elem.audition.candidat.email,
@@ -296,9 +298,9 @@ console.log(response)
         }
         console.log(info);
     });
-    })
+  }})
 
-
+  
   res.status(200).json(tab)
     } catch (error) {
       console.log(error);

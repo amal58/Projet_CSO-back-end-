@@ -8,8 +8,8 @@ const choristeSchema = new mongoose.Schema({
     login:{type:String},
     historiqueStatut: [
       {
-        saison: { type:Number,required:true },
-        statut: { type: String, required: true, enum: ['junior', 'senior', 'veteran', 'inactif'] },
+        saison: { type:Number },
+        statut: { type: String, enum: ['junior', 'senior', 'veteran', 'inactif'] },
         }],
     password:{type:String,required:true},
     confirmationStatus: { type: String, default: 'En attente de confirmation' },
