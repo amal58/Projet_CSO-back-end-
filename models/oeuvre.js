@@ -27,7 +27,7 @@ const validateGenres = function (genres) {
 const PartieSchema = mongoose.Schema({
   estChoeur: { type: Boolean, default: false },
   pupitres: {
-    type: [{ type: String, enum: PupitreEnum, required: true }],
+    type: [{ type: String, enum: PupitreEnum }],
     validate: [
       { validator: validateChoeur, message: "Un chœur doit avoir au moins un pupitre spécifié." },
       { validator: validatePupitres, message: "Chaque pupitre doit être l'un des 'Soprano', 'Alto', 'Ténor', 'Basse'." },

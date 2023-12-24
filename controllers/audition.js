@@ -158,7 +158,6 @@ exports.enregistrerPersonne = async (req, res) => {
 exports.generateAuditions = async (req, res, next) => {
   try {
     const { dateDebut, nombreCandidatsParHeure, heureDebut, heureFin } = req.body;
-
     const plageHoraireDebut = new Date(`${dateDebut}T${heureDebut}`);
     const plageHoraireFin = new Date(`${dateDebut}T${heureFin}`);
 
