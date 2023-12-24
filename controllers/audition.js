@@ -1,6 +1,7 @@
 const Audition = require('../models/audition');
 const Personne = require('../models/personne');
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 exports.generateAuditions = async (req, res, next) => {
   try {
@@ -10,7 +11,7 @@ exports.generateAuditions = async (req, res, next) => {
     const plageHoraireFin = new Date(`${dateDebut}T${heureFin}`);
 
     // Trouver tous les candidats
-    const candidats = await Personne.find({ role: 'candidat' });
+    const candidats = await Personne.find();
 
     // Générer les auditions
     const auditions = [];
@@ -45,31 +46,30 @@ exports.generateAuditions = async (req, res, next) => {
     // Configuration du transporteur nodemailer
     const transporter = nodemailer.createTransport({
       host: 'smtp-mail.outlook.com',
-      secureConnection:false,
+      secureConnection: false,
       port: 587,
-      tls:{
-        ciphers:'SSLv3',
+      tls: {
+        ciphers: 'SSLv3',
       },
       auth: {
-        user: 'simaatest@outlook.com',
-        pass: 'SIMAA test2012',
+        user: 'pourtestsima@outlook.com',
+        pass: process.env.PASSWORD,
       },
       // Ajoutez ces options pour augmenter le délai d'attente (en millisecondes)
       connectionTimeout: 5000,
       greetingTimeout: 10000,
       socketTimeout: 15000,
-
     });
 
-    const destinationEmail = 'hesemi6841@mcenb.com'; // Remplacez par votre adresse e-mail
+    const destinationEmail = 'saadsimaa@gmail.com'; // Remplacez par votre adresse e-mail
 
     // Envoi des e-mails d'invitation
     for (const audition of createdAuditions) {
       const candidat = await Personne.findById(audition.candidat);
 
       const mailOptions = {
-        from: 'simaatest@outlook.com',
-        to: destinationEmail,
+        from: 'pourtestsima@outlook.com',
+        to: candidat.email,
         subject: 'Invitation à audition',
         text: `Cher ${candidat.prenom},\n\nVous êtes invité(e) à participer à l'audition le ${audition.date} à ${audition.heureDebut}.\n\nCordialement,\nVotre équipe d'audition`,
       };
@@ -136,8 +136,8 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
         ciphers: 'SSLv3',
       },
       auth: {
-        user: 'simaatest@outlook.com',
-        pass: 'SIMAA test2012',
+        user: 'pourtestsima@outlook.com',
+        pass: process.env.PASSWORD,
       },
       // Ajoutez ces options pour augmenter le délai d'attente (en millisecondes)
       connectionTimeout: 5000,
@@ -150,10 +150,10 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
     // Envoi des e-mails d'invitation
     for (const audition of createdAuditions) {
       const candidat = await Personne.findById(audition.candidat);
-
+      
       const mailOptions = {
-        from: 'simaatest@outlook.com',
-        to: destinationEmail,
+        from: 'pourtestsima@outlook.com',
+        to: candidat.email,
         subject: 'Invitation à audition',
         text: `Cher ${candidat.prenom},\n\nVous êtes invité(e) à participer à l'audition le ${audition.date} à ${audition.heureDebut}.\n\nCordialement,\nVotre équipe d'audition`,
       };
