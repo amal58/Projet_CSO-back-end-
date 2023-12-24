@@ -5,5 +5,14 @@ const CandidatController = require('../controllers/candidat');
 
 
 
-router.post("/ajouter",CandidatController.AjoutCandidat);
+router.get('/', CandidatController.getAllCandidats);
+
+
+router.get('/:sexe', CandidatController.getCandidatsBySexe);
+
+
+router.get('/id/:id', CandidatController.getCandidatByid);
+
+router.post('/ajout', CandidatController.AjoutCandidat);
+
 module.exports = router;
