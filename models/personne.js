@@ -14,12 +14,7 @@ const personneSchema = mongoose.Schema({
   cin: { type: String, required: true },
   situationPro: { type: String, required: true },
   createdAt: { type: Date,default: Date.now },
-  role: {
-    type: String,
-    enum: ['manager', 'admin', 'choriste', 'candidat'],
-    required: true,
-    
-  },
+ 
 });
 personneSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model("Personne", personneSchema);
