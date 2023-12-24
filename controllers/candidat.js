@@ -11,7 +11,7 @@ exports.getAllCandidats = async (req, res) => {
       limit: parseInt(limit, 10),
     };
 
-    const candidats = await Personne.paginate({ role: 'candidat' }, options);
+    const candidats = await Personne.paginate( {},options);
     res.json(candidats);
   } catch (error) {
     console.error(error);
@@ -29,17 +29,17 @@ exports.getCandidatsBySexe = async (req, res) => {
         limit: parseInt(limit, 10),
       };
   
-      const candidats = await Personne.paginate({ role: 'candidat', sexe }, options);
+      const candidats = await Personne.paginate({ sexe: sexe }, options);
       res.json(candidats);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Erreur serveur' });
     }
   };
-  exports.getCandidatByEmail = async (req, res) => {
+  exports.getCandidatByid = async (req, res) => {
     try {
-      const { email } = req.params;
-      const candidat = await Personne.findOne({ role: 'candidat', email });
+      const { id } = req.params;
+      const candidat = await Personne.find({ _id:id });
       if (!candidat) {
         return res.status(404).json({ message: 'Candidat non trouvé' });
       }

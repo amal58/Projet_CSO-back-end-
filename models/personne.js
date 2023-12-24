@@ -13,12 +13,7 @@ const personneSchema = mongoose.Schema({
   telephone: { type: String, required: true },
   cin: { type: String, required: true },
   situationPro: { type: String, required: true },
-  role: {
-    type: String,
-    enum: ['manager', 'admin', 'choriste', 'candidat'],
-    required: true,
-    
-  },
+  createdAt: { type: Date,default: Date.now },
 });
 personneSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model("Personne", personneSchema);
