@@ -1,8 +1,12 @@
+Object.keys(require.cache).forEach(function(key) {
+  delete require.cache[key];
+});
 const { app, server, io } = require("./app");
 const cron = require('node-cron');
 
 // Liste des candidats ajoutés depuis la dernière notification
 let nouveauxCandidats = [];
+
 
 const port = process.env.PORT || 5000;
 app.set("port", port);

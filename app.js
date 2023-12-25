@@ -29,18 +29,24 @@ mongoose
 // Ajoutez vos routes ici
 const auditionRoutes = require("./routes/audition");
 const personneRoutes = require("./routes/candidat");
-const UserRoutes = require("./routes/compte.js");
-const choriste = require("./models/choriste.js");
+
+// const choriste = require("./models/choriste.js");
+const choristeRoutes = require("./routes/choriste.js");
 const concertRoutes = require('./routes/concert.js');
 const repetitionRoutes = require('./routes/repetition.js');
 const absenceRoutes = require('./routes/absence.js');
 app.use("/api/absences", absenceRoutes);
 app.use("/api/auditions", auditionRoutes);
 app.use("/api/candidats", personneRoutes);
-app.use("/api/auth/",UserRoutes);
-app.use('/api/concerts', concertRoutes);
-app.use('/api/repetitions', repetitionRoutes);
 
+app.use('/api/concerts', concertRoutes);
+app.use('/api/repetitions', repetitionRoutes);// Middleware de journalisation pour déboguer les demandes
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
+app.use('/api/choristes', choristeRoutes);
 
 // Ajoutez une route pour servir le fichier HTML
 app.get("/admin.html", (req, res) => {
@@ -51,19 +57,16 @@ app.get("/admin.html", (req, res) => {
 app.use(express.static(path.join(__dirname, "public")));
 // const exemples = [
 //   {
-//     candidatId: "65819baba2bfb602e732df7d",
-//     nominé: false,
-//     éliminé: false,
-//     chefpupitre: false,
-//     chefchoeur: false,
-//     historiqueStatut: [
-//         {
-//             saison: "Saison_1",
-//             statut: "choriste",
-//         },
-//     ],
-//     compteId: "65833f85acac178013d8fd12",
-// }
+//   candidatId: "65819baba2bfb602e732df7d",
+//   role: "admin",
+//   login: "admin123",
+//   historiqueStatut: [
+//     { saison: 2022, statut: "senior" },
+//     { saison: 2023, statut: "senior" },
+//   ],
+//   password: "$2b$10$Xl2HC7GKAZPk0qkvZiDHaueUBa0zYDK88OUuAaLyGjNqDbD4vCwS.",
+//   confirmationStatus: "En attente de confirmation",
+// },
 
 // ];
 // // Fonction pour insérer les exemples dans la base de données

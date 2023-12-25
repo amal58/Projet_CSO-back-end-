@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const net = require('net');
 const cron = require('node-cron');
 
+
  // Importez l'instance io depuis app.js
 
 // Contrôleur pour récupérer la liste de tous les candidats avec pagination
@@ -16,7 +17,7 @@ exports.getAllCandidats = async (req, res) => {
       limit: parseInt(limit, 10),
     };
 
-    const candidats = await Personne.paginate({ role: 'candidat' }, options);
+    const candidats = await Personne.paginate( {},options);
     res.json(candidats);
   } catch (error) {
     console.error(error);
@@ -34,17 +35,17 @@ exports.getCandidatsBySexe = async (req, res) => {
         limit: parseInt(limit, 10),
       };
   
-      const candidats = await Personne.paginate({ role: 'candidat', sexe }, options);
+      const candidats = await Personne.paginate({ sexe: sexe }, options);
       res.json(candidats);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Erreur serveur' });
     }
   };
-  exports.getCandidatByEmail = async (req, res) => {
+  exports.getCandidatByid = async (req, res) => {
     try {
-      const { email } = req.params;
-      const candidat = await Personne.findOne({ role: 'candidat', email });
+      const { id } = req.params;
+      const candidat = await Personne.find({ _id:id });
       if (!candidat) {
         return res.status(404).json({ message: 'Candidat non trouvé' });
       }
@@ -59,7 +60,7 @@ exports.getCandidatsBySexe = async (req, res) => {
  
   exports.AjoutCandidat = async (req, res) => {
     try {
-      req.body.role = 'candidat';
+      
       const newCandidat = new Personne(req.body);
       await newCandidat.save();
   
@@ -80,7 +81,7 @@ exports.getCandidatsBySexe = async (req, res) => {
     }
   };
   // Planifiez l'envoi de notifications chaque jour à 10h00
-cron.schedule('23 20 * * *', async () => {
+cron.schedule('38 14 * * *', async () => {
   try {
     // Récupérez les nouveaux candidats ajoutés entre 10h d'hier et 10h d'aujourd'hui
     const dateDebut = new Date();
@@ -91,7 +92,7 @@ cron.schedule('23 20 * * *', async () => {
     dateFin.setHours(15, 0, 0, 0); // 10h du matin
 
     const nouveauxCandidats = await Personne.find({
-      role: 'candidat',
+ 
       createdAt: {
         $gte: dateDebut,
         $lt: dateFin,
