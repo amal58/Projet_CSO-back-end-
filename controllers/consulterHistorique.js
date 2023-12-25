@@ -111,7 +111,6 @@ const consulterProfil = async (req, res) => {
         cin: updatedCandidat.cin,
         telephone: updatedCandidat.telephone,
         AnneeIntegration: updatedCandidat.createdAt.getFullYear(),
-        // Ajoutez d'autres champs du modèle Personne au besoin
       },
       historiqueStatut: updatedChoriste.historiqueStatut,
     });
