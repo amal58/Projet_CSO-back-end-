@@ -4,13 +4,8 @@ const mongoose = require('mongoose')
 const repetitionRoutes = require('./routes/repetition');
 
 
-
-
-
-
-
 mongoose
-.connect('mongodb+srv://p92934700:7RoxD6S97xxp1Dea@cluster0.peomj36.mongodb.net/projetCSO', {
+.connect("mongodb://127.0.0.1:27017/data", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
