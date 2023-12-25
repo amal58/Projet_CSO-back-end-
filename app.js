@@ -9,7 +9,6 @@ const cron = require('node-cron');
 const congeController = require('./controllers/conge');
 
 
-
 //'*/2 * * * * *' chaque 2 secondes
 // Exécuter la fonction toutes les 2 HEURES
 cron.schedule('0 */2 * * *', () => {
