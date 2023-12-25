@@ -6,7 +6,6 @@ const congeSchema = new mongoose.Schema({
   datedebut: { type: Date, required: true },
   etat: { type: String, enum: ['en attente', 'accepte'], default: 'en attente' },
   choriste: { type: mongoose.Schema.Types.ObjectId, ref: 'Choriste', required: true },
-  processed: { type: Boolean, default: false },
 });
 
 // Schéma de validation avec Joi

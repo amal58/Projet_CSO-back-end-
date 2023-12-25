@@ -1,17 +1,20 @@
 const mongoose = require("mongoose");
-
-const choristeSchema = mongoose.Schema({
-    choriste: {
+const choristeSchema = new mongoose.Schema({
+    candidatId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Personne',
-        required: true,
       },
-    status: { type: String, required: true, enum: ['inactif', 'junior', 'senior', 'veteran', 'eliminer'] },
-    typePupitre: { type: String, enum: ['Base', 'Alto', 'Tenor', 'Soprano'], required: true },
-    chefpupitre:{type:Boolean, required:true},
-    chefchoeur:{type:Boolean,required:true},
+    role:{type:String , enum:['admin' , 'choriste' , 'Manager','chefpupitre','chefchoeur']},
+    login:{type:String},
+    historiqueStatut: [
+      {
+        saison: { type:Number },
+        statut: { type: String, enum: ['junior', 'senior', 'veteran', 'inactif'] },
+        }],
+    password:{type:String,required:true},
+    confirmationStatus: { type: String, default: 'En attente de confirmation' },
+      })
 
-});
-module.exports = mongoose.model("Choriste",choristeSchema);
+  module.exports = mongoose.model("Choriste",choristeSchema);
 
 
