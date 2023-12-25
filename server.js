@@ -15,8 +15,9 @@ server.listen(port,()=>{
 })
 
 
-app.post("/ajouteconger/:id",async (req, res) =>{
+app.post("/ajouteconger",async (req, res) =>{
     try{
+  
         const conge = new Conge({
             dateDebutConge: req.body.dateDebutConge,
             dateFinConge: req.body.dateFinConge,
@@ -24,6 +25,8 @@ app.post("/ajouteconger/:id",async (req, res) =>{
             choriste: req.params.id
         })
        const resultat = await  conge.save();
+      // const existChoriste= await Choriste.findById({ candidatId: candidatId._id }).populate(Choriste.candidatId.nom)
+
        const choriste=  await Choriste.findById({_id: req.params.id})
        if(resultat){
             io.emit("new_notification",`vous avez une nouvelle congée de ${choriste.nom} ${choriste.prenom}`)
