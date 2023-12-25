@@ -4,7 +4,8 @@ const Audition = require('../models/audition');
 const audition = require('../models/candidatAudition');
 const personne = require('../models/personne');
 const jwt=require ("jsonwebtoken")
-const bcrypt = require ("bcryptjs")
+const bcrypt = require ("bcryptjs");
+const { log } = require('console');
 
 ////////////get all choriste (role=choriste)
 exports.GetAllChoristes = async (req, res) => {
@@ -36,33 +37,28 @@ exports.login= async (req,res,next)=>{
 try{
     const email=req.body.email
     const existChoriste= await Choriste.findOne({ login: email })
-    console.log(existChoriste)
     const existUser= await personne.findOne({ email: email })
-    console.log(existUser)
-    const existPassword=await Choriste.findOne({candidatId:existUser._id})
-    
-
     if(!existChoriste && !existUser){
          return res.status(401).json({message:"user not found"})
     }
     if(existUser){
+      const existPassword=await Choriste.findOne({candidatId:existUser._id})
       const password= await bcrypt.compare(req.body.password, existPassword.password)
       if(password){
        return  res.status(200).json({
-            token: jwt.sign({ existUser: existUser._id }, "RANDOM_TOKEN_SECRET", {
+            token: jwt.sign({ existUser: existPassword._id,role:existPassword.role}, "RANDOM_TOKEN_SECRET", {
                 expiresIn: "24h"
             }),
         });
-
       }else{
-             return res.status(400).json({message:"failed to login"})
-      }
-    }
-    if(existChoriste){
+             return res.status(400).json({message:"invalid password"})
+      }}
+    else if(existChoriste){
         const password=await bcrypt.compare(req.body.password, existChoriste.password)
+        console.log(password);
         if(password){
          return  res.status(200).json({
-              token: jwt.sign({ existChoriste: existChoriste._id }, "RANDOM_TOKEN_SECRET", {
+              token: jwt.sign({ existChoriste: existChoriste._id ,role:existChoriste.role}, "RANDOM_TOKEN_SECRET", {
                   expiresIn: "24h"
               }),
           });
@@ -75,29 +71,6 @@ try{
 return res.status(400).json({message:"failed!!!!!"})
 }
 }
-
-
-// modifier tessiture
-
-// exports.modifier_tessiture = async (req, res) => {
-//     try {
-//       const idChoriste = req.params.id;
-//       const nouvelleTessiture = req.body.tessiture; 
-//       const existChoriste= await Choriste.findById(idChoriste)
-//       if (!existChoriste) {
-//         return res.status(404).json({ success: false, message: 'choriste non trouvé.'});
-//       }
-//       if (Choriste.role !== 'choriste') {
-//         return res.status(403).json({ success: false, message: 'L\'utilisateur n\'a pas le rôle de choriste.' });
-//       }
-//       Choriste.tessiture= nouvelleTessiture;
-//       await Choriste.save();
-  
-//       return res.status(200).json({ success: true, message: 'Utilisateur mis à jour avec succès.', Choriste});
-//     } catch (error) {
-//       return res.status(500).json({ success: false, message: error.message });
-//     }
-//   };
 
 
 exports.modifier_tessiture = async (req, res) => {
