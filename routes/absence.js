@@ -7,7 +7,6 @@ router.post('/add/:id_repetition/:urlQR', absenceController.createAbsence);
 // router.post('/:id_repetition', absenceController.createAbsenceConcert);
 router.post('/confirm/:concertId', absenceController.confirmAbsence);
 router.get('/confirmation-absence/:compteId/:concertId', absenceController.confirmDispo);
-router.patch('/modifyChoristeState/:concertId/:urlQR', absenceController.modifyChoristeState);
-router.get('/ChoristesDispo/:concertId', absenceController.getChoristesDispo);
+router.patch('/modifychoristestate/:concertId/:urlQR', absenceController.modifyChoristeState);
 
 module.exports = router;

@@ -9,7 +9,7 @@ router.get('/', personneController.getAllCandidats);
 router.get('/:sexe', personneController.getCandidatsBySexe);
 
 
-router.get('/email/:email', personneController.getCandidatByEmail);
+router.get('/id/:id', personneController.getCandidatByid);
 
 router.post('/ajout', personneController.AjoutCandidat);
 

@@ -41,10 +41,10 @@ exports.getCandidatsBySexe = async (req, res) => {
       res.status(500).json({ message: 'Erreur serveur' });
     }
   };
-  exports.getCandidatByEmail = async (req, res) => {
+  exports.getCandidatByid = async (req, res) => {
     try {
-      const { email } = req.params;
-      const candidat = await Personne.findOne({ role: 'candidat', email });
+      const { id } = req.params;
+      const candidat = await Personne.find({ _id:id });
       if (!candidat) {
         return res.status(404).json({ message: 'Candidat non trouvé' });
       }
