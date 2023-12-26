@@ -5,4 +5,6 @@ const auditionSchema = mongoose.Schema({
     candidat:{ type: mongoose.Schema.Types.ObjectId,ref: 'personne',required: true, },
   });
 
-  module.exports = mongoose.model("Audition", auditionSchema);
+  const Audition = mongoose.model("Audition", auditionSchema);
+
+  module.exports = Audition;
