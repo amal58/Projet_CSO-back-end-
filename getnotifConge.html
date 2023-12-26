@@ -36,20 +36,19 @@
             renderDates(); 
         });
 
-        // Fonction pour créer et afficher les éléments HTML avec les dates
+        
         function renderDates() {
-            text.innerHTML = ''; // Effacer le contenu actuel
+            text.innerHTML = ''; 
            
             tab.map(el => {
                 var doc = document.createElement("p");
-                text.appendChild(doc); // Utilisez appendChild pour ajouter au lieu de prepend
-              //  doc.innerHTML = el._id;
+                text.appendChild(doc); 
                  doc.innerHTML = "user " + el.choriste.candidatId.nom + " " + el.choriste.candidatId.prenom + " dateDebutConge "+ el.dateDebutConge;
             });
         }
         
         function clickme() {
-            // Vous pouvez ajouter des actions ici si nécessaire
+          
         }
     </script>
 </body>
