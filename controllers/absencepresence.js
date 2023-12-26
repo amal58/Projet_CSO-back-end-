@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { AbsencePresence } = require("../models/absencepresence");
+const { Auditions } = require("../models/");
 
 const createPresence = async (req, res) => {
   try {

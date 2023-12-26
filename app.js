@@ -18,9 +18,9 @@ const candARoutes=require("./routes/candidatAudition");
 // const congeRoutes = require('./controllers/conge');
 const choristeRoutes=require("./routes/choriste");
 const notificationUrgenteRoutes = require('./routes/notifUrgent');
-const addpresenceRoutes = require('./routes/absencepresence');
+//const addpresenceRoutes = require('./routes/absencepresence');
 const participantsRoutes = require('./routes/participantsRoutes');
-
+const routePresenceListe = require('./routes/Listepresence')
 mongoose.connect('mongodb+srv://p92934700:7RoxD6S97xxp1Dea@cluster0.peomj36.mongodb.net/projetCSO', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -46,8 +46,9 @@ app.use('/api/auditions', auditionRoutes);
 app.use("/api/cand",candARoutes)
 app.use("/api/choriste",choristeRoutes)
 app.use("/api/notifUrgente",notificationUrgenteRoutes)
-app.use("/api/pr",addpresenceRoutes)
+//app.use("/api/pr",addpresenceRoutes)
 app.use('/api', participantsRoutes);
+app.use("/lsP",routePresenceListe)
 
 
 
