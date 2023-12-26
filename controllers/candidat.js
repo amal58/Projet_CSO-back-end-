@@ -68,31 +68,3 @@ exports.SuppCandidat = async (req, res) => {
       res.status(400).json({ error });
   }
 };
-
-// /**********************************Mail validation */
-// const sendEmail = (req, res) => {
-//     const { nom, prenom, email } = req.body;
-  
-//     const transporter = nodemailer.createTransport({
-//       service: 'gmail',
-//       auth: {
-//         user: 'safaabdi930@gmail.com',
-//         pass: '##',
-//       },
-//     });
-  
-//     const mailOptions = {
-//       from: 'safaabdi930@gmail.com',
-//       to: email,
-//       subject: 'Subject of the Email',
-//       text: `Dear ${prenom} ${nom},\n\nThank you for your input!\n\nSincerely,\nYour App`,
-//     };
-  
-//     transporter.sendMail(mailOptions, (error, info) => {
-//       if (error) {
-//         return res.status(500).json({ error: error.message });
-//       }
-//       res.status(200).json({ message: 'Email sent', info });
-//     });
-//   };
-  

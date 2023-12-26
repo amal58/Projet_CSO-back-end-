@@ -1,8 +1,7 @@
 const express = require ("express")
 const app= express()
 
-const OeuvreRoutes=require("./routes/oeuvre")
-const personneRoutes = require('./routes/personne');
+const personneRoutes = require('./routes/candidat');
 
 const mongoose = require('mongoose')
 
@@ -19,7 +18,6 @@ mongoose
   });
 
   app.use(express.json())
-  app.use("/Oeuvre",OeuvreRoutes)
   app.use('/api/candidats', personneRoutes);
 
 
