@@ -4,7 +4,7 @@ const presenceController = require('../controllers/absencepresence');
 
 
 router.post('/', presenceController.createPresence );
-router.post('/:pupitre/:rep', presenceController.createPresence );
-router.post('/ListePrgrm/:pupitre/:programmeId', presenceController.createPresence );
+router.get('/ListeRep/:pupitre/:rep', presenceController.getListePresentsByRepetition );
+router.get('/ListePrgrm/:pupitre/:programmeId', presenceController.getListePresentsByProgramme );
 
 module.exports = router;

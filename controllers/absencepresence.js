@@ -57,10 +57,74 @@ exports.getListePresentsByRepetition = async (req, res) => {
   }
 };
 
+// exports.getListePresentsByProgramme = async (req, res) => {
+//   try {
+//     const programmeIdsParam = req.params.programmeId;
+//     const programmeIds = programmeIdsParam ? programmeIdsParam.split(';') : [];
+//     const tess = req.params.pupitre;
+//     // Trouver les absences liées au programme et filtrer par tessiture
+//     const absences = await AbsencePresence.find({
+//       'etat': true,
+//     }).populate({
+//       path: 'repetition',
+//       populate: {
+//         path: 'programme',
+//         model: 'Oeuvre', // Assurez-vous de bien utiliser le modèle approprié
+//       },
+//     }).populate({
+//       path: 'choriste',
+//       populate: {
+//         path: 'candidatId',
+//         model: 'CandAud', // Assurez-vous de bien utiliser le modèle approprié
+//         populate: {
+//           path: 'audition',
+//           model: 'Audition', // Assurez-vous de bien utiliser le modèle approprié
+//           populate: {
+//             path: 'candidat',
+//             model: 'Personne', // Assurez-vous de bien utiliser le modèle approprié
+//           },
+//         },
+//       },
+//     }).exec();
+
+//     const presentsFinaux = absences
+//     .filter(absence => {
+//         if (absence.repetition) {
+//             console.log('Programme de l\'absence :', absence.repetition.programme);
+//         } else {
+//             console.log('L\'absence n\'a pas de programme défini');
+//         }
+
+//         const isSameProgramme =
+//             absence.repetition &&
+//             absence.repetition.programme &&
+//             absence.repetition.programme.length > 0 &&
+//             programmeIds.every(id => absence.repetition.programme.some(oeuvre => oeuvre._id.toString() === id));
+
+//         const isSameTessiture = absence.choriste.candidatId.tessiture === tess;
+
+//         return isSameProgramme && isSameTessiture;
+//     })
+//     .map(absence => ({
+//         nom: absence.choriste.candidatId.audition.candidat.nom,
+//         prenom: absence.choriste.candidatId.audition.candidat.prenom,
+//         // Ajoutez d'autres propriétés selon vos besoins
+//     }));
+// console.log(presentsFinaux);
+
+//     // Envoyer la réponse avec la liste des noms et prénoms des choristes présents
+//     res.json({ Liste_des_Présents: presentsFinaux });
+
+//   } catch (error) {
+//     console.error(error);
+//     // Gérer l'erreur et renvoyer une réponse appropriée
+//     res.status(500).send('Erreur serveur');
+//   }
+// }
+
 exports.getListePresentsByProgramme = async (req, res) => {
   try {
-    const programmeIdsParam = req.params.programmeId;
-    const programmeId = programmeIdsParam ? programmeIdsParam.split(',') : [];
+    const programmeIds = req.params.programmeId.split(','); // Si vous avez plusieurs ID séparés par des virgules
     const tess = req.params.pupitre;
 
     // Trouver les absences liées au programme et filtrer par tessiture
@@ -90,12 +154,11 @@ exports.getListePresentsByProgramme = async (req, res) => {
 
     const presentsFinaux = absences
     .filter(absence => {
-        const isSameProgramme =
-            absence.repetition &&
-            absence.repetition.programme &&
-            absence.repetition.programme.length > 0 &&
-            programmeId.every(id => absence.repetition.programme.some(oeuvre => oeuvre._id.toString() === id));
-
+      const isSameProgramme = 
+      absence.repetition &&
+      absence.repetition.programme &&
+      absence.repetition.programme.length > 0 &&
+      absence.repetition.programme.some(oeuvre => programmeIds.includes(oeuvre._id.toString()));
         const isSameTessiture = absence.choriste.candidatId.tessiture === tess;
 
         if (absence.repetition) {
