@@ -6,16 +6,18 @@
     <title>Document</title>
 </head>
 <body>
+
     <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+
     <button onclick="clickme()">hello</button>
     <div id="text"></div>
-    <script async>
+    <script >
         var name = '';
         var socket = io.connect('http://localhost:5000');
         console.log(socket);
         let text = document.getElementById("text");
         let tab = [];
-
+        
         socket.on("new_notification", data => {
             alert(data);
             console.log(data);
@@ -42,15 +44,13 @@
                 var doc = document.createElement("p");
                 text.appendChild(doc); // Utilisez appendChild pour ajouter au lieu de prepend
               //  doc.innerHTML = el._id;
-                 doc.innerHTML = "user " + el.Choriste.nom + " " + el.Choriste.prenom + " dateDebutConge "+ el.dateDebutConge;
+                 doc.innerHTML = "user " + el.choriste.candidatId.nom + " " + el.choriste.candidatId.prenom + " dateDebutConge "+ el.dateDebutConge;
             });
         }
-
+        
         function clickme() {
             // Vous pouvez ajouter des actions ici si nécessaire
         }
-
-
     </script>
 </body>
 </html>

@@ -2,8 +2,14 @@ const express = require ("express")
 const app= express()
 const mongoose = require('mongoose')
 const repetitionRoutes = require('./routes/repetition');
-const congeRoutes = require('./routes/conge');
 
+
+var path = require('path');
+app.set("view engine", "ejs");
+
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname + '/getnotifConge.html'));
+ });
 
 mongoose
 .connect("mongodb://127.0.0.1:27017/data", {
@@ -21,7 +27,7 @@ mongoose
   app.use(express.json())
 
   app.use('/api/repetitions', repetitionRoutes);
-  app.use('/api/conge', congeRoutes);
+
 
 
  
