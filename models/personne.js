@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Joi = require('joi');
+
 const personneSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   nom: { type: String, required: true },

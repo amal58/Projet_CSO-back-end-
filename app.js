@@ -2,6 +2,7 @@ const express = require ("express")
 const app= express()
 const mongoose = require('mongoose')
 const repetitionRoutes = require('./routes/repetition');
+const congeRoutes = require('./routes/conge');
 
 
 mongoose
@@ -20,6 +21,7 @@ mongoose
   app.use(express.json())
 
   app.use('/api/repetitions', repetitionRoutes);
+  app.use('/api/conge', congeRoutes);
 
 
  

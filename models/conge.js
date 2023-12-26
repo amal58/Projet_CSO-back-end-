@@ -9,14 +9,13 @@ const congeSchema = new mongoose.Schema({
 });
 
 // Schéma de validation avec Joi
-const congeValidationSchema = Joi.object({
-  dateDebutConge: Joi.date().required(),
-  dateFinConge: Joi.date().required(),
-  etat: Joi.string().valid('en attente', 'accepte').default('en attente'),
-  choriste: Joi.string().required(), 
-});
+// const congeValidationSchema = Joi.object({
+//   dateDebutConge: Joi.date().required(),
+//   dateFinConge: Joi.date().required(),
+//   etat: Joi.string().valid('en attente', 'accepte').default('en attente'),
+//   choriste: Joi.string().required(), 
+// });
 
 
-const Conge = mongoose.model("Conge", congeSchema);
-module.exports = { Conge, congeValidationSchema };
+module.exports = mongoose.model("Conge", congeSchema);
 
