@@ -9,7 +9,6 @@ const candAudSchema = mongoose.Schema({
   remarque: { type: String, required: true },
   audition: { type: mongoose.Schema.Types.ObjectId, ref: 'Audition' , required: true}  ,// Assurez-vous que le chemin est correctement défini
   ConfirmedEmail: { type:String,enum:['confirmer','infirmer'], default:'infirmer' },
-
 });
 
 //schéma de validation avec Joi
