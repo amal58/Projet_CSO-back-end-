@@ -1,10 +1,27 @@
-const http =require("http")
-const app =require("./app")
-const port =process.env.PORT|| 5000
-app.set("port",port)
+const app = require("./app");
+const http = require('http');
+const socketIo = require('socket.io');
 
-const server =http.createServer(app)
+const server = http.createServer(app);
+const io = socketIo(server);
 
-server.listen(port,()=>{
-    console.log("listening on "+ port)
-})
+// Ajoutez le middleware d'IO à votre application
+app.io = io;
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/notif.html');
+});
+
+io.on('connection', (socket) => {
+    console.log('Nouvelle connexion socket :', socket.id);
+
+    // Émettre une notification à chaque connexion
+    socket.emit('notification', { message: 'Bienvenue sur la page de notification!' });
+
+    socket.on('disconnect', () => {
+        console.log('Déconnexion socket :', socket.id);
+    });
+});
+server.listen(5000, () => {
+    console.log('Serveur écoutant sur le port 5000');
+});
