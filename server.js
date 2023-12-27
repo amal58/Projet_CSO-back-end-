@@ -15,9 +15,6 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
     console.log('Nouvelle connexion socket :', socket.id);
 
-    // Émettre une notification à chaque connexion
-    socket.emit('notification', { message: 'Bienvenue sur la page de notification!' });
-
     socket.on('disconnect', () => {
         console.log('Déconnexion socket :', socket.id);
     });
