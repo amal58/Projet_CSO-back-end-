@@ -28,7 +28,7 @@ app.post ("/ajouteconger/:id", async (req, res) =>{
        const resultat = await  conge.save();
        const choriste=  await Choriste.findOne({_id: req.params.id}).populate("candidatId")
        if(choriste){
-            io.emit("new_notification","hhjggffuf")
+            io.emit("new_notification","Vous avez une nouvelle demande de conge")
      }
     res.status(200).json({
         message: "bien retourner",
@@ -42,7 +42,7 @@ console.log(e);
 
 
 io.on("connection",Socket=>{
-    console.log(Socket)
+ 
     schedule.scheduleJob('* * * * *', async()=>{
      try {
          const tab = [];
@@ -52,7 +52,7 @@ io.on("connection",Socket=>{
               path: 'candidatId',
             } 
          });
-         console.log(existcongee);
+       
          Socket.emit("list",existcongee)
      } catch (e) {
          console.error("Une erreur s'est produite :", e);
@@ -69,15 +69,19 @@ schedule.scheduleJob('*/2 * * * *', async () => {
         const existe_congées = await Conge.find({
             etat: "accepte",
             dateFinConge: { $gt: date }
-        }).populate("choriste");
+        }).populate({ 
+            path: 'choriste',
+            populate: {
+              path: 'candidatId',
+            } 
+         });
 
         existe_congées.map(async (elem) => {
             console.log(elem);
             console.log(elem.dateDebutConge);
             console.log(today);
 
-            const diff = moment(elem.dateDebutConge).diff(today, 'minutes'); // Calculer la différence en minutes
-
+            const diff = moment(elem.dateDebutConge).diff(today, 'minutes'); 
             console.log(diff);
 
             if (diff === 0 || (diff > 0 && diff < 3)&& existe_congées.choriste.etat==="Actif") {
@@ -88,7 +92,7 @@ schedule.scheduleJob('*/2 * * * *', async () => {
                     console.error("Erreur lors de la mise à jour du statut :", error);
                 }
                 io.emit("notif_congé", `congée de maintenant a ${elem.dateFinConge}`);
-                io.emit("notif_user", ` monsieur votre statut est inactif ${elem.choriste._id}`);
+                io.emit("notif_choriste", ` monsieur votre statut est inactif ${elem.choriste._id}`);
             }
         });
     } catch (e) {
