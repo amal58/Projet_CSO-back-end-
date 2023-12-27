@@ -5,7 +5,7 @@ const {loggedMiddleware}=require("../middlewares/UserAuth")
 
 
 
-router.get("/",loggedMiddleware,ChoristeController.GetAllChoristes)    
+router.get("/",ChoristeController.GetAllChoristes)    
 router.post("/login",ChoristeController.login)
 router.patch("/modifTessiture/:id",loggedMiddleware,ChoristeController.modifier_tessiture)
 
