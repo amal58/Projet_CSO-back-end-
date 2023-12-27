@@ -1,5 +1,6 @@
 const app =require("./app")
 const schedule = require('node-schedule');
+const moment = require('moment');
 
 const Conge= require('./models/conge');
 const http = require('http');
@@ -40,7 +41,6 @@ console.log(e);
 })
 
 
-
 io.on("connection",Socket=>{
     console.log(Socket)
     schedule.scheduleJob('* * * * *', async()=>{
@@ -61,4 +61,37 @@ io.on("connection",Socket=>{
 })
  
 
+schedule.scheduleJob('*/2 * * * *', async () => { 
+    try {
+        const date = moment();
+        const today = moment();
+       
+        const existe_congées = await Conge.find({
+            etat: "accepte",
+            dateFinConge: { $gt: date }
+        }).populate("choriste");
 
+        existe_congées.map(async (elem) => {
+            console.log(elem);
+            console.log(elem.dateDebutConge);
+            console.log(today);
+
+            const diff = moment(elem.dateDebutConge).diff(today, 'minutes'); // Calculer la différence en minutes
+
+            console.log(diff);
+
+            if (diff === 0 || (diff > 0 && diff < 3)&& existe_congées.choriste.etat==="Actif") {
+                console.log("succes");
+                try {
+              await    Choriste.findByIdAndUpdate({ _id: elem.choriste._id }, { etat: "inactif" });}
+                catch (error) {
+                    console.error("Erreur lors de la mise à jour du statut :", error);
+                }
+                io.emit("notif_congé", `congée de maintenant a ${elem.dateFinConge}`);
+                io.emit("notif_user", ` monsieur votre statut est inactif ${elem.choriste._id}`);
+            }
+        });
+    } catch (e) {
+        console.error("Une erreur s'est produite :", e);
+    }
+});

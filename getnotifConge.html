@@ -23,6 +23,11 @@
             console.log(data);
         });
 
+        socket.on("notif_user", data => {
+            alert(data);
+            console.log(data);
+        });
+
         socket.on("list", data => {
             console.log(data);
             if (tab.length < data.length) {
