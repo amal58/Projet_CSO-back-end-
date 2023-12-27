@@ -9,9 +9,21 @@ const concertSchema = new mongoose.Schema({
   choristePC: [
     {
       choriste: { type: mongoose.Schema.Types.ObjectId, ref: 'Choriste' ,required: true },
-      presence: { type: Number,enum:[0,1] ,default: 0 }, // Nouveau champ pour stocker la présence
     }
-  ] 
+  ] ,
+  ListeParticipants: [
+    {
+      pupitre: String, // Ajoutez le type de pupitre si vous voulez stocker cette information
+      participants: [
+        {
+          nom: String,
+          prenom: String,
+          tauxPresence: String,
+          tauxAbsence: String,
+        },
+      ],
+    },
+  ],
 });
 
 //Validation personnalisée pour vérifier que la date est ultérieure à la date actuelle
@@ -20,11 +32,12 @@ function dateValidator(value) {
   return value > currentDate;
 }
 
-// Validation personnalisée pour vérifier l'unicité de la date et des choristes
 concertSchema.path('date').validate(async function (value) {
-  const existingConcert = await this.constructor.findOne({ date: value, choriste: { $in: this.choriste } });
+  // Assurez-vous que this.choristePC est un tableau
+  const choristes = Array.isArray(this.choristePC) ? this.choristePC.map(item => item.choriste) : [this.choristePC.choriste];
+
+  const existingConcert = await this.constructor.findOne({ date: value, choristePC: { $in: choristes } });
   return !existingConcert;
 }, 'Ce concert avec la même date et la même liste de choristes existe déjà.');
-
 
 module.exports = mongoose.model('Concert', concertSchema);

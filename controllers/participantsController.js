@@ -4,7 +4,6 @@ const Audition = require("../models/audition")
 const { CandAud } = require("../models/candidatAudition")
 const { Personne } = require("../models/personne")
 const Concert = require('../models/concert');
-console.log("helloooo1111");
 
 exports.getListeParticipants = async (req, res) => {
   try {
@@ -105,6 +104,33 @@ const groupByPupitre = async (participants) => {
   // Utilisation de la fonction groupByPupitre avec la liste de participants
   const participantsGroupes = await groupByPupitre(participantsFiltres);
   
+   // Récupérez le document Concert existant
+const concert = await Concert.findById(concerti);
+
+// Assurez-vous que ListeParticipants est un tableau vide avant d'ajouter les données
+concert.ListeParticipants = [];
+
+// Ajoutez le nouvel objet à la ListeParticipants avec le pupitre déduit 
+for (const pupitre in participantsGroupes) {
+  if (participantsGroupes.hasOwnProperty(pupitre)) {
+    const participants = participantsGroupes[pupitre].map(participant => ({
+      nom: participant.nom,
+      prenom: participant.prenom,
+      tauxPresence: participant.tauxPresence,
+      tauxAbsence: participant.tauxAbsence,
+    }));
+
+    concert.ListeParticipants.push({
+      pupitre: pupitre,
+      participants: participants,
+    });
+  }
+}
+
+// Enregistrez le modèle Concert mis à jour
+await concert.save();
+
+  
   // Envoyer la réponse
   res.json({ participants: participantsGroupes });
   } catch (error) {
@@ -113,6 +139,7 @@ const groupByPupitre = async (participants) => {
     res.status(500).send('Erreur serveur');
   }
 };
+
 exports.getListeParticipantsParAbsence = async (req, res) => {
   try {
     const concerti = req.params.idC;
@@ -212,6 +239,33 @@ const groupByPupitre = async (participants) => {
   // Utilisation de la fonction groupByPupitre avec la liste de participants
   const participantsGroupes = await groupByPupitre(participantsFiltres);
   
+
+  // Récupérez le document Concert existant
+const concert = await Concert.findById(concerti);
+
+// Assurez-vous que ListeParticipants est un tableau vide avant d'ajouter les données
+concert.ListeParticipants = [];
+
+// Ajoutez le nouvel objet à la ListeParticipants avec le pupitre déduit 
+for (const pupitre in participantsGroupes) {
+  if (participantsGroupes.hasOwnProperty(pupitre)) {
+    const participants = participantsGroupes[pupitre].map(participant => ({
+      nom: participant.nom,
+      prenom: participant.prenom,
+      tauxPresence: participant.tauxPresence,
+      tauxAbsence: participant.tauxAbsence,
+    }));
+
+    concert.ListeParticipants.push({
+      pupitre: pupitre,
+      participants: participants,
+    });
+  }
+}
+
+// Enregistrez le modèle Concert mis à jour
+await concert.save();
+
   // Envoyer la réponse
   res.json({ participants: participantsGroupes });
 
