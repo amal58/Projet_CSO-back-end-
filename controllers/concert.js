@@ -1,13 +1,13 @@
 const excel = require('exceljs');
 const Concert =require("../models/concert")
 const oeuvre=require("../models/oeuvre")
-const repetition =require("../models/repetition") 
+const concert =require("../models/concert") 
 const choriste =require("../models/choriste") 
 
 const fetchConcert =(req,res)=>{
     Concert.find()
     .populate("programme")    
-    .populate("repetition")    
+    .populate("concert")    
     .populate("choriste")    
       .then((concerts) =>
         res.status(200).json({
@@ -22,10 +22,10 @@ const fetchConcert =(req,res)=>{
         });
       });
     }
-    const getConcertById=(req,res)=>{
+const getConcertById=(req,res)=>{
     Concert.findOne({_id:req.params.id})
      .populate("programme")    
-     .populate("repetition")    
+     .populate("concert")    
      .populate("choriste")  
     .then((concerts) => {
       if(!concerts){
@@ -67,29 +67,65 @@ const fetchConcert =(req,res)=>{
       });
   }
 
-//modifier
-const UpdateConcert=(req, res) => {
-    Concert.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
-      .then((concert) => {
-        if (!concert) {
-          res.status(404).json({
-            message: "concert not found ",
-          });
-          return;
-        }
-        res.status(200).json({
-          model: concert,
-          message: "concert updated",
-        });
-      })
-      .catch((error) =>
-        res.status(400).json({
-          error: error.message,
-          message: "concert not correct",
-        })
-      );
-  }
+// //modifier
+// const UpdateConcert=(req, res) => {
+//     Concert.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
+//       .then((concert) => {
+//         if (!concert) {
+//           res.status(404).json({
+//             message: "concert not found ",
+//           });
+//           return;
+//         }
+//         res.status(200).json({
+//           model: concert,
+//           message: "concert updated",
+//         });
+//       })
+//       .catch((error) =>
+//         res.status(400).json({
+//           error: error.message,
+//           message: "concert not correct",
+//         })
+//       );
+//   }
 
+const UpdateConcert = async (req, res) => {
+  try {
+    const io = req.app.io; // Récupérez io à partir de req.app
+    const val = req.body ;
+    // Récupérer le nom du champ modifié
+    const champModifie = Object.keys(val)[0]; // Supposant qu'il y ait un seul champ modifié
+
+    // Récupérer la nouvelle valeur
+    const nouvelleValeur = val[champModifie];
+    //----------------------------------------------------------------------------------------------------
+    const concert = await Concert.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
+    if (!concert) {
+      console.log("concert non trouvée");
+      return res.status(404).json({
+        message: "concert non trouvée",
+      });
+    }
+
+    // Émettre une notification aux clients connectés
+    io.emit('notification', {
+      message: `Concert  mise à jour : ${champModifie} a été changée  ${nouvelleValeur}`
+    });
+
+    console.log("concert mise à jour avec succès");
+    res.status(200).json({
+      model: concert,
+      message: "concert mise à jour avec succès",
+    });
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour du concert:', error);
+    res.status(400).json({
+      error: error.message,
+      message: "Erreur lors de la mise à jour du concert",
+    });
+  }
+};
 
 const DeleteConcert=(req, res) => {
     Concert.deleteOne({ _id: req.params.id })
@@ -129,7 +165,7 @@ const addProgramExcel = (req, res) => {
           date: req.body.date,
           lieu: req.body.lieu,
           affiche: req.body.affiche,
-          repetition: req.body.repetition,
+          concert: req.body.concert,
           choriste: req.body.choriste,
           programme: programmeToAdd,
         };

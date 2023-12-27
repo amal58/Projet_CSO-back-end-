@@ -9,7 +9,7 @@ const io = socketIo(server);
 app.io = io;
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/notif.html');
+    res.sendFile(__dirname + '/views/notifUrgente.html');
 });
 
 io.on('connection', (socket) => {

@@ -1,3 +1,8 @@
+const choriste = require('../models/choriste');
+const Personne = require('../models/personne');
+const Audition = require('../models/audition');
+const { CandAud ,candAudSchemaValidation}= require('../models/candidatAudition');
+
 const { Repetition,repetitionValidationSchema } = require('../models/repetition');
 const socketIo = require('socket.io');
 
@@ -46,6 +51,23 @@ exports.getRepetitionbyconcert=(req, res) => {
 exports.UpdateRepetition = async (req, res) => {
   try {
     const io = req.app.io; // Récupérez io à partir de req.app
+    const val = req.body ;
+    // Récupérer le nom du champ modifié
+    const champModifie = Object.keys(val)[0]; // Supposant qu'il y ait un seul champ modifié
+
+    // Récupérer la nouvelle valeur
+    const nouvelleValeur = val[champModifie];
+    //--------------------- chercher le nom de pupitre --------------------------------------------------
+    const rep = await Repetition.findOne({ _id: req.params.id});
+    const premierChoriste = rep.choriste.length > 0 ? rep.choriste[0] : null;
+    const schChoriste = await choriste.findOne({ _id: premierChoriste });
+    const schPerso =await Personne.findOne({ _id: schChoriste.candidatId });
+    const aud =await Audition.findOne({ candidat: schPerso._id });
+    const can = await CandAud.findOne({ audition: aud._id });
+    const pupitre = can.tessiture ;
+    //console.log(can)
+
+    //----------------------------------------------------------------------------------------------------
     const repetition = await Repetition.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
     if (!repetition) {
       console.log("Répétition non trouvée");
@@ -56,7 +78,7 @@ exports.UpdateRepetition = async (req, res) => {
 
     // Émettre une notification aux clients connectés
     io.emit('notification', {
-      message: `Répétition mise à jour : ${repetition.programme} le ${new Date(repetition.date).toLocaleDateString()}`
+      message: `Répétition de pupitre ${pupitre} mise à jour : ${champModifie} a été changée  ${nouvelleValeur}`
     });
 
     console.log("Répétition mise à jour avec succès");
