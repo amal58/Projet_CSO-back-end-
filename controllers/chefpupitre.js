@@ -1,5 +1,4 @@
 const Choriste = require("../models/choriste");
-const { CandAud } = require("../models/candidatAudition");
 
 const designatePupitreChefs = async (req, res) => {
   try {
@@ -21,53 +20,38 @@ const designatePupitreChefs = async (req, res) => {
       });
     }
 
-    // Récupérer le candidat associé au choriste
-    const candidat = await CandAud.findOne({ _id: choriste.candidatId });
+    const typepupitreRecherche = choriste.typepupitre;
 
-    if (!candidat) {
-      return res.status(404).json({ message: "Candidat not found" });
-    }
-   
+    // Utilisation de la méthode countDocuments pour compter les chefpupitres avec le typepupitre spécifié
+    const count = await Choriste.countDocuments({
+      typepupitre: typepupitreRecherche,
+      role: 'chefpupitre',
+    });
 
-  const choristesMemeTessiture = [];
-
-  const tessitureCandidat = candidat.tessiture;
-
-  const tousLesChoristes = await Choriste.find();
-  
-for (const choriste of tousLesChoristes) {
-  // Vérifier si la tessiture du choriste est égale à celle du candidat
-  const candidat2 = await CandAud.findOne({ _id: choriste.candidatId });
-
-  if (candidat2.tessiture === tessitureCandidat) {
-    // Ajouter le choriste à la liste
-    choristesMemeTessiture.push(choriste);
-  }
-}
-  
-    const chefsPupitreDansLaListe = choristesMemeTessiture.filter(choriste => choriste.role === 'chefpupitre');
-    
-    if (chefsPupitreDansLaListe.length >= 2) {
-      return res.status(400).json({ message: 'Impossible de mettre à jour le choriste. Il y a déjà deux chefs de pupitre actifs pour ce type de pupitre.' });
+    if (count >= 2) {
+      return res.status(400).json({
+        message: `Il existe déjà deux chefpupitres pour le typepupitre "${typepupitreRecherche}".`,
+      });
     }
 
-    // Mettre à jour le champ role
-    await Choriste.findByIdAndUpdate(
+    // Mettre à jour le rôle du choriste
+    const updatedChoriste = await Choriste.findByIdAndUpdate(
       choristeId,
-      { role: "chefpupitre" },
+      { role: 'chefpupitre' },
       { new: true }
     );
 
-    return res.status(200).json({
-      message: `Le choriste a été désigné comme chef de pupitre pour le type ${candidat.tessiture}.`,
-    });
+    console.log(`Choriste ${choristeId} mis à jour avec le rôle de chefpupitre.`);
+    return res.status(200).json(updatedChoriste); // Ajouter une réponse JSON si nécessaire
   } catch (error) {
-    return res.status(500).json({
-      error: error.message,
-      message: "Erreur lors de la désignation des chefs de pupitre.",
-    });
+    console.error('Erreur lors de la désignation du pupitre :', error);
+    return res.status(500).json({ message: 'Erreur interne du serveur' });
   }
 };
+
+
+
+
 
 module.exports = {
   designatePupitreChefs,
