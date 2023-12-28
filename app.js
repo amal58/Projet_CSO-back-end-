@@ -59,32 +59,20 @@ app.use(express.static(path.join(__dirname, "public")));
 //   const exemples = [
   
 //     {
-//         candidatId: "65819ae617a62846b387f0a9",
-//         role: "choriste",
-//         login: "poutestsima@outlook.fr",
-//         historiqueStatut: [
-//           { saison: 2022, statut: "senior" },
-//           { saison: 2023, statut: "senior" },
-//         ],
-//         password: "$2b$10$Xl2HC7GKAZPk0qkvZiDHaueUBa0zYDK88OUuAaLyGjNqDbD4vCwS.",
-//         confirmationStatus: "En attente de confirmation",
-//       },
-//       {
-//         candidatId: "658193982c8735d5ce803421",
-//         role: "choriste",
-//         login: "poutestsima@outlook.com",
-//         historiqueStatut: [
-//           { saison: 2022, statut: "senior" },
-//           { saison: 2023, statut: "senior" },
-//         ],
-//         password: "$2b$10$Xl2HC7GKAZPk0qkvZiDHaueUBa0zYDK88OUuAaLyGjNqDbD4vCwS.",
-//         confirmationStatus: "En attente de confirmation",
-//       }
+//       extrait: "Nom de l'extrait musical",
+//       tessiture: "alto",
+//       evaluation: "A",
+//       decision: "retenu",
+//       remarque: "Remarques supplémentaires sur le candidat",
+//       audition: "658d7d55bc6c4e6cfd1ac73a", // Remplacez par l'ID réel de l'audition associée
+//       ConfirmedEmail: "confirmer"
+//     },
+      
 // ];
 // // Fonction pour insérer les exemples dans la base de données
 // async function insererExemples() {
 //   try {
-//     await choriste.insertMany(exemples);
+//     await auditionC.insertMany(exemples);
 //     console.log('Exemples insérés avec succès dans la base de données.');
 //   } catch (error) {
 //     console.error('Erreur lors de l\'insertion des exemples :', error);
