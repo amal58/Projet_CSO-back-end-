@@ -8,6 +8,7 @@ const concertRoutes=require("./routes/concert");
 const chefpupitreRoutes=require("./routes/chefpupitre");
 const historiqueRoutes=require("./routes/consulterHistorique");
 const congeRoutes=require("./routes/conges");
+const AbsenceRoutes=require("./routes/resultatAbsence");
 
 
 mongoose
@@ -28,6 +29,6 @@ mongoose
   app.use("/api/chef",chefpupitreRoutes)
   app.use("/api/historique", historiqueRoutes)
   app.use("/api/conge", congeRoutes)
-
+app.use("/api/absence",AbsenceRoutes)
 
 module.exports=app
