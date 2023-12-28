@@ -5,6 +5,39 @@ const { CandAud ,candAudSchemaValidation}= require('../models/candidatAudition')
 
 const { Repetition,repetitionValidationSchema } = require('../models/repetition');
 const socketIo = require('socket.io');
+const schedule = require('node-schedule');
+
+
+// // Fonction pour vérifier si une répétition est proche
+// function isRepetitionProche(repetition) {
+//   const maintenant = new Date();
+//   const dateRepetition = new Date(repetition.date);
+//   const heureDebutRepetition = new Date(`${repetition.date} ${repetition.heureDebut}`);
+  
+//   // Définir la plage de temps (par exemple, 15 minutes avant la répétition)
+//   const plageDeTemps = 15 * 60 * 1000; // 15 minutes en millisecondes
+
+//   // Vérifier si la date ou l'heure est proche de maintenant
+//   const dateProche = Math.abs(maintenant - dateRepetition) <= plageDeTemps;
+//   const heureProche = Math.abs(maintenant - heureDebutRepetition) <= plageDeTemps;
+
+//   return dateProche || heureProche;
+// }
+
+// // Fonction pour planifier des notifications pour les répétitions proches
+// function planifierNotificationsPourRepetitionsProches(repetitions) {
+//   repetitions.forEach(repetition => {
+//       if (isRepetitionProche(repetition)) {
+//           // Planifier une notification pour la date de la répétition
+//           const dateRepetition = new Date(repetition.date);
+//           schedule.scheduleJob(dateRepetition, () => {
+//               req.app.io.emit('notification', {
+//                   message: `Répétition proche : ${repetition.programme} le ${new Date(repetition.date).toLocaleDateString()} à ${repetition.heureDebut}`
+//               });
+//           });
+//       }
+//   });
+// }
 
 //creation repetition
 exports.createRepetition = async (req, res) => {
@@ -67,23 +100,15 @@ exports.UpdateRepetition = async (req, res) => {
     const pupitre = can.tessiture ;
     //console.log(can)
 
-    //----------------------------------------------------------------------------------------------------
-    const repetition = await Repetition.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
-    if (!repetition) {
-      console.log("Répétition non trouvée");
-      return res.status(404).json({
-        message: "Répétition non trouvée",
-      });
-    }
-
     // Émettre une notification aux clients connectés
     io.emit('notification', {
       message: `Répétition de pupitre ${pupitre} mise à jour : ${champModifie} a été changée  ${nouvelleValeur}`
     });
 
+
     console.log("Répétition mise à jour avec succès");
     res.status(200).json({
-      model: repetition,
+      model: rep,
       message: "Répétition mise à jour avec succès",
     });
   } catch (error) {
