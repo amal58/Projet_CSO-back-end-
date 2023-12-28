@@ -2,7 +2,7 @@ const choriste = require('../models/choriste');
 const Personne = require('../models/personne');
 const Audition = require('../models/audition');
 const { CandAud ,candAudSchemaValidation}= require('../models/candidatAudition');
-
+// controller.js
 const { Repetition,repetitionValidationSchema } = require('../models/repetition');
 const socketIo = require('socket.io');
 const schedule = require('node-schedule');
@@ -119,3 +119,4 @@ exports.UpdateRepetition = async (req, res) => {
     });
   }
 };
+

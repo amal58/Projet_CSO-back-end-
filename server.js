@@ -4,46 +4,42 @@ const socketIo = require('socket.io');
 const schedule = require('node-schedule');
 const { Repetition } = require('./models/repetition');
 const moment = require('moment-timezone');
+const Personne = require('./models/personne');
+const Choriste =  require('./models/choriste');
+const Conge =  require('./models/conge');
 
 const server = http.createServer(app);
 const io = socketIo(server);
 app.io = io;
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/views/notifUrgente.html');
+app.get('/NotifRep/', (req, res) => {
+    res.sendFile(__dirname + '/views/NotifRep.html');
 });
 
 
 io.on('connection', (socket) => {
     console.log('Nouvelle connexion socket :', socket.id);
-    socket.emit('notification', { message: ' ' });
-
     // Émettre une notification à chaque connexion
-    io.emit('notification', { message: ' ' });
-
     socket.on('disconnect', () => {
         console.log('Déconnexion socket :', socket.id);
     });
 });
 
-async function creerTacheRappel(repetition,option) {
+async function creerTacheRappel(repetition, option) {
     try {
-        const { heureprgrm , repetitions,  message } = option;
-        const { date , heureDebut, lieu } = repetition;
+        const { heureprgrm, repetitions, message } = option;
+        const { date, heureDebut, lieu, choriste } = repetition;
 
- // Convertir la date stockée en base de données en objet moment
- const momentDate = moment(date);
+        // Convertir la date stockée en base de données en objet moment
+        const momentDate = moment(date);
 
- // Utiliser le fuseau horaire de Tunis
- const momentDateTunis = momentDate.tz('Europe/Tunis');
+        // Combiner la date, l'année, le mois, le jour et l'heure de début pour former un objet moment
+        const momentDateHeureDebut = momentDate
+            .set('hour', parseInt(heureDebut.split(':')[0]))
+            .set('minute', parseInt(heureDebut.split(':')[1]));
 
- // Combiner la date, l'année, le mois, le jour et l'heure de début pour former un objet moment
- const momentDateHeureDebut = momentDateTunis
-     .set('hour', parseInt(heureDebut.split(':')[0]))
-     .set('minute', parseInt(heureDebut.split(':')[1]));
-
- // Afficher la date au format souhaité
- console.log(momentDateHeureDebut.format('YYYY-MM-DD HH:mm:ss'));
+        // Afficher la date au format souhaité
+        //console.log(momentDateHeureDebut.format('YYYY-MM-DD HH:mm:ss'));
 
         // Vérifier si la date et l'heure de début ne sont pas dans le passé
         if (momentDateHeureDebut.isBefore(moment())) {
@@ -57,32 +53,44 @@ async function creerTacheRappel(repetition,option) {
         // Vérifier si la différence est inférieure ou égale à 24 heures
         if (differenceHeures <= 24) {
             // Planifier une tâche pour exécuter la fonction de rappel
-            const tacheSchedulee = schedule.scheduleJob(heureprgrm, function () {
-                console.log(`Rappel programmé exécuté : ${message} le ${momentDateHeureDebut}`);
-                const msg = "${message} le ${momentDateHeureDebut}"
+            for (const choristeId of choriste) {
+                const choriste = await Choriste.findOne({ _id: choristeId });
+                const personne = await Personne.findOne({ _id: choriste.candidatId });
+                const Pcong = await Conge.findOne({ choriste : choristeId });
+                //console.log("conge"+Pcong);
+                if(Pcong){
+                    console.log(personne.email+ " en congé ");
+                }else{
+
+                    const tacheSchedulee = schedule.scheduleJob(heureprgrm, async function () {
+                        // Utilisez await pour accéder au résultat de la requête
+                       
+                        io.emit('notification', {
+                            message: ` à ${personne.email} ${message} le ${momentDateHeureDebut.format('DD-MM-YYYY HH:mm:ss')}`
+                        });
+    
+                    // Vérifier s'il reste des répétitions
+                    if (repetitions && repetitions > 1) {
+                        // Planifier des tâches de rappel supplémentaires avec un intervalle
+                        for (let i = 2; i <= repetitions; i++) {
+                            const tempsProchainRappel = new Date(heureprgrm);
+                            tempsProchainRappel.setMinutes(tempsProchainRappel.getMinutes() + i * 300);
+                            const job = schedule.scheduleJob(tempsProchainRappel, function () {
+                                console.log(`Rappel supplémentaire exécuté : ${message}`);
+                                io.emit('notification', { message });
+                            });
+                        }
+                    }
+                });
+    
+                console.log(`à ${personne.email}  Rappel pour repetition le :${momentDateHeureDebut.format('DD-MM-YYYY HH:mm:ss')}`);
+                // Émettre une notification aux clients connectés
                 io.emit('notification', {
-                    message: `${message} le ${momentDateHeureDebut.format('DD-MM-YYYY HH:mm:ss')}`
+                    message: ` à ${personne.email} Rappel pour repetition : ${momentDateHeureDebut.format('DD-MM-YYYY HH:mm:ss')}`
                 });
 
-                // Vérifier s'il reste des répétitions
-                if (repetitions && repetitions > 1) {
-                    // Planifier des tâches de rappel supplémentaires avec un intervalle
-                    for (let i = 2; i <= repetitions; i++) {
-                        const tempsProchainRappel = new Date(heureprgrm);
-                        tempsProchainRappel.setMinutes(tempsProchainRappel.getMinutes() + i * 300);
-                        const job = schedule.scheduleJob(tempsProchainRappel, function () {
-                            console.log(`Rappel supplémentaire exécuté : ${message}`);
-                            io.emit('notification', { message });
-                        });
-                    }
                 }
-            });
-
-            console.log(`Rappel pour repetition le : ${momentDateHeureDebut.format('DD-MM-YYYY HH:mm:ss')}`);
-            // Émettre une notification aux clients connectés
-            io.emit('notification', {
-                message: `Rappel pour repetition : ${momentDateHeureDebut.format('DD-MM-YYYY HH:mm:ss')}`
-            });
+        }  
         } else {
             console.log(`La différence en heures (${differenceHeures}) est supérieure à 24 heures pour : ${message}`);
         }
@@ -108,6 +116,7 @@ async function planifierToutesLesRepetitions() {
         }
 
         repetitions.forEach((repetition) => {
+            //console.log("1") ;
             creerTacheRappel(repetition, optionsRappel);
         });
     } catch (error) {
