@@ -26,7 +26,5 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Routes
-const repetitionRoutes = require('./routes/repetition');
-app.use('/api/repetitions', repetitionRoutes);
 
 module.exports = app;
