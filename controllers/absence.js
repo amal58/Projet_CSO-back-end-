@@ -4,6 +4,12 @@ const { Absence, absenceValidationSchema } = require('../models/absence');
 const Concert = require('../models/concert');
 const { getUserIdFromRequest } = require('../middlewares/auth');
 const { Repetition } = require('../models/repetition');
+const Audition = require('../models/audition'); // Assurez-vous de spécifier le chemin correct
+
+const Personne = require('../models/personne');
+
+
+const CandA = require('../models/candidataudition');
 
 const Choriste = require('../models/choriste');
 
@@ -283,6 +289,53 @@ exports.getChoristesDispo = async (req, res) => {
     res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 };
+exports.listerAbsencesParTessitureEtConcert = async (req, res) => {
+  const { concert } = req.params;
+
+  try {
+    // Trouver les absences pour le concert donné
+    const absences = await Absence.find({ concert: concert }).populate('choriste').exec();
+
+    // Créer un tableau pour stocker les résultats
+    const resultats = [];
+
+    // Parcourir les absences
+    for (const absence of absences) {
+      // Récupérer le candidatId du choriste
+      const candidatId = absence.choriste.candidatId;
+
+      // Chercher l'audition correspondante
+      const audition = await Audition.findOne({ candidat: candidatId});
+
+      // Si une audition est trouvée, chercher la tessiture dans CandA
+      if (audition) {
+        const candA = await CandA.findOne({ audition: audition._id });
+
+        // Si CandA est trouvé, vérifier la tessiture
+        if (candA && candA.tessiture === req.params.tessiture) {
+          const choristeInfo = await Personne.findById(candidatId);
+          // Ajouter le résultat au tableau
+          resultats.push({
+            choriste: absence.choriste,
+            tessiture: candA.tessiture,
+            nom: choristeInfo.nom,
+            prenom: choristeInfo.prenom,
+            // Autres champs que vous souhaitez inclure
+          });
+        }
+      }
+    }
+
+    // Envoyer les résultats en réponse
+    res.json(resultats);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des absences :', error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des absences' });
+  }
+};
+
+
+
 
 
 

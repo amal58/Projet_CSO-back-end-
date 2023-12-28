@@ -45,13 +45,13 @@ exports.generateAuditions = async (req, res, next) => {
     // Configuration du transporteur nodemailer
     const transporter = nodemailer.createTransport({
       host: 'smtp-mail.outlook.com',
-      secureConnection: false,
+      secure: false,
       port: 587,
       tls: {
         ciphers: 'SSLv3',
       },
       auth: {
-        user: 'pourtestsima@outlook.com',
+        user: 'simatester@outlook.com',
         pass: 'SIMAA test2012',
       },
       // Ajoutez ces options pour augmenter le délai d'attente (en millisecondes)
@@ -67,7 +67,7 @@ exports.generateAuditions = async (req, res, next) => {
       const candidat = await Personne.findById(audition.candidat);
 
       const mailOptions = {
-        from: 'pourtestsima@outlook.com',
+        from: 'simatester@outlook.com',
         to: candidat.email,
         subject: 'Invitation à audition',
         text: `Cher ${candidat.prenom},\n\nVous êtes invité(e) à participer à l'audition le ${audition.date} à ${audition.heureDebut}.\n\nCordialement,\nVotre équipe d'audition`,
