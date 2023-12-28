@@ -154,6 +154,7 @@ const fetchCandAs =(req,res)=>{
     const User= new Choriste ({
       role:"choriste",
       candidatId:existUser,
+      statutAcutel:"junior",
       historiqueStatut:[
       {saison:new Date(),statut:"junior"}
       ],
