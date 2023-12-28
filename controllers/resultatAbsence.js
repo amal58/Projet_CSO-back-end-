@@ -122,12 +122,6 @@ const demanderAbsence = async (req, res) => {
 };
 
 
-
-
-
-
-
-
 //:::::::::::::::::::::::::::::
  const getAbsencesForChoriste = async (req, res) => {
   try {
@@ -178,10 +172,38 @@ const mettreAJourSeuil = async (req, res) => {
 };
 
 
+const eliminerChoriste = async (req, res) => {
+  try {
+    const choristeId = req.params.id;
+
+    // Récupérer le choriste par son ID
+    const choriste = await Choriste.findById(choristeId);
+
+    if (!choriste) {
+      return res.status(404).json({ message: 'Choriste non trouvé.' });
+    }
+
+    // Mettre à jour les champs du choriste
+    choriste.etat = 'eliminer';
+    choriste.statutAcutel = 'inactif';
+
+    // Enregistrer les modifications
+    await choriste.save();
+
+    return res.status(200).json({ message: 'Choriste éliminé  pour une raison disciplinaire.' });
+  } catch (error) {
+    console.error('Erreur lors de l\'élimination du choriste :', error);
+    return res.status(500).json({ error: 'Erreur lors de l\'élimination du choriste.' });
+  }
+};
+
+
+
 module.exports = {
   getAbsencesForChoriste,
   demanderAbsence,
   getChoristesNominer,
-getChoristesEliminer,
-mettreAJourSeuil
+  getChoristesEliminer,
+  mettreAJourSeuil,
+  eliminerChoriste
 };

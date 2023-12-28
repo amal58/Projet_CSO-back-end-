@@ -4,6 +4,7 @@ const absenceController = require('../controllers/resultatAbsence');
 
 router.get('/nominer', absenceController.getChoristesNominer);
 router.get('/eliminer', absenceController.getChoristesEliminer);
+router.patch('/:id',absenceController.eliminerChoriste)
 router.patch('/seuil',absenceController.mettreAJourSeuil)
 router.get('/:id', absenceController.getAbsencesForChoriste);
 router.post('/demandeAbsence', absenceController.demanderAbsence);
