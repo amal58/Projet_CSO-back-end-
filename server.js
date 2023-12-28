@@ -84,10 +84,10 @@ schedule.scheduleJob('*/2 * * * *', async () => {
             const diff = moment(elem.dateDebutConge).diff(today, 'minutes'); 
             console.log(diff);
 
-            if (diff === 0 || (diff > 0 && diff < 3)&& existe_congées.choriste.etat==="Actif") {
+            if (diff === 0 || (diff > 0 && diff < 3)&& elem.choriste.EtatConge==false) {
                 console.log("succes");
                 try {
-              await    Choriste.findByIdAndUpdate({ _id: elem.choriste._id }, { etat: "inactif" });}
+              await    Choriste.findByIdAndUpdate({ _id: elem.choriste._id }, { EtatConge: true });}
                 catch (error) {
                     console.error("Erreur lors de la mise à jour du statut :", error);
                 }
