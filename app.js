@@ -36,12 +36,16 @@ const choristeRoutes = require("./routes/choriste.js");
 const concertRoutes = require('./routes/concert.js');
 const repetitionRoutes = require('./routes/repetition.js');
 const absenceRoutes = require('./routes/absence.js');
+const oeuvreRoutes = require('./routes/oeuvre.js');
+
+
 app.use("/api/absences", absenceRoutes);
 app.use("/api/auditions", auditionRoutes);
 app.use("/api/candidats", personneRoutes);
-
+app.use("/api/oeuvres", oeuvreRoutes);
 app.use('/api/concerts', concertRoutes);
-app.use('/api/repetitions', repetitionRoutes);// Middleware de journalisation pour déboguer les demandes
+app.use('/api/repetitions', repetitionRoutes);
+
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();

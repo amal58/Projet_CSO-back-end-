@@ -6,13 +6,14 @@ exports.createConcert = (req, res, next) => {
     const urlQR = generateRandomURL();
 
     // Récupérer les autres champs du corps de la requête
-    const { date, lieu, affiche } = req.body;
+    const { date, lieu, affiche,programme } = req.body;
 
     // Créer un nouvel objet Concert
     const nouveauConcert = new Concert({
         date,
         lieu,
         affiche,
+        programme,
         urlQR,
     });
 
