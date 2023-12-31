@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 const Joi = require('joi');
 const repetitionSchema = mongoose.Schema({
-   heureDebut:{type:String, required:true},
-   heureFin:{type:String, required:true},
-   date :{type:Date, required:true},
-   lieu:{type:String, required:true},
-   programme:{type:String,required:true},   
-   concert: { type: mongoose.Schema.Types.ObjectId, ref: 'Concert', required: true },
-   choriste:[{type: mongoose.Schema.Types.ObjectId, ref: 'Choriste', required: true}],
-   urlQR:{type:String,required:true ,unique:true}, 
+  heureDebut:{type:String, required:true},
+  heureFin:{type:String, required:true},
+  date :{type:Date, required:true},
+  lieu:{type:String, required:true},
+  programme: [{ type: mongoose.Schema.Types.ObjectId, ref:'Oeuvre' }],
+  concert: { type: mongoose.Schema.Types.ObjectId, ref: 'Concert', required: true },
+  choriste:[{type: mongoose.Schema.Types.ObjectId, ref: 'Choriste', required: true}],
+  urlQR:{type:String,required:true}, 
 });
 const repetitionValidationSchema = Joi.object({
     heureDebut: Joi.string().pattern(/^([01]\d|2[0-3]):[0-5]\d$/).required(),

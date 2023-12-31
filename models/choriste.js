@@ -10,7 +10,7 @@ const choristeSchema = new mongoose.Schema({
     historiqueStatut: [
       {
         saison: { type:Number },
-        statut: { type: String, enum: ['junior', 'senior', 'veteran', 'inactif'] },
+        statut: { type: String },
         }],
     password:{type:String,required:true},
     confirmationStatus: { type: String, default: 'En attente de confirmation' },
