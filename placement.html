@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>pyramid placement</title>
+    <style>
+       
+        .pyramid {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+        }
+
+        .cell {
+            border: 1px solid rgb(181, 112, 245);
+            padding: 5px 10px;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pyramid" id="pyramid"></div>
+
+    <script>
+       
+        const data = [
+      
+        "amal triki (150, Soprano)",
+"patron yoyo (150, undefined)",    "asouma triki (160, Soprano)",
+"oumaima akaichi (168, Alto)","yassin sallemi (169, undefined)"," triki asma (170, Soprano)",
+"omar triki (170, Tenor)" ,"lina sa3di (170, undefined)"  , " omar triki (180, Alto)" , "wisem akaichi (180, undefined)",
+"samia sallemi (189, undefined)","uiuiui benmaleh (189, undefined)"," ppp triki (195, Soprano)"," hajer benmaleh (199, undefined)"," yyyy benmaleh (199ndefined)"
+        ];
+
+      
+        function createPyramid() {
+            const pyramidDiv = document.getElementById('pyramid');
+            let rows = '';
+            let rowNumber = 1;
+            let currentRow = '';
+
+            data.forEach((item, index) => {
+                currentRow += `<div class="cell">  ${item}  </div>`;
+                if (index === data.length - 1 || currentRow.length + data[index + 1].length * 10 > 500) {
+                    rows += `<div class="row" style="margin-left: ${rowNumber * 10}px">${currentRow}</div>`;
+                    currentRow = '';
+                    rowNumber++;
+                }
+            });
+
+            pyramidDiv.innerHTML = rows;
+        }
+
+        window.onload = () => {
+            createPyramid();
+        };
+    </script>
+</body>
+
+</html>

@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 const Concert = require("../models/concert");
 const Abpr = require("../models/absencepresence");
-const Personne= require("../models/");
+const Personne= require("../models/personne");
+const Audition= require("../models/audition");
+const AudCandidat= require("../models/candidatAudition");
+const Choriste= require("../models/choriste");
 
 exports.addConcert = (req, res, next) => {
     // Générer l'URLQR aléatoire
@@ -47,24 +50,39 @@ function generateRandomURL() {
 //ajout placement
 exports. ajoutplacement = async (req, res) =>{
     try{
-      let condidat=[]
+      let candidat=[]
       let dispo=[]
-        const existe_Concert=await Abpr.find({concert:req.params.id,etat:false}).populate("concert").populate("choriste")
+      let user=[]
+      let Aud=[]
+
+        const existe_Concert=await Abpr.find({concert:req.params.id,etat:false}).populate("choriste").populate("concert")
+        //console.log(existe_Concert)
        
       for (let i=0;i<existe_Concert.length;i++){
-        let personne=await Personne
+        let personne=await Personne.findById({_id:existe_Concert[i].choriste.candidatId})
+        candidat.push({taille:personne.taille,nom:personne.nom,prenom:personne.prenom})
+        user.push(personne)
       }
+      for(let i=0;i<user.length;i++){
+           let audition=await Audition.findOne({candidat:user[i]._id})
+           Aud.push(audition)
+      }
+console.log(Aud);
+      for(let i=0;i<Aud.length;i++){
+        let audC=await AudCandidat.findOne({audition:Aud[i]._id})
+        candidat[i].tessiture=audC.tessiture
+   }
+
+
   
-   // const existe_choriste=await Utilisateur.find({role:"choriste"}) 
-  
-    condidat.sort((candidat1, candidat2) => {
+    candidat.sort((candidat1, candidat2) => {
       if (candidat1.taille !== candidat2.taille) {
           return candidat1.taille - candidat2.taille; 
       } else {
   
           const voixOrder = { "basse": 1, "tenor": 2, "alto": 3, "soprano": 4 };
          
-          return voixOrder[candidat1.tessitureVocale] - voixOrder[candidat2.tessitureVocale];
+          return voixOrder[candidat1.tessiture] - voixOrder[candidat2.tessiture];
       }
   });
   const pyramidHeight = 5; 
@@ -75,8 +93,8 @@ exports. ajoutplacement = async (req, res) =>{
   for (let i = 1; i <= pyramidHeight; i++) {
       let row = [];
       for (let j = 1; j <= i; j++) {
-          if (counter < condidat.length) {
-              row.push(condidat[counter]);
+          if (counter < candidat.length) {
+              row.push(candidat[counter]);
               counter++;
           }
       }
@@ -85,14 +103,12 @@ exports. ajoutplacement = async (req, res) =>{
   matrix.forEach(row => {
     let rowData = "";
     row.forEach(candidat => {
-        rowData += `${candidat.nom} ${candidat.prenom} (${candidat.taille}, ${candidat.tessitureVocale})\t`;
+        rowData += `${candidat.nom} ${candidat.prenom} (${candidat.taille}, ${candidat.tessiture})\t`;
     });
     console.log(rowData);
   });
   
-  
   res.status(200).json({reponse:matrix,message:"succes retour"})
-  
     }
     catch(error){
       console.log(error);
