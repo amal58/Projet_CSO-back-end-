@@ -46,6 +46,7 @@ try{
       const password= await bcrypt.compare(req.body.password, existPassword.password)
       if(password){
        return  res.status(200).json({
+            user:existPassword,
             token: jwt.sign({ existUser: existPassword._id,role:existPassword.role}, "RANDOM_TOKEN_SECRET", {
                 expiresIn: "24h"
             }),
@@ -58,6 +59,7 @@ try{
         console.log(password);
         if(password){
          return  res.status(200).json({
+          user:existChoriste,
               token: jwt.sign({ existChoriste: existChoriste._id ,role:existChoriste.role}, "RANDOM_TOKEN_SECRET", {
                   expiresIn: "24h"
               }),
