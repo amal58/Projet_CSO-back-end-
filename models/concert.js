@@ -6,7 +6,7 @@ const concertSchema = new mongoose.Schema({
   lieu: { type: String, required: true },
   affiche: { type: String },
   programme: [{ type: mongoose.Schema.Types.ObjectId, ref:'Oeuvre' ,required:true}],
-  choriste: [{ type: mongoose.Schema.Types.ObjectId, ref:'Choriste' }],
+  choriste: [{ type: mongoose.Schema.Types.ObjectId, ref:'Choriste', required:true }],
   
 });
 
@@ -15,7 +15,6 @@ const concertSchemaValidation = Joi.object({
   lieu: Joi.string().required(),
   affiche: Joi.string(),
   programme: Joi.array().items(Joi.string()).required(),
- // repetition: Joi.array().items(Joi.string()).required(),
   choriste: Joi.array().items(Joi.string()).required(),
 });
 
