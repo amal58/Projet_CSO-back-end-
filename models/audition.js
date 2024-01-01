@@ -1,9 +1,9 @@
-// const mongoose = require("mongoose");
+const mongoose = require("mongoose");
+const auditionSchema = mongoose.Schema({
+    date: { type: Date,default: Date.now },
+    heureDebut: {type: Date,required: true},
+    candidat:{ type: mongoose.Schema.Types.ObjectId,ref: 'personne',required: true, },
+  });
 
-// const auditionSchema = new mongoose.Schema({
-//   date: { type: Date, required: true },
-//   heuredebut: { type: String, required: true },
-//   duree: { type: Number, required: true },
-// });
-
-// module.exports = mongoose.model("Audition", auditionSchema);
+  
+  module.exports = mongoose.model("Audition", auditionSchema);
