@@ -3,7 +3,9 @@ const router = express.Router();
 const repetitionController = require('../controllers/repetition');
 
 
-router.post('/', repetitionController.createRepetition );
+router.post('/:id', repetitionController.createRepetition );
+
+
 //router.get("/concert/:id", repetitionController.getRepetitionbyconcert );
 
 
