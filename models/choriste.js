@@ -7,7 +7,6 @@ const choristeSchema = new mongoose.Schema({
       },
     role:{type:String , enum:['admin' , 'choriste' , 'Manager','chefpupitre','chefchoeur']},
     login:{type:String},
-    typepupitre:{type:String,required:true},
     statutAcutel:{type:String, enum: ['choriste','junior', 'senior', 'veteran', 'inactif']},
     historiqueStatut: [
       {
