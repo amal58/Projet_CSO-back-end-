@@ -11,5 +11,4 @@ const absencePresenceSchema = new mongoose.Schema({
   concert: { type: mongoose.Schema.Types.ObjectId, ref: 'Concert' },
 });
 
-
 module.exports= mongoose.model("Absence", absencePresenceSchema);  
