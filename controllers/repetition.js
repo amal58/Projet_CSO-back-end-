@@ -104,3 +104,57 @@ exports.deleteRepetition = async (req, res) => {
     res.status(500).json({ message: "Une erreur s'est produite lors de la suppression de la répétition" });
   }
 };
+
+
+
+exports.updateRepetition = async (req, res) => {
+  try {
+    const repetitionId = req.params.id;
+    const existingRepetition = await Repetition.findById(repetitionId);
+    if (!existingRepetition) {
+      return res.status(404).json({ message: "Répétition non trouvée" });
+    }
+    existingRepetition.heureDebut = req.body.heureDebut || existingRepetition.heureDebut;
+    existingRepetition.heureFin = req.body.heureFin || existingRepetition.heureFin;
+    existingRepetition.date = req.body.date || existingRepetition.date;
+    existingRepetition.lieu = req.body.lieu || existingRepetition.lieu;
+    existingRepetition.urlQR = req.body.urlQR || existingRepetition.urlQR;
+    const updatedRepetition = await existingRepetition.save();
+
+    res.status(200).json({ message: "Répétition mise à jour avec succès", repetition: updatedRepetition });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Une erreur s'est produite lors de la mise à jour de la répétition" });
+  }
+};
+
+
+
+exports.getAllRepetitions = async (req, res) => {
+  try {
+    const allRepetitions = await Repetition.find();
+    res.status(200).json({ repetitions: allRepetitions });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Une erreur s'est produite lors de la récupération des répétitions" });
+  }
+};
+
+
+
+exports.getRepetitionById = async (req, res) => {
+  try {
+    const repetitionId = req.params.id;
+
+    const foundRepetition = await Repetition.findById(repetitionId);
+
+    if (!foundRepetition) {
+      return res.status(404).json({ message: "Répétition non trouvée" });
+    }
+
+    res.status(200).json({ repetition: foundRepetition });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Une erreur s'est produite lors de la récupération de la répétition par ID" });
+  }
+};
