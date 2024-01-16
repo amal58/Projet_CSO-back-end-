@@ -113,7 +113,7 @@ async function sendConfirmationEmail(choristeEmail, dateConcert, confirmationLin
         <p>Merci de confirmer votre absence pour le concert du ${dateConcert}.</p>
         <p>Cliquez sur le lien ci-dessous pour confirmer :</p>
         <form method="get" action="${confirmationLink}">
-        <button type="submit">Confirmer l'absence</button>
+        <button type="submit">Confirmer la disponibilité</button>
         </form>
         
       `,
@@ -149,7 +149,7 @@ exports.confirmAbsence = async (req, res) => {
     const existingAbsence = await Absence.findOne({ choriste: compteId, concert: concertId }); // Utilisez _id plutôt que choristeid
 
     if (existingAbsence && existingAbsence.etat) {
-      return res.status(400).json({ error: 'L\'absence a déjà été confirmée' });
+      return res.status(400).json({ error: 'La disponibilité a déjà été confirmée' });
     }
 
     console.log('msg demandeeeeeeee', compteId);
@@ -168,7 +168,7 @@ exports.confirmAbsence = async (req, res) => {
     const choristeEmail = "saadsimaa@gmail.com"; // Remplacez par l'e-mail du choriste
     await sendConfirmationEmail(choristeEmail, concert.date, confirmationLink);
 
-    res.status(200).json({ message: 'Confirmation d\'absence réussie' });
+    res.status(200).json({ message: 'Confirmation da la disponibilité réussie' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
@@ -209,7 +209,7 @@ exports.confirmDispo = async (req, res) => {
 
     res.json({
       message:
-        "Confirmation réussie. Le choriste a été ajouté à la liste d'absence.",
+        "Confirmation réussie. Le choriste a été ajouté à la liste de disponibilité.",
     });
   } catch (error) {
     console.error("Erreur lors de la confirmation de disponibilité :", error);
@@ -330,8 +330,8 @@ exports.listerAbsencesParTessitureEtConcert = async (req, res) => {
     // Envoyer les résultats en réponse
     res.json(resultats);
   } catch (error) {
-    console.error('Erreur lors de la récupération des absences :', error);
-    res.status(500).json({ error: 'Erreur lors de la récupération des absences' });
+    console.error('Erreur lors de la récupération des presences :', error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des presences' });
   }
 };
 
@@ -346,8 +346,9 @@ exports.statspresenceChoriste = async (req, res) => {
     }
 
     // Récupérer l'ID de l'œuvre spécifiée dans la requête
-    const oeuvreId = [req.params.oeuvreId];
+    const oeuvreId = req.params.oeuvreId.toString(); // Convertissez l'ID en chaîne
 
+    console.log('ID de l\'oeuvre :', oeuvreId);
     // Récupérer le nombre total d'absences
     const nombreAbsences = await Absence.find({ choriste: choristeId }).countDocuments();
 
@@ -357,24 +358,16 @@ exports.statspresenceChoriste = async (req, res) => {
       repetition: { $exists: true },
     }).populate({
       path: 'repetition',
-      match: { 'repetition.programme': { $in: oeuvreId } }, // Filtrer les répétitions par programme
-      populate: {
-        path: 'programme',
-        model: 'Oeuvre',
-      },
+      match: { 'repetition.programme': oeuvreId }, // Filtrer les répétitions par programme
     });
-
+    
     // Récupérer les concerts absents avec le programme spécifié
     const concertsAbsents = await Absence.find({
       choriste: choristeId,
       concert: { $exists: true },
     }).populate({
       path: 'concert',
-      match: { 'concert.programme': { $in: oeuvreId } }, // Filtrer les concerts par programme
-      populate: {
-        path: 'programme',
-        model: 'Oeuvre',
-      },
+      match: { 'concert.programme': oeuvreId }, // Filtrer les concerts par programme
     });
 
     const nombreRepetitionsAbsentes = repetitionsAbsentes.length;
