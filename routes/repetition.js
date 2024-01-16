@@ -4,9 +4,7 @@ const repetitionController = require('../controllers/repetition');
 
 
 router.post('/:id', repetitionController.createRepetition );
-
-
-//router.get("/concert/:id", repetitionController.getRepetitionbyconcert );
+router.delete("/:id", repetitionController.deleteRepetition );
 
 
 module.exports = router;

@@ -3,7 +3,7 @@ const Audition=require("../models/audition")
 const audition=require("../models/candidatAudition")
 const Repetition=require("../models/repetition")
 const Personne=require("../models/personne")
-//creation repetition
+
 exports.createRepetition = async (req, res) => {
   try {
     let soprano=[]
@@ -87,3 +87,20 @@ if (ten==undefined &&  al==undefined && bas==undefined && sop==undefined ){
   }
 }
 
+
+
+exports.deleteRepetition = async (req, res) => {
+  try {
+    const repetitionId = req.params.id;
+    const existingRepetition = await Repetition.findById(repetitionId);
+    if (!existingRepetition) {
+      return res.status(404).json({ message: "Répétition non trouvée" });
+    }
+    await Repetition.findByIdAndDelete(repetitionId);
+
+    res.status(200).json({ message: "Répétition supprimée avec succès" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Une erreur s'est produite lors de la suppression de la répétition" });
+  }
+};
