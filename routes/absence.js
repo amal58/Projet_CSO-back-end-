@@ -11,4 +11,7 @@ router.patch('/modifychoristestate/:concertId/:urlQR', absenceController.modifyC
 router.get('/choristesdispo/:concertId', absenceController.getChoristesDispo);
 router.get('/listerAbsencesParTessitureEtConcert/:tessiture/:concert', absenceController.listerAbsencesParTessitureEtConcert);
 router.get('/profil/:oeuvreId', absenceController.statspresenceChoriste);
+router.get('/absences-concerts-repetitions/:choristeId', absenceController.getAbsencesAndConcertsAndRepetitions);
+router.get('/statistique-concert/:concertId', absenceController.statistiqueConcert);
+router.get('/statistique-repetition/:repetitionId', absenceController.statistiqueRepetition);
 module.exports = router;

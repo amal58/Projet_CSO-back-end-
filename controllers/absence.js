@@ -385,6 +385,131 @@ exports.statspresenceChoriste = async (req, res) => {
     res.status(500).json({ error: 'Erreur serveur' });
   }
 };
+exports.getAbsencesAndConcertsAndRepetitions = async function (req, res) {
+  try {
+    const choristeId = req.params.choristeId;
+
+    // Récupérer les absences du choriste
+    const absences = await Absence.find({ choriste: choristeId, etat: true })
+      .populate('repetition concert')
+      .exec();
+
+    // Récupérer les répétitions du choriste, y compris celles où il est absent
+    const toutesRepetitions = await Repetition.find({ choriste: choristeId })
+      .populate('concert')
+      .exec();
+
+    // Séparer les répétitions où le choriste est absent
+    const repetitions = toutesRepetitions.filter(rep => absences.some(abs => abs.repetition && abs.repetition._id.equals(rep._id)));
+
+    // Récupérer les concerts du choriste, y compris ceux où il est absent
+    const tousConcerts = await Concert.find({ choristes: choristeId })
+      .exec();
+
+    // Séparer les concerts où le choriste est absent
+    const concerts = tousConcerts.filter(concert => absences.some(abs => abs.concert && abs.concert._id.equals(concert._id)));
+
+    // Logique pour déterminer la maîtrise des œuvres
+    const maitriseOeuvre = await determineMaitriseOeuvre(choristeId);
+
+    // Extraire les identifiants des répétitions et des concerts où le choriste est absent
+    const repetitionsAbsentIds = absences.filter(abs => abs.repetition).map(abs => abs.repetition._id);
+    const concertsAbsentIds = absences.filter(abs => abs.concert).map(abs => abs.concert._id);
+
+    // Envoyer la réponse avec les données récupérées et la maîtrise des œuvres
+    return res.status(200).json({
+      absences,
+      
+      maitriseOeuvre,
+      repetitionsAbsentIds,
+      concertsAbsentIds
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+};
+
+
+
+async function determineMaitriseOeuvre(choristeId) {
+  try {
+    const absences = await Absence.find({ choriste: choristeId, etat: true })
+      .populate('repetition')
+      .exec();
+
+    console.log('Absences:', absences);
+
+    const occurencesOeuvres = {};
+
+    absences.forEach((absence) => {
+      if (absence.repetition) {
+        absence.repetition.programme.forEach((oeuvre) => {
+          occurencesOeuvres[oeuvre] = (occurencesOeuvres[oeuvre] || 0) + 1;
+        });
+      }
+    });
+
+    console.log('Occurrences d\'œuvres:', occurencesOeuvres);
+
+    const oeuvresMaitrisePlusDeDeux = Object.entries(occurencesOeuvres)
+      .filter(([_, count]) => count >= 2)
+      .map(([oeuvre, _]) => oeuvre);
+
+    console.log('Œuvres maîtrisées au moins deux fois:', oeuvresMaitrisePlusDeDeux);
+
+    return oeuvresMaitrisePlusDeDeux.length;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Erreur lors de la détermination de la maîtrise des œuvres');
+  }
+}
+
+exports.statistiqueConcert = async function (req, res) {
+  try {
+    const concertId = req.params.concertId;
+
+
+    const nombrePresence = await Absence.countDocuments({ concert: concertId, etat: true });
+
+    const nombreAbsence = await Absence.countDocuments({ concert: concertId, etat: false });
+
+    return res.status(200).json({
+      nombrePresence,
+      nombreAbsence
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+};
+
+exports.statistiqueRepetition = async function (req, res) {
+  try {
+    const repetitionId = req.params.repetitionId;
+
+
+    const nombrePresence = await Absence.countDocuments({ repetition: repetitionId, etat: true });
+
+
+    const nombreAbsence = await Absence.countDocuments({ repetition: repetitionId, etat: false });
+
+
+    return res.status(200).json({ nombrePresence, nombreAbsence });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+};
+
+
+
+
+
+
+
+
+
 
 
 
