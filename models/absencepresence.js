@@ -12,7 +12,6 @@ const absencePresenceSchema = new mongoose.Schema({
   concert: { type: mongoose.Schema.Types.ObjectId, ref: 'Concert' },
 });
 
-// Joi validation schema
 const absenceValidationSchema = Joi.object({
   etat: Joi.boolean().default(false),
   date: Joi.date().default(Date.now),  
