@@ -19,6 +19,8 @@ const absenceValidationSchema = Joi.object({
   RaisonAbsence: Joi.string(),
   RaisonPresenceManuel: Joi.string(),
   choriste: Joi.string().required(),
+  repetition: Joi.string(), 
+  concert: Joi.string(), 
 });
 
 const AbsencePresence = mongoose.model("Absence", absencePresenceSchema);  

@@ -1,8 +1,6 @@
 const express = require ("express")
 const app= express()
 const mongoose = require('mongoose')
-
-
 const abprRoutes = require('./routes/absencepresence');
 
 
@@ -21,9 +19,6 @@ mongoose
 
 
   app.use(express.json())
-
-  
-  
 
   app.use('/api/absencepresence', abprRoutes);
 
