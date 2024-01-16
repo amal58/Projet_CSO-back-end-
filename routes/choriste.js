@@ -5,7 +5,7 @@ const jwtcontro=require("../middlewares/UserAuth")
 
 
 
-router.get("/",ChoristeController.GetAllChoristes)    
+router.get("/",jwtcontro.loggedMiddleware,jwtcontro.isChoriste,ChoristeController.GetAllChoristes)    
 router.post("/login",ChoristeController.login)
 router.patch("/modifTessiture/:id",ChoristeController.modifier_tessiture)
 
