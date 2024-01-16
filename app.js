@@ -7,7 +7,7 @@ const path = require('path');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
- const repetitionRoutes = require('./routes/repetition');
+const repetitionRoutes = require('./routes/repetition');
 
 const mongoose = require('mongoose');
 const concertRoutes = require("./routes/concert");
