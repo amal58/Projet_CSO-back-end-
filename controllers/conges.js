@@ -5,9 +5,7 @@ const processDemandesConge = async (req, res) => {
   try {
 
     const choristesEnCongeInactifs = [];
-    // Récupérer les demandes de congé en attente
     const demandesCongeEnAttente = await Conge.find({ etat: 'en attente' });
-    //null ou undefined
     if (!demandesCongeEnAttente || demandesCongeEnAttente.length === 0) {
       return res.status(404).json({ message: 'Pas de demandes de congé en attente.' });
     }
@@ -19,7 +17,6 @@ const processDemandesConge = async (req, res) => {
 
       const choriste = await Choriste.findById(demandeConge.choriste);
                
-      // Mettre à jour le statut du choriste à 'inactif'
       choriste.statutAcutel = 'inactif';
       await choriste.save();
       choristesEnCongeInactifs.push(choriste);
@@ -27,10 +24,20 @@ const processDemandesConge = async (req, res) => {
     }
 
     return res.status(200).json({
-      message: 'Traitement des demandes de congé réussi.',
-      choristesEnCongeInactifs,
+      message :'traitement des demandes de congé réussi',
+      choristeEnConges: await Promise.all(choristesEnCongeInactifs.map(async choriste => {
+        const candidat = await Personne.findOne({ _id: choriste.candidatId });
+    
+        return {
+          nom: candidat ? `${candidat.nom} ${candidat.prenom}` : 'Nom inconnu', // ou une valeur par défaut appropriée
+          role: choriste.role,
+          statutAcutel: choriste.statutAcutel,
+        };
+      })),
     });
-  } catch (error) {
+    
+
+} catch (error) {
     console.error('Erreur lors du traitement des demandes de congé:', error);
     return res.status(500).json({ error: error.message, message: 'Erreur lors du traitement des demandes de congé.' });
   }

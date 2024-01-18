@@ -32,7 +32,7 @@ const absenceValidationSchema = Joi.object({
   date: Joi.date().default(Date.now),  
   RaisonAbsence: Joi.string(),
   RaisonPresenceManuel: Joi.string(),
-  choriste: Joi.string().required(), // Ajoutez la validation pour la propriété "choriste"
+  
   concert: Joi.string().required(), // Ajoutez la validation pour la propriété "concert"
 
 });

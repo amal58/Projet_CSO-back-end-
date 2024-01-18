@@ -1,12 +1,22 @@
 const excel = require('exceljs');
 const Oeuvre=require("../models/oeuvre")
 const {Concert,concertSchemaValidation} =require("../models/concert")
-
+const choriste=require("../models/choriste")
+const Personne=require("../models/personne")
 
 const fetchConcert =(req,res)=>{
+
     Concert.find()
     .populate("programme")    
-    .populate("choriste")    
+    .populate({
+      path: 'choriste',select:'candidatId role statutAcutel',
+      populate: {
+          path: 'candidatId',
+          model: 'Personne',
+          select: 'nom prenom -_id',
+      },
+  })
+
       .then((concerts) =>
         res.status(200).json({
           model: concerts,
@@ -26,7 +36,14 @@ const fetchConcert =(req,res)=>{
     const getConcertById=(req,res)=>{
     Concert.findOne({_id:req.params.id})
      .populate("programme")    
-     .populate("choriste")  
+     .populate({
+      path: 'choriste',select:'candidatId role statutAcutel ',
+      populate: {
+          path: 'candidatId',
+          model: 'Personne',
+          select: 'nom prenom',
+      },
+  })
     .then((concerts) => {
       if(!concerts){
         res.status(404).json({

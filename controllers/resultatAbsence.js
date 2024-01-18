@@ -1,5 +1,6 @@
 const { AbsencePresence,absenceValidationSchema } = require('../models/absencepresence');
 const Choriste =require('../models/choriste')
+const Personne=require('../models/personne')
 const Repetition=require('../models/repetition')
 const socketIo = require('socket.io');
 const app=require('../app')
@@ -12,23 +13,19 @@ const verifierSeuilNomination = async (choristeId ,req) => {
   const verif = await AbsencePresence.findOne()
   console.log(verif.seuilelimine)
   console.log(verif.seuilnomine)
-  // Vérifier si le nombre d'absences dépasse le seuil de nomination
   if (nombreAbsences >= verif.seuilnomine) {
-    // Mettre à jour l'état du choriste en "nominé"
+
     await Choriste.findByIdAndUpdate(choristeId, { etat: 'nominer' });
     console.log(choristeId)
   
-    // Émettez une notification via WebSocket avec un message personnalisé
      const message = "Attention !! Suite à votre nombre d'absence vous etes actuellement nominé " +nombreAbsences +" absence";
      req.emit('notification', {message}); 
   
     
   }
   if(nombreAbsences >= verif.seuilelimine){
-    // Mettre à jour l'état du choriste en "nominé"
     await Choriste.findByIdAndUpdate(choristeId, { etat: 'eliminer',statutAcutel:'inactif' });
  
-    //envoyer notification
     const message = "Suite à votre nombre d'absence vous etes actuellement éliminé "+nombreAbsences +" absence";
     req.emit('notification', {message}); 
   }
@@ -39,19 +36,31 @@ const verifierSeuilNomination = async (choristeId ,req) => {
 
 const getChoristesNominer = async (req, res) => {
   try {
-    // Récupérer tous les choristes dont l'état est "nominé"
     const choristesNominer = await Choriste.find({ etat: 'nominer' });
 
-    // Vérifier si la liste est vide
     if (choristesNominer.length === 0) {
-      // Envoyer un message si la liste est vide
       return res.status(200).json({ message: 'Aucun choriste n est actuellement nominé.' });
     }
 
-    return res.status(200).json(choristesNominer);
+    const nombre = choristesNominer.length;
+    return res.status(200).json({nombre,
+      choristesNominer: await Promise.all(choristesNominer.map(async choriste => {
+        const candidat = await Personne.findOne({ _id: choriste.candidatId });
+    
+        return {
+          nom: candidat ? `${candidat.nom} ${candidat.prenom}` : 'Nom inconnu',
+          email: candidat ? ` ${candidat.email}` : 'email inconnu',
+          cin: candidat ? `${candidat.cin}` : 'cin inconnu',
+          role: choriste.role,
+          statutAcutel: choriste.statutAcutel,
+          telephone:candidat ? `${candidat.telephone}`:'telephone',
+          sexe: candidat ? `${candidat.sexe}`: 'sexe inconnu',
+
+        };
+      })),
+    });
   } catch (error) {
     console.error('Erreur lors de la récupération des choristes nominés:', error);
-    // Envoyer une réponse avec un code d'erreur en cas d'erreur
     return res.status(500).json({ erreur: 'Erreur lors de la récupération des choristes nominés.' });
   }
 };
@@ -59,26 +68,37 @@ const getChoristesNominer = async (req, res) => {
 
 const getChoristesEliminer = async (req, res) => {
   try {
-    // Récupérer tous les choristes dont l'état est "nominé"
     const choristesEliminer = await Choriste.find({ etat: 'eliminer' });
 
-    // Vérifier si la liste est vide
     if (choristesEliminer.length === 0) {
-      // Envoyer un message si la liste est vide
       return res.status(200).json({ message: 'Aucun choriste n est actuellement eliminé.' });
     }
+    
+   const nombre = choristesEliminer.length;
+    return res.status(200).json({nombre,
+      choristesEliminer: await Promise.all(choristesEliminer.map(async choriste => {
+        const candidat = await Personne.findOne({ _id: choriste.candidatId });
+    
+        return {
+          nom: candidat ? `${candidat.nom} ${candidat.prenom}` : 'Nom inconnu',
+          email: candidat ? ` ${candidat.email}` : 'email inconnu',
+          cin: candidat ? `${candidat.cin}` : 'cin inconnu',
+          role: choriste.role,
+          statutAcutel: choriste.statutAcutel,
+          telephone:candidat ? `${candidat.telephone}`:'telephone',
+          sexe: candidat ? `${candidat.sexe}`: 'sexe inconnu',
 
-    return res.status(200).json(choristesEliminer);
+        };
+      })),
+    });
   } catch (error) {
     console.error('Erreur lors de la récupération des choristes eliminés:', error);
-    // Envoyer une réponse avec un code d'erreur en cas d'erreur
     return res.status(500).json({ erreur: 'Erreur lors de la récupération des choristes Eliminer.' });
   }
 };
 
 
 
-// Fonction pour gérer la demande d'absence pour une répétition ou un concert
 const demanderAbsence = async (req, res) => {
   
   try {
@@ -89,29 +109,28 @@ const demanderAbsence = async (req, res) => {
       return res.status(400).json({ erreur: error.details[0].message });
     }
 
-    // Extraire les informations pertinentes de la requête
-    const { date, RaisonAbsence, choriste, repetition, concert } = value;
+    const { date, RaisonAbsence, repetition, concert } = value;
+    const choriste = req.choristeId;
+    console.log("verife choriste",choriste)
     const choristed= await Choriste.findOne({_id:choriste});
     const verif =choristed.etat;
-    console.log(verif)
+    console.log("hedhi mtaa eta",verif)
     if(verif ==='eliminer'){
       return res.status(200).json("vous etes actuellement eliminer")
     }else{
-    // Créer un nouveau document d'absence
+
     const nouvelleAbsence = new AbsencePresence({
       etat: repetition ? false : undefined,
       CurrentDate: date,
       RaisonAbsence,
-      choriste,
+      choriste:choristed,
       repetition,
       concert,
      
     });
-
-    // Enregistrer le document d'absence dans la base de données
     await nouvelleAbsence.save();
-    console.log(choriste)
-    await verifierSeuilNomination(choriste,var1);
+    console.log(choristed)
+    await verifierSeuilNomination(choristed,var1);
     // Répondre avec un message de succès
   
     return res.status(201).json({ message: 'Demande d absence soumise avec succès.' });
@@ -125,15 +144,15 @@ const demanderAbsence = async (req, res) => {
 //:::::::::::::::::::::::::::::
  const getAbsencesForChoriste = async (req, res) => {
   try {
-    const choristeId = req.params.id; 
-    console.log(choristeId)
+    const choristed = req.choristeId; 
+    console.log(choristed)
 
      // Vérifier si le choriste existe avant de rechercher ses absences
-     const choriste = await Choriste.findById(choristeId);
+     const choriste = await Choriste.findById(choristed);
      if (!choriste) {
        return res.status(404).json({ message: 'Choriste non trouvé.' });
      }
-     const absences = await AbsencePresence.find({ 'choriste': choristeId }).populate({
+     const absences = await AbsencePresence.find({ 'choriste': choristed }).populate({
       path: 'concert',
       select: 'date lieu',
     }).populate({
@@ -141,8 +160,9 @@ const demanderAbsence = async (req, res) => {
       select:'date lieu',
     }).exec();
 
-
-    res.status(200).json({ absences });
+    const nombreAbsences = absences.length;
+console.log(nombreAbsences)
+    res.status(200).json({nombreAbsences,absences:absences });
 
   } catch (error) {
     console.error('Erreur lors de la récupération des absences:', error);
@@ -152,7 +172,6 @@ const demanderAbsence = async (req, res) => {
 
 
 
-// Mettre à jour les seuils avec les valeurs fournies dans req.body
 const mettreAJourSeuil = async (req, res) => {
   try {
     const { seuilNomine, seuilElimine } = req.body;
@@ -161,8 +180,6 @@ const mettreAJourSeuil = async (req, res) => {
     if (seuilNomine === undefined || seuilElimine === undefined) {
       return res.status(400).json({ error: 'Les deux seuils sont requis.' });
     }
-
-    // Appeler la méthode statique pour mettre à jour les seuils
     await AbsencePresence.mettreAJourSeuils(seuilNomine, seuilElimine);
     return res.status(200).json({ message: 'Seuils mis à jour avec succès.' });
   } catch (error) {
@@ -176,20 +193,14 @@ const eliminerChoriste = async (req, res) => {
   try {
     const choristeId = req.params.id;
 
-    // Récupérer le choriste par son ID
     const choriste = await Choriste.findById(choristeId);
 
     if (!choriste) {
       return res.status(404).json({ message: 'Choriste non trouvé.' });
     }
-
-    // Mettre à jour les champs du choriste
     choriste.etat = 'eliminer';
     choriste.statutAcutel = 'inactif';
-
-    // Enregistrer les modifications
     await choriste.save();
-
     return res.status(200).json({ message: 'Choriste éliminé  pour une raison disciplinaire.' });
   } catch (error) {
     console.error('Erreur lors de l\'élimination du choriste :', error);

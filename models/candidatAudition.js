@@ -7,10 +7,9 @@ const candAudSchema = mongoose.Schema({
   evaluation: { type: String, enum: ['A', 'B', 'C'], required: true },
   decision: { type: String,enum:['retenu','non retenu'], default:'non retenu' , required:true},
   remarque: { type: String, required: true },
-  audition: { type: mongoose.Schema.Types.ObjectId, ref: 'Audition' , required: true}  // Assurez-vous que le chemin est correctement défini
+  audition: { type: mongoose.Schema.Types.ObjectId, ref: 'Audition' , required: true}  
 });
 
-//schéma de validation avec Joi
 const candAudSchemaValidation = Joi.object({
   extrait: Joi.string().required(),
   tessiture: Joi.string().valid('Base', 'Alto', 'Tenor', 'Soprano').required(),
