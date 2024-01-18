@@ -501,6 +501,62 @@ exports.statistiqueRepetition = async function (req, res) {
     return res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 };
+exports.statistiqueOeuvre = async (req, res) => {
+  const oeuvreId = req.params.oeuvreId;
+
+  try {
+    // Initialiser les compteurs
+    let nombrePresenceRepetition = 0;
+    let nombreAbsenceRepetition = 0;
+    let nombrePresenceConcert = 0;
+    let nombreAbsenceConcert = 0;
+
+    // Récupérer tous les documents dans la table Absence avec les références à Repetition ou Concert
+    const absences = await Absence.find({ $or: [{ repetition: { $exists: true } }, { concert: { $exists: true } }] });
+
+    // Parcourir chaque document de la table Absence
+    for (const absence of absences) {
+      // Vérifier si la référence est une Repetition et si elle appartient au programme de l'oeuvre
+      if (absence.repetition) {
+        const repetition = await Repetition.findById(absence.repetition);
+        if (repetition && repetition.programme.includes(oeuvreId)) {
+          if (absence.etat) {
+            nombrePresenceRepetition++;
+          } else {
+            nombreAbsenceRepetition++;
+          }
+        }
+      }
+
+      // Vérifier si la référence est un Concert et si il appartient au programme de l'oeuvre
+      if (absence.concert) {
+        const concert = await Concert.findById(absence.concert);
+        if (concert && concert.programme.includes(oeuvreId)) {
+          if (absence.etat) {
+            nombrePresenceConcert++;
+          } else {
+            nombreAbsenceConcert++;
+          }
+        }
+      }
+    }
+
+    // Retourner les statistiques
+    res.json({
+      statsRepetitions: {
+        nombrePresence: nombrePresenceRepetition,
+        nombreAbsence: nombreAbsenceRepetition,
+      },
+      statsConcerts: {
+        nombrePresence: nombrePresenceConcert,
+        nombreAbsence: nombreAbsenceConcert,
+      },
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des statistiques d\'absence pour l\'œuvre :', error);
+    res.status(500).json({ error: 'Erreur serveur lors de la récupération des statistiques.' });
+  }
+};
 
 
 
