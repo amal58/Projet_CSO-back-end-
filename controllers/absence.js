@@ -17,7 +17,7 @@ const Choriste = require('../models/choriste');
 
 
 exports.createAbsence = async (req, res) => {
-  // Valider les données de la requête
+ 
   const { error } = absenceValidationSchema.validate(req.body);
 
   if (error) {
@@ -25,25 +25,25 @@ exports.createAbsence = async (req, res) => {
   }
 
   try {
-    // Récupérer les paramètres de l'URL
+    
     const { id_repetition, urlQR } = req.params;
     console.log('ID de la répétition:', id_repetition);
     console.log('URL QR:', urlQR);
 
-    // Rechercher la répétition correspondant à l'`id_repetition`
+    
     const repetition = await Repetition.findOne({ _id: id_repetition });
    
-    // Vérifier si la répétition existe
+   
     if (!repetition) {
       return res.status(404).json({ error: 'Répétition non trouvée pour les paramètres fournis' });
     }
 
-    // Vérifier si l'URL QR correspond à celui de la répétition
+    
     if (repetition.urlQR !== urlQR) {
       return res.status(400).json({ error: "L'URL QR ne correspond pas à celui de la répétition" });
     }
 
-    // Récupérer l'ID du compte à partir de la requête
+   
     const compteId = await getUserIdFromRequest(req);
     // console.log('ID du compte:', compteId);
 
@@ -51,7 +51,7 @@ exports.createAbsence = async (req, res) => {
     //   return res.status(401).json({ error: 'Token invalide ou expiré' });
     // }
 
-    // // Trouver le choriste correspondant à l'ID du compte
+   
     const choriste = await Choriste.findById(compteId); 
     console.log('Choriste trouvé:', choriste);
 
@@ -59,22 +59,22 @@ exports.createAbsence = async (req, res) => {
       return res.status(404).json({ error: 'Choriste non trouvé' });
     }
 
-    // Vérifier si la date d'insertion est égale à la date de répétition
-    const dateInsertion = new Date(); // Assurez-vous d'obtenir la date d'insertion correcte selon votre application
+   
+    const dateInsertion = new Date(); 
     const dateRepetition = repetition.date;
 
     if (!isSameDate(dateInsertion, dateRepetition)) {
       return res.status(400).json({ error: "La présence ne peut être créée que le jour de la répétition" });
     }
 
-    // Créer un nouvel objet Absence
+
     const nouvelleAbsence = new Absence({
       etat: true,
       choriste: choriste._id, 
       repetition: repetition._id,
     });
 
-    // Enregistrer l'absence dans la base de données
+  
     const absenceEnregistree = await nouvelleAbsence.save();
 
     res.status(201).json({
@@ -86,7 +86,7 @@ exports.createAbsence = async (req, res) => {
   }
 };
 
-//Fonction pour envoyer un e-mail de confirmation avec un lien
+
 async function sendConfirmationEmail(choristeEmail, dateConcert, confirmationLink) {
   try {
     const transporter = nodemailer.createTransport({
@@ -187,18 +187,18 @@ exports.confirmDispo = async (req, res) => {
       return res.status(404).json({ erreur: "Choriste non trouvé" });
     }
 
-    // Vérifiez si le token reçu correspond au token associé au choriste
+   
     
 
     choriste.confirmationStatus = "Confirmé";
     
     await choriste.save();
 
-    // Ajoutez le choriste à la liste d'absence uniquement après confirmation
+  
     if (
       choriste.confirmationStatus === "Confirmé"
     ) {
-      // Créer un nouvel objet Absence
+ 
     const nouvelleAbsence = new Absence({
       choriste: choriste._id,
       concert: concert._id,
@@ -218,15 +218,15 @@ exports.confirmDispo = async (req, res) => {
 };
 
 exports.modifyChoristeState = async (req, res) => {
-  // Valider les données de la requête si nécessaire
+
 
   try {
-    // Récupérer les paramètres de l'URL
+  
     const { concertId, urlQR } = req.params;
     console.log('ID du concert:', concertId);
     console.log('URL QR:', urlQR);
 
-    // Récupérer l'ID du choriste à partir de la requête
+
     const compteId = await getUserIdFromRequest(req);
     console.log('ID du compte:', compteId);
 
@@ -234,25 +234,24 @@ exports.modifyChoristeState = async (req, res) => {
       return res.status(401).json({ error: 'Token invalide ou expiré' });
     }
 
-    // Trouver le choriste correspondant à l'ID du compte
     const choriste = await Choriste.findById(compteId);
 
     if (!choriste) {
       return res.status(404).json({ error: 'Choriste non trouvé' });
     }
 
-    // Rechercher l'absence correspondant au choriste et au concert
+
     const absence = await Absence.findOne({
       choriste: choriste._id,
       concert: concertId,
     });
 
-    // Vérifier si l'absence existe
+
     if (!absence) {
       return res.status(404).json({ error: 'Absence non trouvée pour les paramètres fournis' });
     }
 
-    // Vérifier si l'URL QR correspond à celui du concert
+ 
     const concert = await Concert.findOne({ _id: concertId });
 
     if (!concert || concert.urlQR !== urlQR) {
@@ -260,11 +259,11 @@ exports.modifyChoristeState = async (req, res) => {
     }
     choriste.confirmationStatus = "En attente de confirmation";
     await choriste.save();
-    // Mettre à jour l'état de l'absence
+ 
     await Absence.findOneAndUpdate(
       { _id: absence._id },
       { $set: { etat: true } },
-      { new: true } // Pour renvoyer le document mis à jour
+      { new: true } 
     );
 
     res.json({
@@ -279,10 +278,10 @@ exports.getChoristesDispo = async (req, res) => {
   try {
     const { concertId } = req.params;
 
-    // Recherche des choristes absents pour le concert spécifié
+  
     const absentChoristes = await Absence.find({ concert: concertId, etat: false })
-      .populate('choriste') // Assurez-vous que vous avez une référence correcte dans votre modèle Absence
-      .select('choriste'); // Sélectionnez uniquement le champ 'choriste' dans le résultat
+      .populate('choriste') 
+      .select('choriste'); 
 
     res.json({ absentChoristes });
   } catch (error) {
@@ -294,40 +293,40 @@ exports.listerAbsencesParTessitureEtConcert = async (req, res) => {
   const { concert } = req.params;
 
   try {
-    // Trouver les absences pour le concert donné
+
     const absences = await Absence.find({ concert: concert }).populate('choriste').exec();
 
-    // Créer un tableau pour stocker les résultats
+
     const resultats = [];
 
-    // Parcourir les absences
+
     for (const absence of absences) {
-      // Récupérer le candidatId du choriste
+
       const candidatId = absence.choriste.candidatId;
 
-      // Chercher l'audition correspondante
+
       const audition = await Audition.findOne({ candidat: candidatId});
 
-      // Si une audition est trouvée, chercher la tessiture dans CandA
+ 
       if (audition) {
         const candA = await CandA.findOne({ audition: audition._id });
 
-        // Si CandA est trouvé, vérifier la tessiture
+ 
         if (candA && candA.tessiture === req.params.tessiture) {
           const choristeInfo = await Personne.findById(candidatId);
-          // Ajouter le résultat au tableau
+
           resultats.push({
             choriste: absence.choriste,
             tessiture: candA.tessiture,
             nom: choristeInfo.nom,
             prenom: choristeInfo.prenom,
-            // Autres champs que vous souhaitez inclure
+
           });
         }
       }
     }
 
-    // Envoyer les résultats en réponse
+
     res.json(resultats);
   } catch (error) {
     console.error('Erreur lors de la récupération des presences :', error);
@@ -339,35 +338,35 @@ exports.statspresenceChoriste = async (req, res) => {
   try {
     const choristeId = await getUserIdFromRequest(req);
 
-    // Vérifiez si choristeId est défini
+
     if (!choristeId) {
       res.status(403).json({ error: 'Accès non autorisé' });
       return;
     }
 
-    // Récupérer l'ID de l'œuvre spécifiée dans la requête
-    const oeuvreId = req.params.oeuvreId.toString(); // Convertissez l'ID en chaîne
+
+    const oeuvreId = req.params.oeuvreId.toString(); 
 
     console.log('ID de l\'oeuvre :', oeuvreId);
-    // Récupérer le nombre total d'absences
+ 
     const nombreAbsences = await Absence.find({ choriste: choristeId }).countDocuments();
 
-    // Récupérer les répétitions absentes avec le programme spécifié
+  
     const repetitionsAbsentes = await Absence.find({
       choriste: choristeId,
       repetition: { $exists: true },
     }).populate({
       path: 'repetition',
-      match: { 'repetition.programme': oeuvreId }, // Filtrer les répétitions par programme
+      match: { 'repetition.programme': oeuvreId }, 
     });
     
-    // Récupérer les concerts absents avec le programme spécifié
+  
     const concertsAbsents = await Absence.find({
       choriste: choristeId,
       concert: { $exists: true },
     }).populate({
       path: 'concert',
-      match: { 'concert.programme': oeuvreId }, // Filtrer les concerts par programme
+      match: { 'concert.programme': oeuvreId }, 
     });
 
     const nombreRepetitionsAbsentes = repetitionsAbsentes.length;
@@ -389,34 +388,31 @@ exports.getAbsencesAndConcertsAndRepetitions = async function (req, res) {
   try {
     const choristeId = req.params.choristeId;
 
-    // Récupérer les absences du choriste
+
     const absences = await Absence.find({ choriste: choristeId, etat: true })
       .populate('repetition concert')
       .exec();
 
-    // Récupérer les répétitions du choriste, y compris celles où il est absent
+
     const toutesRepetitions = await Repetition.find({ choriste: choristeId })
       .populate('concert')
       .exec();
 
-    // Séparer les répétitions où le choriste est absent
+
     const repetitions = toutesRepetitions.filter(rep => absences.some(abs => abs.repetition && abs.repetition._id.equals(rep._id)));
 
-    // Récupérer les concerts du choriste, y compris ceux où il est absent
+
     const tousConcerts = await Concert.find({ choristes: choristeId })
       .exec();
 
-    // Séparer les concerts où le choriste est absent
     const concerts = tousConcerts.filter(concert => absences.some(abs => abs.concert && abs.concert._id.equals(concert._id)));
 
-    // Logique pour déterminer la maîtrise des œuvres
     const maitriseOeuvre = await determineMaitriseOeuvre(choristeId);
 
-    // Extraire les identifiants des répétitions et des concerts où le choriste est absent
     const repetitionsAbsentIds = absences.filter(abs => abs.repetition).map(abs => abs.repetition._id);
     const concertsAbsentIds = absences.filter(abs => abs.concert).map(abs => abs.concert._id);
 
-    // Envoyer la réponse avec les données récupérées et la maîtrise des œuvres
+  
     return res.status(200).json({
       absences,
       
@@ -505,18 +501,18 @@ exports.statistiqueOeuvre = async (req, res) => {
   const oeuvreId = req.params.oeuvreId;
 
   try {
-    // Initialiser les compteurs
+
     let nombrePresenceRepetition = 0;
     let nombreAbsenceRepetition = 0;
     let nombrePresenceConcert = 0;
     let nombreAbsenceConcert = 0;
 
-    // Récupérer tous les documents dans la table Absence avec les références à Repetition ou Concert
+    
     const absences = await Absence.find({ $or: [{ repetition: { $exists: true } }, { concert: { $exists: true } }] });
 
-    // Parcourir chaque document de la table Absence
+
     for (const absence of absences) {
-      // Vérifier si la référence est une Repetition et si elle appartient au programme de l'oeuvre
+      
       if (absence.repetition) {
         const repetition = await Repetition.findById(absence.repetition);
         if (repetition && repetition.programme.includes(oeuvreId)) {
@@ -528,7 +524,7 @@ exports.statistiqueOeuvre = async (req, res) => {
         }
       }
 
-      // Vérifier si la référence est un Concert et si il appartient au programme de l'oeuvre
+     
       if (absence.concert) {
         const concert = await Concert.findById(absence.concert);
         if (concert && concert.programme.includes(oeuvreId)) {
@@ -541,7 +537,7 @@ exports.statistiqueOeuvre = async (req, res) => {
       }
     }
 
-    // Retourner les statistiques
+
     res.json({
       statsRepetitions: {
         nombrePresence: nombrePresenceRepetition,
@@ -555,6 +551,100 @@ exports.statistiqueOeuvre = async (req, res) => {
   } catch (error) {
     console.error('Erreur lors de la récupération des statistiques d\'absence pour l\'œuvre :', error);
     res.status(500).json({ error: 'Erreur serveur lors de la récupération des statistiques.' });
+  }
+};
+
+exports.AbsenceRepetition = async (req, res) => {
+  try {
+ 
+    const absences = await Absence.find({ repetition: { $exists: true }, etat: false })
+      .populate('choriste')
+      .populate('repetition')
+      .exec();
+
+ 
+    res.json(absences);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des absences pour les répétitions :', error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des absences pour les répétitions' });
+  }
+};
+exports.AbsenceRepetitionChoriste = async (req, res) => {
+  const { choristeId } = req.params;
+
+  try {
+ 
+    const absences = await Absence.find({ choriste: choristeId, repetition: { $exists: true }, etat: false })
+      .populate('choriste')
+      .populate('repetition')
+      .exec();
+
+
+    res.json(absences);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des absences pour les répétitions pour le choriste :', error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des absences pour les répétitions pour le choriste' });
+  }
+};
+
+exports.absencesChoristesParTessiture = async (req, res) => {
+  const { tessiture } = req.params;
+
+  try {
+    const absences = await Absence.find({ etat: false, repetition: { $exists: true } }).populate('choriste').exec();
+
+    const resultats = [];
+
+    for (const absence of absences) {
+      const candidatId = absence.choriste.candidatId;
+
+      const audition = await Audition.findOne({ candidat: candidatId });
+
+      if (audition) {
+        const candA = await CandA.findOne({ audition });
+
+        if (candA && candA.tessiture === tessiture) {
+          const choristeInfo = await Personne.findById(candidatId);
+          resultats.push({
+            choriste: absence.choriste,
+            tessiture: candA.tessiture,
+            nom: choristeInfo.nom,
+            prenom: choristeInfo.prenom,
+            // Autres champs que vous souhaitez inclure
+          });
+        }
+      }
+    }
+
+    res.json(resultats);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des absences :', error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des absences' });
+  }
+};
+
+exports.absencesRepetitionDate = async (req, res) => {
+  const { date } = req.params;
+
+  try {
+    // Convertir la chaîne de date en objet Date
+    const dateRecherchee = new Date(date);
+
+    // Trouver les absences pour la date spécifique, etat: false, avec le champ repetition
+    const absences = await Absence.find({
+      etat: false,
+      repetition: { $exists: true },
+      CurrentDate: {
+        $gte: dateRecherchee,
+        $lt: new Date(dateRecherchee.getTime() + 24 * 60 * 60 * 1000),
+      },
+    }).exec();
+
+    // Envoyer les résultats en réponse
+    res.json(absences);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des absences :', error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des absences' });
   }
 };
 

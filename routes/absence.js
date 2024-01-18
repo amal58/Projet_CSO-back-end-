@@ -15,4 +15,9 @@ router.get('/absences-concerts-repetitions/:choristeId', absenceController.getAb
 router.get('/statistique-concert/:concertId', absenceController.statistiqueConcert);
 router.get('/statistique-repetition/:repetitionId', absenceController.statistiqueRepetition);
 router.get("/statistique-oeuvre/:oeuvreId", absenceController.statistiqueOeuvre);
+router.get('/absences-repetition', absenceController.AbsenceRepetition);
+router.get('/absences-repetition-choriste/:choristeId', absenceController.AbsenceRepetitionChoriste);
+router.get('/absences-choristes/:tessiture', absenceController.absencesChoristesParTessiture);
+router.get("/absencesRepetitionDate/:date", absenceController.absencesRepetitionDate);
+
 module.exports = router;
