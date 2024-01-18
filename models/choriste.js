@@ -10,7 +10,7 @@ const choristeSchema = new mongoose.Schema({
     statutAcutel:{type:String, enum: ['choriste','junior', 'senior', 'veteran', 'inactif']},
     historiqueStatut: [
       {
-        saison: { type:Number},
+        saison: { type:Number },
         statut: { type: String },
         }],
     password:{type:String,required:true},

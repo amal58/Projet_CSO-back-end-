@@ -145,4 +145,5 @@ app.use(
   app.use("/api/conge", congeRoutes)
   app.use("/api/login", loginRoutes)
   app.use("/api/absence",AbsenceRoutes)
+
 module.exports=app
