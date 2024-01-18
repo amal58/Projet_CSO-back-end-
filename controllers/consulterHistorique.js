@@ -1,5 +1,7 @@
 const Choriste = require('../models/choriste');
 const Personne=require('../models/personne')
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const updateStatus = async (choristeId, anneeIntegration) => {
   try {
@@ -65,9 +67,7 @@ const updateStatus = async (choristeId, anneeIntegration) => {
 };
 
 
-
-
-const consulterProfil = async (req, res) => {
+const consulteProfilAdmin = async (req, res) => {
   try {
     const choristeId = req.params.id;
 
@@ -87,7 +87,7 @@ const consulterProfil = async (req, res) => {
     const updatedChoriste = await Choriste.findOne({ _id: choristeId, role: 'choriste' });
     const updatedCandidat = await Personne.findOne({ _id: updatedChoriste.candidatId });
 
-     res.json({
+    res.json({
       profil: {
         _id: updatedCandidat._id,
         nom: updatedCandidat.nom,
@@ -108,6 +108,52 @@ const consulterProfil = async (req, res) => {
 };
 
 
+const consulterProfil = async (req, res) => {
+  try {
+    const choristeId = req.choristeId; 
+
+    console.log(choristeId)
+    const choriste = await Choriste.findOne({ _id: choristeId, role: 'choriste' });
+
+    if (!choriste) {
+      return res.status(404).json({ message: 'Choriste non trouvé' });
+    }
+
+    const candidat = await Personne.findOne({ _id: choriste.candidatId });
+    if (!candidat || !candidat.createdAt || !(candidat.createdAt instanceof Date)) {
+      return res.status(404).json({ message: 'Candidat non trouvé ou date d\'intégration non valide' });
+    }
+
+    await updateStatus(choristeId, candidat.createdAt);
+
+    const updatedChoriste = await Choriste.findOne({ _id: choristeId, role: 'choriste' });
+    const updatedCandidat = await Personne.findOne({ _id: updatedChoriste.candidatId });
+
+    res.json({
+      profil: {
+        _id: updatedCandidat._id,
+        nom: updatedCandidat.nom,
+        prenom: updatedCandidat.prenom,
+        statutActuel: updatedChoriste.statutAcutel,
+        role: updatedChoriste.role,
+        dateNaissance: updatedCandidat.dateNaissance,
+        cin: updatedCandidat.cin,
+        telephone: updatedCandidat.telephone,
+        AnneeIntegration: updatedCandidat.createdAt.getFullYear(),
+      },
+      historiqueStatut: updatedChoriste.historiqueStatut,
+    });
+  } catch (error) {
+    console.error('Erreur lors de la consultation du profil et du statut actuel du choriste :', error);
+    res.status(500).json({ error: 'Erreur interne du serveur', message: error.message });
+  }
+};
+
+
+
+
+
 module.exports = {
   consulterProfil,
+  consulteProfilAdmin
 };
