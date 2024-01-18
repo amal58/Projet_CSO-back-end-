@@ -1,10 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const abprController  = require('../controllers/absencepresence');
+const express=require("express")
+const router =express.Router()
+const absprController=require("../controllers/absencepresence")
 
-
-router.post('/demandeAbsence', abprController.demanderAbsence);
-router.get('/getAllDemandeAbsence', abprController.getAllDemandeAbsence);
+  
+router.post("/",absprController.AjoutDispon)
+router.post('/demandeAbsence', absprController.demanderAbsence);
+router.get('/getAllDemandeAbsence', absprController.getAllDemandeAbsence);
 
 
 module.exports = router;

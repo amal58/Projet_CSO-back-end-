@@ -1,6 +1,8 @@
 const express = require ("express")
 const app= express()
 const mongoose = require('mongoose')
+const concertRoutes=require("./routes/concert");
+const dispRoutes=require("./routes/absencepresence");
 const candARoutes=require('./routes/candidatAudition')
 const auditionRoutes = require('./routes/audition');
 const personneRoutes = require('./routes/personne');
@@ -67,7 +69,9 @@ console.log(`manager  account has been added : ${compteManager.login}`);
 connection()
   app.use(express.json())
 
- 
+
+  app.use("/api/concert",concertRoutes)
+  app.use("/api/disp",dispRoutes)
   app.use('/api/auditions', auditionRoutes); 
   app.use("/api/cand",candARoutes)
   app.use('/api/candidats', personneRoutes);

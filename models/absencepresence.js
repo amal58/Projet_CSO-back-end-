@@ -24,3 +24,4 @@ const absenceValidationSchema = Joi.object({
 
 const AbsencePresence = mongoose.model("Absence", absencePresenceSchema);  
 module.exports = { AbsencePresence, absenceValidationSchema };
+

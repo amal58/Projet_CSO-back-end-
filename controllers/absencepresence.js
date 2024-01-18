@@ -1,4 +1,24 @@
+const mongoose = require("mongoose");
 const { AbsencePresence, absenceValidationSchema } = require('../models/absencepresence');
+
+const AjoutDispon = (req, res, next) => {
+    const { etat,  choriste, concert } = req.body;
+    const nouveauDispo = new AbsencePresence({
+        etat,
+        choriste,
+        concert,
+    });
+    nouveauDispo.save()
+        .then(dispo => {
+            res.status(201).json({
+                Dispo: dispo ,
+                message: "dispo créé avec succès !",
+            });
+        })
+        .catch(error => {
+            res.status(500).json({ error: error.message });
+        });
+};
 
 
 const demanderAbsence = async (req, res) => {
@@ -8,8 +28,6 @@ const demanderAbsence = async (req, res) => {
     if (error) {
       return res.status(400).json({ erreur: error.details[0].message });
     }
-
-
     const nouvelleDemande = new AbsencePresence({
       etat: req.body.etat,
       date: req.body.date,
@@ -43,5 +61,5 @@ const getAllDemandeAbsence = async (req, res) => {
   }
 };
 
-module.exports = { demanderAbsence, getAllDemandeAbsence };
+module.exports = { demanderAbsence, getAllDemandeAbsence,AjoutDispon };
 
