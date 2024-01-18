@@ -1,31 +1,24 @@
 const mongoose = require('mongoose');
 const Oeuvre = require("../models/oeuvre")
 
-  // Fonction pour ajouter un œuvre avec validation
 exports.AjoutOeuvre = async (req, res) => {
   try {
     const oeuvre = new Oeuvre(req.body);
     await oeuvre.validate();
-
-    // Save the document to the database
     await oeuvre.save();
-
     res.status(201).json({
-      model: Oeuvre,
+      model: oeuvre,
       message: "Oeuvre créée !",
     });
   } catch (error) {
     if (error instanceof mongoose.Error.ValidationError) {
       const validationErrors = {};
 
-      // Accumulate validation errors without interrupting execution
       for (const field in error.errors) {
         if (error.errors.hasOwnProperty(field)) {
           validationErrors[field] = error.errors[field].message;
         }
       }
-
-      // Send the accumulated validation errors as part of the response
       res.status(400).json({
         error: "Erreur de validation",
         validationErrors,
@@ -42,20 +35,17 @@ exports.AfficherToutOeuvre = async (req, res) => {
   try {
     const Oeuvres = await Oeuvre.find();
     if (Oeuvres.length === 0) {
-      // Aucune oeuvre trouvée
       res.status(404).json({
         message: "Aucune œuvre trouvée dans la base de données",
       });
       return;
     }
 
-    // oeuvres trouvées avec succès
     res.status(200).json({
       model: Oeuvres,
       message: "Œuvres récupérées avec succès",
     });
   } catch (error) {
-    // Gestion des erreurs générales
     res.status(500).json({
       error: error.message,
       message: "Problème lors de la récupération des oeuvres",
@@ -67,20 +57,17 @@ exports.AfficheUneOeuvre = async (req, res) => {
     const oeuvre = await Oeuvre.findOne({ _id: req.params.id });
 
     if (!oeuvre) {
-      // Aucune oeuvre trouvée avec l'ID spécifié
       res.status(404).json({
         message: "Aucune oeuvre trouvée avec l'ID spécifié",
       });
       return;
     }
 
-    // oeuvre trouvée avec succès
     res.status(200).json({
       model: oeuvre,
       message: "oeuvre récupérée avec succès",
     });
   } catch (error) {
-    // Gestion des erreurs générales
     res.status(500).json({
       error: error.message,
       message: "Problème lors de la récupération de l'oeuvre",
@@ -115,14 +102,11 @@ exports.SuppOeuvre = async (req, res) => {
     const result = await Oeuvre.deleteOne({ _id: req.params.id });
 
     if (result.deletedCount === 0) {
-      // Aucune œuvre n'a été supprimée, car aucune correspondance trouvée
       res.status(404).json({ message: "oeuvre non trouvée" });
       return;
     }
-    // L'œuvre a été supprimée avec succès
     res.status(200).json({ message: "oeuvre supprimée avec succès" });
   } catch (error) {
-    // Gestion des erreurs générales
     res.status(500).json({ error: error.message });
   }
 };
