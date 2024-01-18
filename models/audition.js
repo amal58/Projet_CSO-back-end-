@@ -6,11 +6,5 @@ const auditionSchema = new mongoose.Schema({
   });
 
   
-<<<<<<< HEAD
-  module.exports = mongoose.model("Audition", auditionSchema);
-=======
   module.exports = mongoose.model("Audition", auditionSchema);
 
-
-  
->>>>>>> repetitionCrud
