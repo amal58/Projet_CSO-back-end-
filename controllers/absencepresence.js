@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const { AbsencePresence, absenceValidationSchema } = require('../models/absencepresence');
 
 const AjoutDispon = (req, res, next) => {
-    const { etat,  choriste, concert } = req.body;
+    const { disponibilite,  choriste, concert } = req.body;
     const nouveauDispo = new AbsencePresence({
-        etat,
+        disponibilite,
         choriste,
         concert,
     });
@@ -20,10 +20,8 @@ const AjoutDispon = (req, res, next) => {
         });
 };
 
-
 const demanderAbsence = async (req, res) => {
   try {
-    
     const { error } = absenceValidationSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ erreur: error.details[0].message });
@@ -40,7 +38,6 @@ const demanderAbsence = async (req, res) => {
     });
 
     const demandeEnregistree = await nouvelleDemande.save();
-
     res.status(201).json({ message: "Demande d'absence ajoutée avec succès", demande: demandeEnregistree });
   } catch (erreur) {
     console.error(erreur);

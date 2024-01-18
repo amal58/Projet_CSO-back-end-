@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Concert = require("../models/concert");
-const Abpr = require("../models/absencepresence");
+const {AbsencePresence} = require("../models/absencepresence");
 const Personne= require("../models/personne");
 const Audition= require("../models/audition");
 const AudCandidat= require("../models/candidatAudition");
@@ -34,7 +34,6 @@ exports.addConcert = (req, res, next) => {
         });
 };
 
-// Fonction pour générer une chaîne de caractères aléatoire pour l'URLQR
 function generateRandomURL() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let randomURL = 'https://';
@@ -47,17 +46,15 @@ function generateRandomURL() {
 
     return randomURL;
 }
-//ajout placement
-exports. ajoutplacement = async (req, res) =>{
+
+exports.ajoutplacement = async (req, res) =>{
     try{
       let candidat=[]
       let dispo=[]
       let user=[]
       let Aud=[]
+        const existe_Concert=await AbsencePresence.find({concert:req.params.id,disponibilite:true}).populate("choriste").populate("concert")
 
-        const existe_Concert=await Abpr.find({concert:req.params.id,etat:false}).populate("choriste").populate("concert")
-        //console.log(existe_Concert)
-       
       for (let i=0;i<existe_Concert.length;i++){
         let personne=await Personne.findById({_id:existe_Concert[i].choriste.candidatId})
         candidat.push({taille:personne.taille,nom:personne.nom,prenom:personne.prenom})
@@ -73,15 +70,12 @@ console.log(Aud);
         candidat[i].tessiture=audC.tessiture
    }
 
-
-  
     candidat.sort((candidat1, candidat2) => {
       if (candidat1.taille !== candidat2.taille) {
           return candidat1.taille - candidat2.taille; 
       } else {
   
           const voixOrder = { "basse": 1, "tenor": 2, "alto": 3, "soprano": 4 };
-         
           return voixOrder[candidat1.tessiture] - voixOrder[candidat2.tessiture];
       }
   });
@@ -115,4 +109,5 @@ console.log(Aud);
   res.status(400).json("faild")
     }
   }
+
 

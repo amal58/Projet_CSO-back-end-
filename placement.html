@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>placement sur scene</title>
     <style>
-       
         .pyramid {
             text-align: center;
             margin-top: 20px;
         }
-
         .row {
             display: flex;
             justify-content: center;
         }
-
         .cell {
             border: 1px solid rgb(181, 112, 245);
             padding: 5px 10px;
@@ -22,42 +18,53 @@
         }
     </style>
 </head>
-
 <body>
     <div class="pyramid" id="pyramid"></div>
 
     <script>
-       
-        const data = [
-      
-        "amal triki (150, Soprano)",
-"patron yoyo (150, undefined)",    "asouma triki (160, Soprano)",
-"oumaima akaichi (168, Alto)","yassin sallemi (169, undefined)"," triki asma (170, Soprano)",
-"omar triki (170, Tenor)" ,"lina sa3di (170, undefined)"  , " omar triki (180, Alto)" , "wisem akaichi (180, undefined)",
-"samia sallemi (189, undefined)","uiuiui benmaleh (189, undefined)"," ppp triki (195, Soprano)"," hajer benmaleh (199, undefined)"," yyyy benmaleh (199ndefined)"
-        ];
+       let data;
 
-      
-        function createPyramid() {
-            const pyramidDiv = document.getElementById('pyramid');
-            let rows = '';
-            let rowNumber = 1;
-            let currentRow = '';
-
-            data.forEach((item, index) => {
-                currentRow += `<div class="cell">  ${item}  </div>`;
-                if (index === data.length - 1 || currentRow.length + data[index + 1].length * 10 > 500) {
-                    rows += `<div class="row" style="margin-left: ${rowNumber * 10}px">${currentRow}</div>`;
-                    currentRow = '';
-                    rowNumber++;
-                }
+       async function fetchData() {
+          try {
+            const response = await fetch('http://localhost:5000/api/concert/ajoutplacement/65a9653c8bb8d224dbc4389d', {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
             });
-
-            pyramidDiv.innerHTML = rows;
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            data = await response.json();
+            createPyramid(data.reponse);
+            console.log(data.reponse);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
         }
 
+        function createPyramid(data) {
+    const pyramidDiv = document.getElementById('pyramid');
+    let rows = '';
+    let rowNumber = 1;
+    let currentRow = '';
+
+    data.forEach((array, index) => {
+        array.forEach((item) => {
+            currentRow += `<div class="cell">`;
+            Object.entries(item).forEach(([key, value]) => {
+                currentRow += `${key}: ${value}<br>`;
+            });
+            currentRow += `</div>`;
+        });
+        rows += `<div class="row" style="margin-left: ${rowNumber * 10}px">${currentRow}</div>`;
+        currentRow = '';
+        rowNumber++;
+    });
+    pyramidDiv.innerHTML = rows;
+}
         window.onload = () => {
-            createPyramid();
+            fetchData();
         };
     </script>
 </body>

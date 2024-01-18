@@ -6,6 +6,7 @@ const Conge= require('./models/conge');
 const http = require('http');
 const Choriste = require('./models/choriste');
 const Personne = require('./models/personne');
+const { log } = require("console");
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
@@ -65,7 +66,7 @@ schedule.scheduleJob('*/2 * * * *', async () => {
     try {
         const date = moment();
         const today = moment();
-       
+        console.log(date)
         const existe_congées = await Conge.find({
             etat: "accepte",
             dateFinConge: { $gt: date }

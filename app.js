@@ -11,15 +11,15 @@ const Choriste = require('./models/choriste');
 const repetitionRoutes = require('./routes/repetition');
 const abprRoutes = require('./routes/absencepresence');
 const bcrypt=require('bcryptjs')
-
 var path = require('path');
 app.set("view engine", "ejs");
-
-app.get('/', function(req, res) {
+app.get('/NotifConge', function(req, res) {
   res.sendFile(path.join(__dirname + '/getnotifConge.html'));
  });
 
-
+app.get('/GetPlacement', function(req, res) {
+  res.sendFile(path.join(__dirname + '/placement.html'));
+ });
 const connection=async()=>{
 try{
 await mongoose
@@ -68,8 +68,6 @@ console.log(`manager  account has been added : ${compteManager.login}`);
 }}
 connection()
   app.use(express.json())
-
-
   app.use("/api/concert",concertRoutes)
   app.use("/api/disp",dispRoutes)
   app.use('/api/auditions', auditionRoutes); 

@@ -18,6 +18,4 @@ const choristeSchema = new mongoose.Schema({
     etat:{type:String,enum:['eliminer','nominer']}
       })
 
-
-
   module.exports = mongoose.model("Choriste",choristeSchema);
