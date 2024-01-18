@@ -49,7 +49,6 @@ console.log(`manager  account has been added : ${compteManager.login}`);
   console.log(e)
 }}
 connection()
-
   app.use(express.json())
   app.use('/api/auditions', auditionRoutes); 
   app.use("/api/cand",candARoutes)
