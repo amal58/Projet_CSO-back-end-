@@ -15,6 +15,8 @@ const choristeSchema = new mongoose.Schema({
         }],
     password:{type:String,required:true},
     confirmationStatus: { type: String, default: 'En attente de confirmation' },
+    etat:{type:String,enum:['eliminer','nominer']}
+
       })
 
   module.exports = mongoose.model("Choriste",choristeSchema);
