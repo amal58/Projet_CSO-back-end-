@@ -2,6 +2,9 @@ const express = require ("express")
 const app= express()
 const mongoose = require('mongoose')
 const nodemon = require("nodemon");
+const swaggerJSdoc=require("swagger-jsdoc")
+const swaggerUI = require("swagger-ui-express")
+
 
 const candARoutes=require("./routes/candidatAudition");
 const concertRoutes=require("./routes/concert");
@@ -9,6 +12,8 @@ const chefpupitreRoutes=require("./routes/chefpupitre");
 const historiqueRoutes=require("./routes/consulterHistorique");
 const congeRoutes=require("./routes/conges");
 const loginRoutes=require("./routes/choriste")
+const AbsenceRoutes=require("./routes/resultatAbsence");
+
 const bcrypt=require('bcryptjs')
 const Choriste = require("./models/choriste")
 
@@ -131,6 +136,7 @@ app.use(
   swaggerUI.setup(specs,{explorer:true})
 )
 
+
   app.use(express.json())
   app.use("/api/cand",candARoutes)
   app.use("/api/concert",concertRoutes)
@@ -138,6 +144,5 @@ app.use(
   app.use("/api/historique", historiqueRoutes)
   app.use("/api/conge", congeRoutes)
   app.use("/api/login", loginRoutes)
-
-
+  app.use("/api/absence",AbsenceRoutes)
 module.exports=app
