@@ -16,5 +16,17 @@ const choristeSchema = new mongoose.Schema({
     password:{type:String,required:true},
     confirmationStatus: { type: String, default: 'En attente de confirmation' },
       })
+<<<<<<< HEAD
+=======
+
+  module.exports = mongoose.model("Choriste",choristeSchema);
+
+
+
+
+
+
+
+>>>>>>> repetitionCrud
 
   module.exports = mongoose.model("Choriste",choristeSchema);
