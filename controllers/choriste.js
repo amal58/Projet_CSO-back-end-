@@ -5,6 +5,7 @@ const Audition = require('../models/audition');
 const audition = require('../models/candidataudition');
 const personne = require('../models/personne');
 const Candidat = require('../models/personne');
+const cron = require('node-cron');
 
 const jwt=require ("jsonwebtoken")
 const bcrypt = require ("bcryptjs");
@@ -90,25 +91,21 @@ exports.modifier_tessiture = async (req, res) => {
       { new: true }
     );
 
-    console.log('Tentative de modification de tessiture pour:', candidatAssocie.nom, candidatAssocie.prenom);
+    // console.log('Tentative de modification de tessiture pour:', candidatAssocie.nom, candidatAssocie.prenom);
 
 
-    // const ioTessiture = getIoTessiture();
-    // ioTessiture.emit("tessitureModification", {
-    //   message: `Tessiture modifiée pour ${candidatAssocie.nom} ${candidatAssocie.prenom}`,
-    //   candidats: [
-    //     {
-    //       nom: candidatAssocie.nom,
-    //       prenom: candidatAssocie.prenom,
-    //     },
-    //   ],
-    // });
-
-    console.log('Notification envoyée au chef de pupitre :', tessiture);
+    notifierAuChefDePupitre(candidatAssocie.nom,candidatAssocie.prenom,tessiture);
+    // console.log('Notification envoyée au chef de pupitre :', tessiture);
 
     return res.status(200).json({ message: "Tessiture modifiée", res: fetchTessiture });
   } catch (error) {
     console.error('Erreur:', error);
     res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
+};
+const notifierAuChefDePupitre = (nom, prenom, nouvelleTessiture) => {
+
+  cron.schedule('*/1 * * * *', () => { // Exécute toutes les minutes, vous pouvez ajuster le timing selon vos besoins
+    console.log(`Notification envoyée au chef de pupitre - ${nom} ${prenom} - Nouvelle tessiture : ${nouvelleTessiture}`);
+  });
 };

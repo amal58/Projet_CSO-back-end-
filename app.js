@@ -52,6 +52,7 @@ const concertRoutes = require('./routes/concert.js');
 const repetitionRoutes = require('./routes/repetition.js');
 const absenceRoutes = require('./routes/absence.js');
 const oeuvreRoutes = require('./routes/oeuvre.js');
+const historiqueRoutes=require("./routes/consulterHistorique");
 
 
 app.use("/api/absences", absenceRoutes);
@@ -60,6 +61,7 @@ app.use("/api/candidats", personneRoutes);
 app.use("/api/oeuvres", oeuvreRoutes);
 app.use('/api/concerts', concertRoutes);
 app.use('/api/repetitions', repetitionRoutes);
+app.use("/api/historique", historiqueRoutes)
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
@@ -87,16 +89,16 @@ app.get("/admin.html", (req, res) => {
 // app.get("/tenor.html", (req, res) => {
 //   res.sendFile(path.join(__dirname, "tenor.html"));
 // });
-app.get("/tessiture.html", (req, res) => {
-  res.sendFile(path.join(__dirname, "tessiture.html"));
-});
-app.use(express.static(path.join(__dirname, 'public')));
-getIoTessiture().on('connection', (socket) => {
-  const tessiture = socket.handshake.query.tessiture;
-  if (tessiture) {
-    socket.join(tessiture);
-  }
-});
+// app.get("/tessiture.html", (req, res) => {
+//   res.sendFile(path.join(__dirname, "tessiture.html"));
+// });
+// app.use(express.static(path.join(__dirname, 'public')));
+// getIoTessiture().on('connection', (socket) => {
+//   const tessiture = socket.handshake.query.tessiture;
+//   if (tessiture) {
+//     socket.join(tessiture);
+//   }
+// });
 // Gestion des fichiers statiques
 // app.use(express.static(path.join(__dirname, 'public')));
 
