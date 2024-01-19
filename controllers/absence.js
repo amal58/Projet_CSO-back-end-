@@ -652,6 +652,221 @@ exports.absencesChoristesParTessiture = async (req, res) => {
   }
 };
 
+
+exports.ajouterpresenceRepetionPourChoriste = async (req, res) => {
+  try {
+    // Utilisez await pour obtenir la valeur de getUserIdFromRequest
+    const chefPupitreId = await getUserIdFromRequest(req );
+    console.log('chefPupitreId:', chefPupitreId);
+
+    // Vérifiez si chefPupitreId est défini
+    if (!chefPupitreId) {
+      res.status(403).json({ error: 'Accès non autorisé' });
+      return;
+    }
+
+    // Récupérer le chef de pupitre à partir de l'ID
+    const chefPupitre = await Choriste.findById(chefPupitreId);
+
+    // Vérifier si le rôle est "chefpupitre"
+    if (!chefPupitre || chefPupitre.role !== 'chefpupitre') {
+      res.status(403).json({ error: 'Accès non autorisé' });
+      return;
+    }
+
+    // Récupérer l'ID du candidat associé au chef de pupitre
+    const candidatIdChefPupitre = chefPupitre.candidatId;
+
+    // Récupérer l'audition du chef de pupitre
+    const auditionChefPupitre = await Audition.findOne({ candidat: candidatIdChefPupitre });
+
+    // Vérifier si l'audition du chef de pupitre est trouvée
+    if (!auditionChefPupitre) {
+      res.status(404).json({ error: 'Audition non trouvée pour le chef de pupitre' });
+      return;
+    }
+
+    // Récupérer le document CandA correspondant à l'audition du chef de pupitre
+    const candAChefPupitre = await CandA.findOne({ audition: auditionChefPupitre._id });
+
+    // Vérifier si le document CandA du chef de pupitre est trouvé
+    if (!candAChefPupitre) {
+      res.status(404).json({ error: 'Document CandA non trouvé pour l\'audition du chef de pupitre' });
+      return;
+    }
+
+    // Récupérer l'ID du choriste à partir du corps de la requête
+    const choristeId = req.body.choristeId;
+    console.log('choristeId:', choristeId);
+
+    // Vérifier si choristeId est défini
+    if (!choristeId) {
+      res.status(400).json({ error: 'L\'ID du choriste est requis' });
+      return;
+    }
+
+    // Récupérer le choriste à partir de l'ID
+    const choriste = await Choriste.findById(choristeId);
+
+    // Vérifier si le choriste est trouvé
+    if (!choriste) {
+      res.status(404).json({ error: 'Choriste non trouvé' });
+      return;
+    }
+
+    // Récupérer l'audition du choriste
+    const audition = await Audition.findOne({ candidat: choriste.candidatId });
+
+    // Vérifier si l'audition du choriste est trouvée
+    if (!audition) {
+      res.status(404).json({ error: 'Audition non trouvée pour le choriste' });
+      return;
+    }
+
+    // Récupérer le document CandA correspondant à l'audition du choriste
+    const candA = await CandA.findOne({ audition: audition._id });
+
+    // Vérifier si le document CandA du choriste est trouvé
+    if (!candA) {
+      res.status(404).json({ error: 'Document CandA non trouvé pour l\'audition du choriste' });
+      return;
+    }
+
+    // Vérifier si la tessiture du choriste correspond à celle du chef de pupitre
+    if (candA.tessiture !== candAChefPupitre.tessiture) {
+      res.status(403).json({ error: 'Tessiture non autorisée pour le choriste' });
+      return;
+    }
+
+    // Ajouter l'absence
+    const nouvelleAbsence = new Absence({
+      etat: true,
+      RaisonPresenceManuel: req.body.RaisonPresenceManuel ,  // Remplacez par la logique appropriée
+      choriste: choristeId,
+      repetition: req.body.repetitionId, // Remplacez par la logique appropriée
+    });
+
+    await nouvelleAbsence.save();
+
+    res.json({ 
+      absence:nouvelleAbsence,
+      message: 'Absence ajoutée avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout de l\'absence pour le choriste :', error);
+    res.status(500).json({ error: 'Erreur lors de l\'ajout de l\'absence pour le choriste' });
+  }
+};
+
+exports.modifierpresenceConcertPourChoriste = async (req, res) => {
+  try {
+    const chefPupitreId = await getUserIdFromRequest(req);
+
+    // Vérifier si chefPupitreId est défini
+    if (!chefPupitreId) {
+      res.status(403).json({ error: 'Accès non autorisé' });
+      return;
+    }
+
+    // Récupérer le chef de pupitre à partir de l'ID
+    const chefPupitre = await Choriste.findById(chefPupitreId);
+
+    // Vérifier si le rôle est "chefpupitre"
+    if (!chefPupitre || chefPupitre.role !== 'chefpupitre') {
+      res.status(403).json({ error: 'Accès non autorisé' });
+      return;
+    }
+
+    // Récupérer l'ID du candidat associé au chef de pupitre
+    const candidatIdChefPupitre = chefPupitre.candidatId;
+
+    // Récupérer l'audition du chef de pupitre
+    const auditionChefPupitre = await Audition.findOne({ candidat: candidatIdChefPupitre });
+
+    // Vérifier si l'audition du chef de pupitre est trouvée
+    if (!auditionChefPupitre) {
+      res.status(404).json({ error: 'Audition non trouvée pour le chef de pupitre' });
+      return;
+    }
+
+    // Récupérer le document CandA correspondant à l'audition du chef de pupitre
+    const candAChefPupitre = await CandA.findOne({ audition: auditionChefPupitre._id });
+
+    // Vérifier si le document CandA du chef de pupitre est trouvé
+    if (!candAChefPupitre) {
+      res.status(404).json({ error: 'Document CandA non trouvé pour l\'audition du chef de pupitre' });
+      return;
+    }
+
+    // Récupérer l'ID du choriste à partir du corps de la requête
+    const choristeId = req.body.choristeId;
+
+    // Vérifier si choristeId est défini
+    if (!choristeId) {
+      res.status(400).json({ error: 'L\'ID du choriste est requis' });
+      return;
+    }
+
+    // Récupérer le choriste à partir de l'ID
+    const choriste = await Choriste.findById(choristeId);
+
+    // Vérifier si le choriste est trouvé
+    if (!choriste) {
+      res.status(404).json({ error: 'Choriste non trouvé' });
+      return;
+    }
+
+    // Récupérer l'audition du choriste
+    const audition = await Audition.findOne({ candidat: choriste.candidatId });
+
+    // Vérifier si l'audition du choriste est trouvée
+    if (!audition) {
+      res.status(404).json({ error: 'Audition non trouvée pour le choriste' });
+      return;
+    }
+
+    // Récupérer le document CandA correspondant à l'audition du choriste
+    const candA = await CandA.findOne({ audition: audition._id });
+
+    // Vérifier si le document CandA du choriste est trouvé
+    if (!candA) {
+      res.status(404).json({ error: 'Document CandA non trouvé pour l\'audition du choriste' });
+      return;
+    }
+
+    // Vérifier si la tessiture du choriste correspond à celle du chef de pupitre
+    if (candA.tessiture !== candAChefPupitre.tessiture) {
+      res.status(403).json({ error: 'Tessiture non autorisée pour le choriste' });
+      return;
+    }
+
+  
+    const absence = await Absence.findOne({ choriste: choristeId, concert: req.params.concertId });
+
+    // Vérifier si l'absence est trouvée
+    if (!absence) {
+      res.status(404).json({ error: 'Absence non trouvée pour le choriste et le concert spécifiés' });
+      return;
+    }
+
+    // Modifier l'état de l'absence à true
+    absence.etat = true;
+
+    // Ajouter la raison de la présence manuelle
+    absence.RaisonPresenceManuel = req.body.RaisonPresenceManuel;
+
+    // Sauvegarder les modifications
+    await absence.save();
+
+    res.json({ message: 'Absence modifiée avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de la modification de l\'absence pour le choriste au concert :', error);
+    res.status(500).json({ error: 'Erreur lors de la modification de l\'absence pour le choriste au concert' });
+  }
+};
+
+
+// Ajoutez cette route à votre fichier de routes
+=======
 exports.absencesRepetitionDate = async (req, res) => {
   const { date } = req.params;
 
@@ -676,6 +891,7 @@ exports.absencesRepetitionDate = async (req, res) => {
     res.status(500).json({ error: 'Erreur lors de la récupération des absences' });
   }
 };
+
 
 
 

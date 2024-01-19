@@ -85,6 +85,17 @@ app.use((req, res, next) => {
 //   const exemples = [
   
 //     {
+
+//       extrait: "Nom de l'extrait musical",
+//       tessiture: "alto",
+//       evaluation: "A",
+//       decision: "retenu",
+//       remarque: "Remarques supplémentaires sur le candidat",
+//       audition: "658d7d55bc6c4e6cfd1ac73a", // Remplacez par l'ID réel de l'audition associée
+//       ConfirmedEmail: "confirmer"
+//     },
+      
+
 //       etat: false,
 //       choriste: "658d844e2b3416e82d172df9",
       
@@ -108,11 +119,16 @@ app.use((req, res, next) => {
       
 //       repetition: "65a6dc7e55efc6b2053ea664",
 //     },
+
 // ];
 // // Fonction pour insérer les exemples dans la base de données
 // async function insererExemples() {
 //   try {
+
+//     await auditionC.insertMany(exemples);
+
 //     await  Absence.insertMany(exemples);
+
 //     console.log('Exemples insérés avec succès dans la base de données.');
 //   } catch (error) {
 //     console.error('Erreur lors de l\'insertion des exemples :', error);
