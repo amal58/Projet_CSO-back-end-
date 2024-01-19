@@ -10,6 +10,7 @@ const Conge =  require('./models/conge');
 
 const server = http.createServer(app);
 const io = socketIo(server);
+
 app.io = io;
 
 app.get('/NotifRep/', (req, res) => {

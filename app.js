@@ -13,6 +13,8 @@ const ValidMailPRoutes = require('./routes/validerMailPersonne');
 const auditionRoutes = require('./routes/audition');
 const routePresenceListe = require('./routes/Listepresence')
 const choristeRoutes=require("./routes/choriste");
+const repetitionRoutes = require('./routes/repetition');
+
 const participantsRoutes = require('./routes/participantsRoutes');
 const saisonRoutes = require('./routes/saison');
 const Choriste = require('./models/choriste');
@@ -75,12 +77,11 @@ app.use("/Oeuvre", OeuvreRoutes);
 app.use('/api/auditions', auditionRoutes); 
 app.use('/validerMail', ValidMailPRoutes);
 app.use('/api/auditions', auditionRoutes); 
-app.use("/api/choriste",choristeRoutes)
 app.use('/api', participantsRoutes);
 app.use('/api/choriste', choristeRoutes);
 app.use("/listePresents",routePresenceListe)
 app.use('/api/saison', saisonRoutes); 
-
+app.use('/api/repetitions', repetitionRoutes);
 
 
 
