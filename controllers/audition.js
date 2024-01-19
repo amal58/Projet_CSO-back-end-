@@ -9,16 +9,16 @@ exports.generateAuditions = async (req, res, next) => {
     const plageHoraireDebut = new Date(`${dateDebut}T${heureDebut}`);
     const plageHoraireFin = new Date(`${dateDebut}T${heureFin}`);
 
-    // Trouver tous les candidats
+   
     const candidats = await Personne.find();
 
-    // Générer les auditions
+    
     const auditions = [];
     let dateAudition = new Date(plageHoraireDebut);
 
     for (let i = 0; i < candidats.length; i += 2) {
       if (dateAudition > plageHoraireFin) {
-        // Si la plage horaire est terminée, passer au jour suivant
+        
         dateAudition = new Date(`${dateDebut}T${heureDebut}`);
         dateAudition.setDate(dateAudition.getDate() + 1); // Passer au jour suivant
       }
@@ -35,14 +35,13 @@ exports.generateAuditions = async (req, res, next) => {
         candidat: candidats[i + 1]._id,
       });
 
-      // Passer à l'heure suivante
       dateAudition.setTime(dateAudition.getTime() + (60 * 60 * 1000));
     }
 
-    // Enregistrer les auditions dans la base de données
+   
     const createdAuditions = await Audition.insertMany(auditions);
 
-    // Configuration du transporteur nodemailer
+
     const transporter = nodemailer.createTransport({
       host: 'smtp-mail.outlook.com',
       secure: false,
@@ -54,15 +53,15 @@ exports.generateAuditions = async (req, res, next) => {
         user: 'simatester@outlook.com',
         pass: 'SIMAA test2012',
       },
-      // Ajoutez ces options pour augmenter le délai d'attente (en millisecondes)
+    
       connectionTimeout: 5000,
       greetingTimeout: 10000,
       socketTimeout: 15000,
     });
 
-    const destinationEmail = 'saadsimaa@gmail.com'; // Remplacez par votre adresse e-mail
+    const destinationEmail = 'saadsimaa@gmail.com'; 
 
-    // Envoi des e-mails d'invitation
+    
     for (const audition of createdAuditions) {
       const candidat = await Personne.findById(audition.candidat);
 
@@ -73,7 +72,7 @@ exports.generateAuditions = async (req, res, next) => {
         text: `Cher ${candidat.prenom},\n\nVous êtes invité(e) à participer à l'audition le ${audition.date} à ${audition.heureDebut}.\n\nCordialement,\nVotre équipe d'audition`,
       };
 
-      // Envoyer l'e-mail
+    
       await transporter.sendMail(mailOptions);
     }
 
@@ -95,16 +94,16 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
   try {
     const { listeCandidats, nombreCandidatsParHeure, heureDebut, heureFin, dateDebut } = req.body;
 
-    // Trouver les candidats correspondant aux e-mails
+
     const candidats = await Personne.find({ email: { $in: listeCandidats } });
 
-    // Générer les auditions
+    
     const auditions = [];
     let dateAudition = new Date(`${dateDebut}T${heureDebut}`);
 
     for (let i = 0; i < candidats.length; i += nombreCandidatsParHeure) {
       if (dateAudition > new Date(`${dateDebut}T${heureFin}`)) {
-        // Si la plage horaire est terminée, passer au jour suivant
+      
         dateAudition = new Date(`${dateDebut}T${heureDebut}`);
         dateAudition.setDate(dateAudition.getDate() + 1); // Passer au jour suivant
       }
@@ -120,14 +119,14 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
         }
       }
 
-      // Passer à l'heure suivante
+     
       dateAudition.setTime(dateAudition.getTime() + (60 * 60 * 1000));
     }
 
-    // Enregistrer les auditions dans la base de données
+    
     const createdAuditions = await Audition.insertMany(auditions);
 
-    // Configuration du transporteur nodemailer
+
     const transporter = nodemailer.createTransport({
       host: 'smtp-mail.outlook.com',
       secureConnection: false,
@@ -139,15 +138,15 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
         user: 'pourtestsima@outlook.com',
         pass: 'SIMAA test2012',
       },
-      // Ajoutez ces options pour augmenter le délai d'attente (en millisecondes)
+      
       connectionTimeout: 5000,
       greetingTimeout: 10000,
       socketTimeout: 15000,
     });
 
-    const destinationEmail = 'saadsimaa@gmail.com'; // Remplacez par votre adresse e-mail
+    const destinationEmail = 'saadsimaa@gmail.com'; 
 
-    // Envoi des e-mails d'invitation
+
     for (const audition of createdAuditions) {
       const candidat = await Personne.findById(audition.candidat);
 
@@ -158,7 +157,6 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
         text: `Cher ${candidat.prenom},\n\nVous êtes invité(e) à participer à l'audition le ${audition.date} à ${audition.heureDebut}.\n\nCordialement,\nVotre équipe d'audition`,
       };
 
-      // Envoyer l'e-mail
       await transporter.sendMail(mailOptions);
     }
 
@@ -194,7 +192,7 @@ exports.getAuditionsForCandidate = async (req, res, next) => {
   try {
     const candidatId = req.params.candidatId;
 
-    // Trouver le candidat
+   
     const candidat = await Personne.findById(candidatId);
 
     if (!candidat) {
@@ -203,7 +201,7 @@ exports.getAuditionsForCandidate = async (req, res, next) => {
       });
     }
 
-    // Trouver toutes les auditions pour ce candidat
+   
     const auditions = await Audition.find({ candidat: candidatId });
 
     res.status(200).json({
@@ -219,15 +217,15 @@ exports.getAuditionsForCandidate = async (req, res, next) => {
   }
 };
 
-// Contrôleur pour visualiser les auditions par date
+
 exports.getAuditionsByDate = async (req, res, next) => {
   try {
     const { date } = req.params;
 
-    // Supprimez l'heure de la date si elle est présente
+  
     const formattedDate = date.split('T')[0];
 
-    // Recherche des auditions pour la date spécifiée
+
     const auditions = await Audition.find({
       date: { $gte: new Date(`${formattedDate}T00:00:00.000Z`), $lt: new Date(`${formattedDate}T23:59:59.999Z`) },
     });
@@ -249,13 +247,13 @@ exports.getAuditionsByHeure = async (req, res) => {
     const heureParam = req.params.heure;
     const dateParam = req.params.date;
 
-    // Assurez-vous que la date et l'heure sont correctement formatées
+ 
     const formattedDate = new Date(`${dateParam}T${heureParam}`);
     if (isNaN(formattedDate.valueOf())) {
       throw new Error('Date ou heure invalide');
     }
 
-    // Créez une plage de temps d'une heure à partir de l'heure fournie
+
     const heureFin = new Date(formattedDate);
     heureFin.setHours(heureFin.getHours() + 1);
 
