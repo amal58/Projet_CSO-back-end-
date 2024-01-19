@@ -14,7 +14,7 @@ exports.getAllCandidats = async (req, res) => {
       limit: parseInt(limit, 10),
     };
 
-    const candidats = await Personne.paginate({ role: 'candidat' }, options);
+    const candidats = await Personne.paginate( {},options);
     res.json(candidats);
   } catch (error) {
     console.error(error);
@@ -32,7 +32,7 @@ exports.getCandidatsBySexe = async (req, res) => {
         limit: parseInt(limit, 10),
       };
   
-      const candidats = await Personne.paginate({ role: 'candidat', sexe }, options);
+      const candidats = await Personne.paginate({ sexe: sexe }, options);
       res.json(candidats);
     } catch (error) {
       console.error(error);
@@ -57,7 +57,7 @@ exports.getCandidatsBySexe = async (req, res) => {
  
   exports.AjoutCandidat = async (req, res) => {
     try {
-      // req.body.role = 'candidat';
+
       const newCandidat = new Personne(req.body);
       await newCandidat.save();
   

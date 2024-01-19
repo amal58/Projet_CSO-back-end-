@@ -1,6 +1,7 @@
 const Audition = require('../models/audition');
 const Personne = require('../models/personne');
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 exports.generateAuditions = async (req, res, next) => {
   try {
@@ -9,7 +10,7 @@ exports.generateAuditions = async (req, res, next) => {
     const plageHoraireDebut = new Date(`${dateDebut}T${heureDebut}`);
     const plageHoraireFin = new Date(`${dateDebut}T${heureFin}`);
 
-   
+
     const candidats = await Personne.find();
 
     
@@ -44,14 +45,19 @@ exports.generateAuditions = async (req, res, next) => {
 
     const transporter = nodemailer.createTransport({
       host: 'smtp-mail.outlook.com',
-      secure: false,
+
+      secureConnection: false,
+
       port: 587,
       tls: {
         ciphers: 'SSLv3',
       },
       auth: {
+
+
         user: 'simatester@outlook.com',
         pass: 'SIMAA test2012',
+
       },
     
       connectionTimeout: 5000,
@@ -59,14 +65,18 @@ exports.generateAuditions = async (req, res, next) => {
       socketTimeout: 15000,
     });
 
-    const destinationEmail = 'saadsimaa@gmail.com'; 
+    const destinationEmail = 'saadsimaa@gmail.com'; // Remplacez par votre adresse e-mail
+
 
     
     for (const audition of createdAuditions) {
       const candidat = await Personne.findById(audition.candidat);
 
       const mailOptions = {
+
+
         from: 'simatester@outlook.com',
+
         to: candidat.email,
         subject: 'Invitation à audition',
         text: `Cher ${candidat.prenom},\n\nVous êtes invité(e) à participer à l'audition le ${audition.date} à ${audition.heureDebut}.\n\nCordialement,\nVotre équipe d'audition`,
@@ -136,7 +146,10 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
       },
       auth: {
         user: 'pourtestsima@outlook.com',
+
+
         pass: 'SIMAA test2012',
+
       },
       
       connectionTimeout: 5000,
@@ -149,10 +162,13 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
 
     for (const audition of createdAuditions) {
       const candidat = await Personne.findById(audition.candidat);
-
+      
       const mailOptions = {
         from: 'pourtestsima@outlook.com',
+
+
         to: destinationEmail,
+
         subject: 'Invitation à audition',
         text: `Cher ${candidat.prenom},\n\nVous êtes invité(e) à participer à l'audition le ${audition.date} à ${audition.heureDebut}.\n\nCordialement,\nVotre équipe d'audition`,
       };
