@@ -4,3 +4,5 @@ const auditionSchema = mongoose.Schema({
     heureDebut: {type: Date,required: true},
     candidat:{ type: mongoose.Schema.Types.ObjectId,ref: 'Personne',required: true, },
   });
+
+  module.exports = mongoose.model("Audition", auditionSchema);
