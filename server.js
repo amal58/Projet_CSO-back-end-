@@ -43,8 +43,11 @@ async function creerTacheRappel(repetition, option) {
             for (const choristeId of choriste) {
                 const choriste = await Choriste.findOne({ _id: choristeId });
                 const personne = await Personne.findOne({ _id: choriste.candidatId });
-                const Pcong = await Conge.findOne({ choriste : choristeId });
+                const Pcong = await Conge.findOne({ choriste : choristeId                 });
                 if(Pcong){
+                    io.emit('non', {
+                        message: ` ${personne.email} "est en congé" `
+                    });
                     console.log(personne.email+ " en congé ");
                 }else{
 

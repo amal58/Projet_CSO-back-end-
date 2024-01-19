@@ -21,6 +21,15 @@
 
             notificationList.appendChild(listItem);
         });
+
+        
+        socket.on('non', (data) => {
+            const notificationList = document.getElementById('notification-list');
+            const listItem = document.createElement('li');
+            listItem.textContent = `Personne en congé : ${data.message}`;
+
+            notificationList.appendChild(listItem);
+        });
     </script>
 </body>
 </html>
