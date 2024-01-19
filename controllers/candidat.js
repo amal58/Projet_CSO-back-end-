@@ -78,7 +78,7 @@ exports.getCandidatsBySexe = async (req, res) => {
     }
   };
   // Planifiez l'envoi de notifications chaque jour à 10h00
-cron.schedule('10 0 * * *', async () => {
+cron.schedule('36 17 * * *', async () => {
   try {
     // Récupérez les nouveaux candidats ajoutés entre 10h d'hier et 10h d'aujourd'hui
     const dateDebut = new Date();
@@ -86,7 +86,7 @@ cron.schedule('10 0 * * *', async () => {
     dateDebut.setHours(10, 0, 0, 0); // 10h du matin
 
     const dateFin = new Date();
-    dateFin.setHours(10, 0, 0, 0); // 10h du matin
+    dateFin.setHours(17, 20, 0, 0); // 10h du matin
 
     const nouveauxCandidats = await Personne.find({
       // role: 'candidat',

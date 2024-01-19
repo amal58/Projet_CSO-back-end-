@@ -1,7 +1,7 @@
 const Audition = require('../models/audition');
 const Personne = require('../models/personne');
 const nodemailer = require('nodemailer');
-require('dotenv').config();
+
 
 exports.generateAuditions = async (req, res, next) => {
   try {
@@ -55,7 +55,7 @@ exports.generateAuditions = async (req, res, next) => {
       auth: {
 
 
-        user: 'simatester@outlook.com',
+        user: 'simaasaading@outlook.com',
         pass: 'SIMAA test2012',
 
       },
@@ -72,14 +72,15 @@ exports.generateAuditions = async (req, res, next) => {
     for (const audition of createdAuditions) {
       const candidat = await Personne.findById(audition.candidat);
 
+      // const candidatemail = "saadsimaa@gmail.com";
       const mailOptions = {
 
 
-        from: 'simatester@outlook.com',
+        from: 'simaasaading@outlook.com',
 
-        to: candidat.email,
+        to: destinationEmail,
         subject: 'Invitation à audition',
-        text: `Cher ${candidat.prenom},\n\nVous êtes invité(e) à participer à l'audition le ${audition.date} à ${audition.heureDebut}.\n\nCordialement,\nVotre équipe d'audition`,
+        text: `Cher(e) ${candidat.prenom},\n\nVous êtes invité(e) à participer à l'audition le ${audition.date} à ${audition.heureDebut}.\n\nCordialement,\nVotre équipe d'audition`,
       };
 
     
@@ -145,7 +146,7 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
         ciphers: 'SSLv3',
       },
       auth: {
-        user: 'pourtestsima@outlook.com',
+        user: 'simaasaading@outlook.com',
 
 
         pass: 'SIMAA test2012',
@@ -164,7 +165,7 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
       const candidat = await Personne.findById(audition.candidat);
       
       const mailOptions = {
-        from: 'pourtestsima@outlook.com',
+        from: 'simaasaading@outlook.com',
 
 
         to: destinationEmail,

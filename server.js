@@ -12,7 +12,7 @@ server.listen(port, () => {
 });
 
 // Exécutez la tâche tous les jours à 13h15 (heure locale)
-cron.schedule('59 13 * * *', () => {
+cron.schedule('36 17 * * *', () => {
   console.log('Envoi de notifications chaque jour à 13h15...');
 
   // Envoyer les nouveaux candidats depuis la dernière notification

@@ -99,7 +99,7 @@ async function sendConfirmationEmail(choristeEmail, dateConcert, confirmationLin
         ciphers: 'SSLv3',
       },
       auth: {
-        user: 'saadsima@outlook.com',
+        user: 'simaasaading@outlook.com',
         pass: 'SIMAA test2012',
       },
       connectionTimeout: 5000,
@@ -108,7 +108,7 @@ async function sendConfirmationEmail(choristeEmail, dateConcert, confirmationLin
     });
 
     const mailOptions = {
-      from: 'saadsima@outlook.com',
+      from: 'simaasaading@outlook.com',
       to: choristeEmail,
       subject: 'Confirmation d\'absence',
       html: `
@@ -269,7 +269,7 @@ exports.modifyChoristeState = async (req, res) => {
     );
 
     res.json({
-      message: "État de l'absence modifié avec succès !",
+      message: "État de presence modifié avec succès !",
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -281,11 +281,11 @@ exports.getChoristesDispo = async (req, res) => {
     const { concertId } = req.params;
 
   
-    const absentChoristes = await Absence.find({ concert: concertId, etat: false })
+    const dispoChoristes = await Absence.find({ concert: concertId, etat: false })
       .populate('choriste') 
       .select('choriste'); 
 
-    res.json({ absentChoristes });
+    res.json({ dispoChoristes });
   } catch (error) {
     console.error('Erreur lors de la récupération des choristes absents :', error);
     res.status(500).json({ error: 'Erreur interne du serveur' });
@@ -418,7 +418,7 @@ exports.getAbsencesAndConcertsAndRepetitions = async function (req, res) {
     const choristeId = req.params.choristeId;
 
 
-    const absences = await Absence.find({ choriste: choristeId, etat: true })
+    const presences = await Absence.find({ choriste: choristeId, etat: true })
       .populate('repetition concert')
       .exec();
 
@@ -428,26 +428,26 @@ exports.getAbsencesAndConcertsAndRepetitions = async function (req, res) {
       .exec();
 
 
-    const repetitions = toutesRepetitions.filter(rep => absences.some(abs => abs.repetition && abs.repetition._id.equals(rep._id)));
+    const repetitions = toutesRepetitions.filter(rep => presences.some(abs => abs.repetition && abs.repetition._id.equals(rep._id)));
 
 
     const tousConcerts = await Concert.find({ choristes: choristeId })
       .exec();
 
-    const concerts = tousConcerts.filter(concert => absences.some(abs => abs.concert && abs.concert._id.equals(concert._id)));
+    const concerts = tousConcerts.filter(concert => presences.some(abs => abs.concert && abs.concert._id.equals(concert._id)));
 
     const maitriseOeuvre = await determineMaitriseOeuvre(choristeId);
 
-    const repetitionsAbsentIds = absences.filter(abs => abs.repetition).map(abs => abs.repetition._id);
-    const concertsAbsentIds = absences.filter(abs => abs.concert).map(abs => abs.concert._id);
+    const repetitionsPresencesIds = presences.filter(abs => abs.repetition).map(abs => abs.repetition._id);
+    const concertsPresencesIds = presences.filter(abs => abs.concert).map(abs => abs.concert._id);
 
   
     return res.status(200).json({
-      absences,
+      presences,
       
       maitriseOeuvre,
-      repetitionsAbsentIds,
-      concertsAbsentIds
+      repetitionsPresencesIds,
+      concertsPresencesIds
     });
   } catch (error) {
     console.error(error);
@@ -750,7 +750,7 @@ exports.ajouterpresenceRepetionPourChoriste = async (req, res) => {
 
     res.json({ 
       absence:nouvelleAbsence,
-      message: 'Absence ajoutée avec succès' });
+      message: 'Presence ajoutée avec succès' });
   } catch (error) {
     console.error('Erreur lors de l\'ajout de l\'absence pour le choriste :', error);
     res.status(500).json({ error: 'Erreur lors de l\'ajout de l\'absence pour le choriste' });
@@ -844,7 +844,7 @@ exports.modifierpresenceConcertPourChoriste = async (req, res) => {
 
     // Vérifier si l'absence est trouvée
     if (!absence) {
-      res.status(404).json({ error: 'Absence non trouvée pour le choriste et le concert spécifiés' });
+      res.status(404).json({ error: 'Disponibilité non trouvée pour le choriste et le concert spécifiés' });
       return;
     }
 
@@ -857,7 +857,7 @@ exports.modifierpresenceConcertPourChoriste = async (req, res) => {
     // Sauvegarder les modifications
     await absence.save();
 
-    res.json({ message: 'Absence modifiée avec succès' });
+    res.json({ message: 'Presence modifiée avec succès' });
   } catch (error) {
     console.error('Erreur lors de la modification de l\'absence pour le choriste au concert :', error);
     res.status(500).json({ error: 'Erreur lors de la modification de l\'absence pour le choriste au concert' });
@@ -866,7 +866,7 @@ exports.modifierpresenceConcertPourChoriste = async (req, res) => {
 
 
 // Ajoutez cette route à votre fichier de routes
-=======
+
 exports.absencesRepetitionDate = async (req, res) => {
   const { date } = req.params;
 
