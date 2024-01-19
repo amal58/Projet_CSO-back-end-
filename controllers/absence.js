@@ -53,8 +53,10 @@ exports.createAbsence = async (req, res) => {
     //   return res.status(401).json({ error: 'Token invalide ou expiré' });
     // }
 
+
    
     const choriste = await Choriste.findById(compteId); 
+
     console.log('Choriste trouvé:', choriste);
 
     if (!choriste) {
@@ -99,7 +101,9 @@ async function sendConfirmationEmail(choristeEmail, dateConcert, confirmationLin
         ciphers: 'SSLv3',
       },
       auth: {
+
         user: 'saadsima@outlook.com',
+
         pass: 'SIMAA test2012',
       },
       connectionTimeout: 5000,
@@ -108,14 +112,18 @@ async function sendConfirmationEmail(choristeEmail, dateConcert, confirmationLin
     });
 
     const mailOptions = {
+
       from: 'saadsima@outlook.com',
+
       to: choristeEmail,
       subject: 'Confirmation d\'absence',
       html: `
         <p>Merci de confirmer votre absence pour le concert du ${dateConcert}.</p>
         <p>Cliquez sur le lien ci-dessous pour confirmer :</p>
         <form method="get" action="${confirmationLink}">
+
         <button type="submit">Confirmer la disponibilité</button>
+
         </form>
         
       `,
@@ -151,7 +159,9 @@ exports.confirmAbsence = async (req, res) => {
     const existingAbsence = await Absence.findOne({ choriste: compteId, concert: concertId }); // Utilisez _id plutôt que choristeid
 
     if (existingAbsence && existingAbsence.etat) {
+
       return res.status(400).json({ error: 'La disponibilité a déjà été confirmée' });
+
     }
 
     console.log('msg demandeeeeeeee', compteId);
@@ -161,6 +171,7 @@ exports.confirmAbsence = async (req, res) => {
 
     if (!concert) {
       return res.status(404).json({ error: 'Concert non trouvé' });
+
     }
 
     // Générez un lien unique pour la confirmation d'absence
@@ -272,9 +283,112 @@ exports.modifyChoristeState = async (req, res) => {
       message: "État de l'absence modifié avec succès !",
     });
   } catch (error) {
+
     res.status(500).json({ error: error.message });
   }
 };
+
+
+exports.confirmDispo = async (req, res) => {
+  const { compteId, concertId} = req.params;
+
+  try {
+    const choriste = await Choriste.findById(compteId); 
+   
+    const concert = await Concert.findById(concertId);
+
+    if (!choriste) {
+      return res.status(404).json({ erreur: "Choriste non trouvé" });
+    }
+
+    // Vérifiez si le token reçu correspond au token associé au choriste
+    
+
+    choriste.confirmationStatus = "Confirmé";
+    
+    await choriste.save();
+
+    // Ajoutez le choriste à la liste d'absence uniquement après confirmation
+    if (
+      choriste.confirmationStatus === "Confirmé"
+    ) {
+      // Créer un nouvel objet Absence
+    const nouvelleAbsence = new Absence({
+      choriste: choriste._id,
+      concert: concert._id,
+    });
+
+    await nouvelleAbsence.save();
+    }
+
+    res.json({
+      message:
+        "Confirmation réussie. Le choriste a été ajouté à la liste d'absence.",
+    });
+  } catch (error) {
+    console.error("Erreur lors de la confirmation de disponibilité :", error);
+    res.status(500).json({ erreur: "Erreur interne du serveur" });
+  }
+};
+
+exports.modifyChoristeState = async (req, res) => {
+  // Valider les données de la requête si nécessaire
+
+  try {
+    // Récupérer les paramètres de l'URL
+    const { concertId, urlQR } = req.params;
+    console.log('ID du concert:', concertId);
+    console.log('URL QR:', urlQR);
+
+    // Récupérer l'ID du choriste à partir de la requête
+    const compteId = await getUserIdFromRequest(req);
+    console.log('ID du compte:', compteId);
+
+    if (!compteId) {
+      return res.status(401).json({ error: 'Token invalide ou expiré' });
+    }
+
+    // Trouver le choriste correspondant à l'ID du compte
+    const choriste = await Choriste.findById(compteId);
+
+    if (!choriste) {
+      return res.status(404).json({ error: 'Choriste non trouvé' });
+    }
+
+    // Rechercher l'absence correspondant au choriste et au concert
+    const absence = await Absence.findOne({
+      choriste: choriste._id,
+      concert: concertId,
+    });
+
+    // Vérifier si l'absence existe
+    if (!absence) {
+      return res.status(404).json({ error: 'Absence non trouvée pour les paramètres fournis' });
+    }
+
+    // Vérifier si l'URL QR correspond à celui du concert
+    const concert = await Concert.findOne({ _id: concertId });
+
+    if (!concert || concert.urlQR !== urlQR) {
+      return res.status(400).json({ error: "L'URL QR ne correspond pas à celui du concert" });
+    }
+    choriste.confirmationStatus = "En attente de confirmation";
+    await choriste.save();
+    // Mettre à jour l'état de l'absence
+    await Absence.findOneAndUpdate(
+      { _id: absence._id },
+      { $set: { etat: true } },
+      { new: true } // Pour renvoyer le document mis à jour
+    );
+
+    res.json({
+      message: "État de l'absence modifié avec succès !",
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 exports.getChoristesDispo = async (req, res) => {
   try {
@@ -866,7 +980,7 @@ exports.modifierpresenceConcertPourChoriste = async (req, res) => {
 
 
 // Ajoutez cette route à votre fichier de routes
-=======
+
 exports.absencesRepetitionDate = async (req, res) => {
   const { date } = req.params;
 
@@ -891,6 +1005,7 @@ exports.absencesRepetitionDate = async (req, res) => {
     res.status(500).json({ error: 'Erreur lors de la récupération des absences' });
   }
 };
+
 
 
 

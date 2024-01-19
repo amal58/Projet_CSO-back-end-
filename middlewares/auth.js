@@ -61,7 +61,9 @@ module.exports.isadmin = (req, res, next)=>{
         const choriste = await Choriste.findOne({ _id: decoded.existUser });
         console.log('Le choriste associé au token :', choriste);
 
+
         if (!choriste ) {
+
             return null; // Le choriste associé au token n'existe pas
         }
 

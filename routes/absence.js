@@ -8,10 +8,12 @@ router.post('/add/:id_repetition/:urlQR', absenceController.createAbsence);
 router.post('/confirm/:concertId', absenceController.confirmAbsence);
 router.get('/confirmation-absence/:compteId/:concertId', absenceController.confirmDispo);
 router.patch('/modifychoristestate/:concertId/:urlQR', absenceController.modifyChoristeState);
+
 router.get('/choristesdispo/:concertId', absenceController.getChoristesDispo);
 router.get('/listerAbsencesParTessitureEtConcert/:tessiture/:concert', absenceController.listerAbsencesParTessitureEtConcert);
 router.post('/ajouterAbsencePourChoriste', absenceController.ajouterpresenceRepetionPourChoriste);
 router.patch('/presenceManellement/:concertId', absenceController.modifierpresenceConcertPourChoriste);
+
 
 
 router.get('/absences-concerts-repetitions/:choristeId', absenceController.getAbsencesAndConcertsAndRepetitions);

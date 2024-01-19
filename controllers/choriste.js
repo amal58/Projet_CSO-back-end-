@@ -2,10 +2,12 @@
 const mongoose = require('mongoose');
 const Choriste = require('../models/choriste');
 const Audition = require('../models/audition');
+
 const audition = require('../models/candidataudition');
 const personne = require('../models/personne');
 const Candidat = require('../models/personne');
 const cron = require('node-cron');
+
 
 const jwt=require ("jsonwebtoken")
 const bcrypt = require ("bcryptjs");
@@ -49,6 +51,7 @@ exports.login= async (req,res,next)=>{
         console.log(error)
     return res.status(400).json({message:"failed!!!!!"})
     }
+
 };
 // const { getIoTessiture } = require("../socketTessiture");
 
@@ -109,3 +112,4 @@ const notifierAuChefDePupitre = (nom, prenom, nouvelleTessiture) => {
     console.log(`Notification envoyée au chef de pupitre - ${nom} ${prenom} - Nouvelle tessiture : ${nouvelleTessiture}`);
   });
 };
+

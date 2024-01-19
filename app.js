@@ -45,10 +45,12 @@ mongoose
 
 const auditionRoutes = require("./routes/audition");
 const personneRoutes = require("./routes/candidat");
+
 const auditionC = require("./models/candidataudition.js");
 
 const choriste = require("./models/choriste.js");
 const { Absence } = require("./models/absence.js");
+
 
 
 const choristeRoutes = require("./routes/choriste.js");
@@ -62,6 +64,10 @@ const historiqueRoutes=require("./routes/consulterHistorique");
 app.use("/api/absences", absenceRoutes);
 app.use("/api/auditions", auditionRoutes);
 app.use("/api/candidats", personneRoutes);
+
+
+app.use('/api/choristes', choristeRoutes);
+
 app.use("/api/oeuvres", oeuvreRoutes);
 app.use('/api/concerts', concertRoutes);
 app.use('/api/repetitions', repetitionRoutes);
@@ -72,6 +78,7 @@ app.use((req, res, next) => {
   next();
 });
 
+
 app.use('/api/choristes', choristeRoutes);
 app.use((req, res, next) => {
   console.log(`Requested: ${req.method} ${req.url}`);
@@ -81,6 +88,7 @@ app.use((req, res, next) => {
 app.get("/admin.html", (req, res) => {
   res.sendFile(path.join(__dirname, "admin.html"));
 });
+
 
 
 
@@ -131,6 +139,7 @@ app.use((req, res, next) => {
       
 //       repetition: "65a6dc7e55efc6b2053ea664",
 //     },
+
 
 // ];
 // // Fonction pour insérer les exemples dans la base de données

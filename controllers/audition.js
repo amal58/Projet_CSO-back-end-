@@ -11,6 +11,7 @@ exports.generateAuditions = async (req, res, next) => {
     const plageHoraireFin = new Date(`${dateDebut}T${heureFin}`);
 
 
+
     const candidats = await Personne.find();
 
     
