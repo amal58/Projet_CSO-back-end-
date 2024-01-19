@@ -3,19 +3,20 @@ const bodyParser = require('body-parser');
 const app = express();
 const path = require('path');
 
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 
-const OeuvreRoutes = require("./routes/oeuvre");
 const mongoose = require('mongoose');
 const ValidMailPRoutes = require('./routes/validerMailPersonne');
 const auditionRoutes = require('./routes/audition');
-const saisonRoutes = require('./routes/saison');
-const choristeRoutes = require('./routes/choriste');
+const routePresenceListe = require('./routes/Listepresence')
+const choristeRoutes=require("./routes/choriste");
 const participantsRoutes = require('./routes/participantsRoutes');
+const saisonRoutes = require('./routes/saison');
 const Choriste = require('./models/choriste');
- 
+const OeuvreRoutes=require("./routes/oeuvre")
 const connection = async () => {
   try {
     await mongoose.connect('mongodb+srv://p92934700:7RoxD6S97xxp1Dea@cluster0.peomj36.mongodb.net/projetCSO', {
@@ -71,11 +72,17 @@ connection();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/Oeuvre", OeuvreRoutes);
+app.use('/api/auditions', auditionRoutes); 
 app.use('/validerMail', ValidMailPRoutes);
 app.use('/api/auditions', auditionRoutes); 
-app.use('/api/choriste', choristeRoutes);
-app.use('/api/saison', saisonRoutes); 
+app.use("/api/choriste",choristeRoutes)
 app.use('/api', participantsRoutes);
+app.use('/api/choriste', choristeRoutes);
+app.use("/listePresents",routePresenceListe)
+app.use('/api/saison', saisonRoutes); 
+
+
+
 
 
 
