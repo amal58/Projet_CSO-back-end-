@@ -1,3 +1,4 @@
+
 const { getIo } = require("../socket"); 
 const Personne = require('../models/personne');
 const mongoose = require('mongoose');
@@ -5,6 +6,7 @@ const net = require('net');
 const cron = require('node-cron');
 
  
+
 exports.getAllCandidats = async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
@@ -52,6 +54,7 @@ exports.getCandidatsBySexe = async (req, res) => {
       res.status(500).json({ message: 'Erreur serveur' });
     }
   };
+
 
   const io = getIo();
  
@@ -107,3 +110,4 @@ cron.schedule('10 0 * * *', async () => {
     console.error(error);
   }
 });
+

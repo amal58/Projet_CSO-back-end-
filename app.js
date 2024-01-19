@@ -1,9 +1,19 @@
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const paginate = require('mongoose-paginate-v2');
+const personneRoutes = require('./routes/candidat');
+const Personne = require('./models/personne');
+const auditionRoutes = require('./routes/audition');
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const path = require("path");
 const http = require("http");
 const { initializeSocket } = require("./socket");
+
 
 
 
@@ -30,6 +40,8 @@ mongoose
   .catch((error) => {
     console.error("Error connecting to MongoDB", error);
   });
+
+
 
 const auditionRoutes = require("./routes/audition");
 const personneRoutes = require("./routes/candidat");
@@ -135,3 +147,4 @@ app.use((req, res, next) => {
 //   }
 // }
 module.exports = { app, server, io  };
+
