@@ -13,7 +13,7 @@ const personneSchema = new mongoose.Schema({
   telephone: { type: String, required: true },
   cin: { type: String, required: true },
   situationPro: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
+  createdAt: { type: Date,default: Date.now },
 });
 
 module.exports = mongoose.model("Personne", personneSchema);

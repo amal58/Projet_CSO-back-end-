@@ -1,13 +1,21 @@
 const express = require("express");
+const bodyParser = require('body-parser');  
 const app = express();
-const mongoose = require('mongoose');
-const choristeRoutes = require('./routes/choriste');
+const path = require('path');
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+
 const OeuvreRoutes = require("./routes/oeuvre");
+const mongoose = require('mongoose');
+const concertRoutes = require("./routes/concert");
+const repetitionRoutes = require('./routes/repetition');
 const ValidMailPRoutes = require('./routes/validerMailPersonne');
 const auditionRoutes = require('./routes/audition');
 const saisonRoutes = require('./routes/saison');
-const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
+const choristeRoutes = require('./routes/choriste');
+const participantsRoutes = require('./routes/participantsRoutes');
 const Choriste = require('./models/choriste');
 
 const connection = async () => {
@@ -61,11 +69,15 @@ const connection = async () => {
 
 connection();
 
-app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/api/choriste', choristeRoutes);
+app.use(express.json());
 app.use("/Oeuvre", OeuvreRoutes);
+app.use("/api/concert", concertRoutes);
+app.use('/api/repetitions', repetitionRoutes);
 app.use('/validerMail', ValidMailPRoutes);
 app.use('/api/auditions', auditionRoutes); 
+app.use('/api/choriste', choristeRoutes);
 app.use('/api/saison', saisonRoutes); 
+app.use('/api', participantsRoutes);
+
 module.exports = app;
