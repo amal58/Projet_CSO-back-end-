@@ -9,8 +9,6 @@ app.set('views', path.join(__dirname, 'views'));
 
 const OeuvreRoutes = require("./routes/oeuvre");
 const mongoose = require('mongoose');
-const concertRoutes = require("./routes/concert");
-const repetitionRoutes = require('./routes/repetition');
 const ValidMailPRoutes = require('./routes/validerMailPersonne');
 const auditionRoutes = require('./routes/audition');
 const saisonRoutes = require('./routes/saison');
@@ -72,8 +70,6 @@ connection();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/Oeuvre", OeuvreRoutes);
-app.use("/api/concert", concertRoutes);
-app.use('/api/repetitions', repetitionRoutes);
 app.use('/validerMail', ValidMailPRoutes);
 app.use('/api/auditions', auditionRoutes); 
 app.use('/api/choriste', choristeRoutes);
