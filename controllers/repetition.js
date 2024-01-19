@@ -6,7 +6,6 @@ const { CandAud ,candAudSchemaValidation}= require('../models/candidatAudition')
 const { Repetition,repetitionValidationSchema } = require('../models/repetition');
 const socketIo = require('socket.io');
 
-//creation repetition
 exports.createRepetition = async (req, res) => {
   try {
   
@@ -28,7 +27,6 @@ exports.createRepetition = async (req, res) => {
 };
 
 
-// Nouvelle route pour obtenir tous les repetition d'un concert
 exports.getRepetitionbyconcert=(req, res) => {
   const concertId = req.params.id;
 
@@ -51,6 +49,8 @@ exports.getRepetitionbyconcert=(req, res) => {
 exports.UpdateRepetition = async (req, res) => {
   try {
     const io = req.app.io; 
+    const ioNotification = io.of('/notification');
+
     const val = req.body ;
     const champModifie = Object.keys(val)[0]; 
 
@@ -83,7 +83,7 @@ exports.UpdateRepetition = async (req, res) => {
       });
     }
 
-    io.emit('notification', {
+    ioNotification.emit('notification', {
       message: `Répétition de pupitre ${pupitre} mise à jour : ${champModifie} a été changée  ${nouvelleValeur}`
     });
 

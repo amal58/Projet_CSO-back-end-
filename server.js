@@ -13,17 +13,44 @@ const io = socketIo(server);
 
 app.io = io;
 
+const ioRepetition = io.of('/repetition');
+const ioNotification = io.of('/notification');
+
 app.get('/NotifRep/', (req, res) => {
     res.sendFile(__dirname + '/views/NotifRep.html');
 });
 
-
-io.on('connection', (socket) => {
-    console.log('Nouvelle connexion socket :', socket.id);
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/views/notifUrgente.html');
+});
+ioRepetition.on('connection', (socket) => {
+    console.log('Nouvelle connexion socket pour les répétitions :', socket.id);
     socket.on('disconnect', () => {
-        console.log('Déconnexion socket :', socket.id);
+        console.log('Déconnexion socket pour les répétitions :', socket.id);
     });
 });
+
+ioNotification.on('connection', (socket) => {
+    console.log('Nouvelle connexion socket pour les notifications :', socket.id);
+    socket.on('disconnect', () => {
+        console.log('Déconnexion socket pour les notifications :', socket.id);
+    });
+});
+
+// app.get('/NotifRep/', (req, res) => {
+//     res.sendFile(__dirname + '/views/NotifRep.html');
+// });
+
+// app.get('/', (req, res) => {
+//     res.sendFile(__dirname + '/views/notifUrgente.html');
+// });
+
+// io.on('connection', (socket) => {
+//     console.log('Nouvelle connexion socket :', socket.id);
+//     socket.on('disconnect', () => {
+//         console.log('Déconnexion socket :', socket.id);
+//     });
+// });
 
 async function creerTacheRappel(repetition, option) {
     try {
@@ -46,7 +73,7 @@ async function creerTacheRappel(repetition, option) {
                 const personne = await Personne.findOne({ _id: choriste.candidatId });
                 const Pcong = await Conge.findOne({ choriste : choristeId                 });
                 if(Pcong){
-                    io.emit('non', {
+                    ioRepetition.emit('non', {
                         message: ` ${personne.email} "est en congé" `
                     });
                     console.log(personne.email+ " en congé ");
@@ -54,7 +81,7 @@ async function creerTacheRappel(repetition, option) {
 
                     const tacheSchedulee = schedule.scheduleJob(heureprgrm, async function () {
                        
-                        io.emit('notification', {
+                        ioRepetition.emit('notification', {
                             message: ` à ${personne.email} ${message} le ${momentDateHeureDebut.format('DD-MM-YYYY HH:mm:ss')}`
                         });
     
@@ -64,7 +91,7 @@ async function creerTacheRappel(repetition, option) {
                             tempsProchainRappel.setMinutes(tempsProchainRappel.getMinutes() + i * 15);
                             const job = schedule.scheduleJob(tempsProchainRappel, function () {
                                 console.log(`Rappel supplémentaire exécuté : ${message}`);
-                                io.emit('notification', {
+                                ioRepetition.emit('notification', {
                                     message: ` à ${personne.email} ${message} le ${momentDateHeureDebut.format('DD-MM-YYYY HH:mm:ss')}`
                                 });                         
                                });
@@ -73,7 +100,7 @@ async function creerTacheRappel(repetition, option) {
                 });
     
                 console.log(`à ${personne.email}  Rappel pour repetition le :${momentDateHeureDebut.format('DD-MM-YYYY HH:mm:ss')}`);
-                io.emit('notification', {
+                ioRepetition.emit('notification', {
                     message: ` à ${personne.email} Rappel pour repetition : ${momentDateHeureDebut.format('DD-MM-YYYY HH:mm:ss')}`
                 });
 
