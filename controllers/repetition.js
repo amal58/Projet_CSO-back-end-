@@ -1,7 +1,6 @@
 const { Repetition, repetitionValidationSchema } = require('../models/repetition');
 
 exports.createRepetition = async (req, res) => {
-    
     const { error } = repetitionValidationSchema.validate(req.body);
     if (error) {
         return res.status(400).json({ error: error.details[0].message });
@@ -11,10 +10,10 @@ exports.createRepetition = async (req, res) => {
       
         const urlQR = generateRandomURL();
 
-      
+        
         const { heureDebut, heureFin, date, lieu, programme, concert } = req.body;
 
-      
+        
         const nouvelleRepetition = new Repetition({
             heureDebut,
             heureFin,
@@ -25,7 +24,7 @@ exports.createRepetition = async (req, res) => {
             urlQR,
         });
 
-      
+        
         const repetitionEnregistree = await nouvelleRepetition.save();
 
         res.status(201).json({
@@ -45,8 +44,8 @@ function generateRandomURL() {
     for (let i = 0; i < 10; i++) {
         randomURL += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-
     randomURL += '.com'; 
+   
 
     return randomURL;
 }
