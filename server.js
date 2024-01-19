@@ -1,7 +1,9 @@
+
 Object.keys(require.cache).forEach(function(key) {
   delete require.cache[key];
 });
 const { app, server, io } = require("./app");
+
 const cron = require('node-cron');
 
 // Liste des candidats ajoutés depuis la dernière notification
@@ -26,4 +28,4 @@ cron.schedule('59 13 * * *', () => {
   nouveauxCandidats = [];
 });
 
-module.exports = { server, io, nouveauxCandidats };
+module.exports = { server, io  , nouveauxCandidats };
