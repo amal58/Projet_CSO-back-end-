@@ -7,4 +7,5 @@ const router = express.Router();
 
 // router.get("/",loggedMiddleware,ChoristeController.GetAllChoristes) ;   
 router.post("/login",ChoristeController.login);
+router.patch("/modifTessiture/:id",ChoristeController.modifier_tessiture)
 module.exports = router;
