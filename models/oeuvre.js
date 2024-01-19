@@ -74,5 +74,3 @@ const OeuvreSchema = mongoose.Schema({
 });
 
 module.exports = mongoose.model("Oeuvre", OeuvreSchema);
-
-
