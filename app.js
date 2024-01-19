@@ -4,8 +4,6 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 
-
-// Connexion à MongoDB
 mongoose.connect('mongodb+srv://p92934700:7RoxD6S97xxp1Dea@cluster0.peomj36.mongodb.net/projetCSO', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -17,14 +15,10 @@ mongoose.connect('mongodb+srv://p92934700:7RoxD6S97xxp1Dea@cluster0.peomj36.mong
     console.error("Error connecting to MongoDB", error);
 });
 
-// Configuration du moteur de modèle EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middleware pour les données JSON et URL-encoded
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-
-// Routes
 
 module.exports = app;

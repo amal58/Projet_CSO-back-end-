@@ -19,6 +19,5 @@ const repetitionValidationSchema = Joi.object({
     programme: Joi.string().required(),
     urlQR: Joi.string().required(),
   });
-
 const Repetition = mongoose.model("Repetition", repetitionSchema);
 module.exports = { Repetition, repetitionValidationSchema };
