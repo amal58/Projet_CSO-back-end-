@@ -9,13 +9,15 @@ app.set('views', path.join(__dirname, 'views'));
 
 const OeuvreRoutes = require("./routes/oeuvre");
 const mongoose = require('mongoose');
+const concertRoutes = require("./routes/concert");
+const repetitionRoutes = require('./routes/repetition');
 const ValidMailPRoutes = require('./routes/validerMailPersonne');
 const auditionRoutes = require('./routes/audition');
 const saisonRoutes = require('./routes/saison');
 const choristeRoutes = require('./routes/choriste');
 const participantsRoutes = require('./routes/participantsRoutes');
 const Choriste = require('./models/choriste');
-
+ 
 const connection = async () => {
   try {
     await mongoose.connect('mongodb+srv://p92934700:7RoxD6S97xxp1Dea@cluster0.peomj36.mongodb.net/projetCSO', {
@@ -67,13 +69,18 @@ const connection = async () => {
 
 connection();
 
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/Oeuvre", OeuvreRoutes);
+app.use("/api/concert", concertRoutes);
+app.use('/api/repetitions', repetitionRoutes);
 app.use('/validerMail', ValidMailPRoutes);
 app.use('/api/auditions', auditionRoutes); 
 app.use('/api/choriste', choristeRoutes);
 app.use('/api/saison', saisonRoutes); 
 app.use('/api', participantsRoutes);
+
+
 
 module.exports = app;
