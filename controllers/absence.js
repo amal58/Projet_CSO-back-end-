@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { ObjectId } = require('mongoose').Types;
+
 const nodemailer = require('nodemailer');
 const jwt = require("jsonwebtoken")
 const { Absence, absenceValidationSchema } = require('../models/absence');
@@ -335,6 +337,7 @@ exports.listerAbsencesParTessitureEtConcert = async (req, res) => {
   }
 };
 
+
 exports.statspresenceChoriste = async (req, res) => {
   try {
     const choristeId = await getUserIdFromRequest(req);
@@ -345,46 +348,53 @@ exports.statspresenceChoriste = async (req, res) => {
       return;
     }
 
-    // Récupérer l'ID de l'œuvre spécifiée dans la requête
-    const oeuvreId = req.params.oeuvreId.toString(); // Convertissez l'ID en chaîne
-
-    console.log('ID de l\'oeuvre :', oeuvreId);
     // Récupérer le nombre total d'absences
-    const nombreAbsences = await Absence.find({ choriste: choristeId }).countDocuments();
+    const nombrePresences = await Absence.find({ choriste: choristeId }).countDocuments();
 
-    // Récupérer les répétitions absentes avec le programme spécifié
-    const repetitionsAbsentes = await Absence.find({
-      choriste: choristeId,
-      repetition: { $exists: true },
-    }).populate({
-      path: 'repetition',
-      match: { 'repetition.programme': oeuvreId }, // Filtrer les répétitions par programme
-    });
-    
-    // Récupérer les concerts absents avec le programme spécifié
-    const concertsAbsents = await Absence.find({
-      choriste: choristeId,
-      concert: { $exists: true },
-    }).populate({
-      path: 'concert',
-      match: { 'concert.programme': oeuvreId }, // Filtrer les concerts par programme
-    });
+    // Récupérer les répétitions absentes avec etat: true
+const repetitionsPresences = await Absence.find({
+  choriste: choristeId,
+  repetition: { $exists: true },
+  etat: true,
+}).populate('repetition');
 
-    const nombreRepetitionsAbsentes = repetitionsAbsentes.length;
-    const nombreConcertsAbsents = concertsAbsents.length;
+// Récupérer les concerts absents avec etat: true
+const concertsPresences = await Absence.find({
+  choriste: choristeId,
+  concert: { $exists: true },
+  etat: true,
+}).populate('concert');
+
+// Récupérer la liste des concerts auxquels le choriste a participé avec etat: true
+const concertsParticipes = await Absence.find({
+  choriste: choristeId,
+  concert: { $exists: true },
+  etat: true,
+}).populate('concert');
+
 
     res.json({
-      nombreAbsences,
-      nombreRepetitionsAbsentes,
-      repetitionsAbsentes,
-      nombreConcertsAbsents,
-      concertsAbsents,
+      nombrePresences,
+      nombreRepetitionsPresences: repetitionsPresences.length,
+      repetitionsPresences,
+      nombreConcertsPresences: concertsPresences.length,
+      concertsPresences,
+      nombreConcertsParticipes: concertsParticipes.length,
+      concertsParticipes,
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des statistiques d\'absence :', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 };
+
+
+
+
+
+
+
+
 
 
 
