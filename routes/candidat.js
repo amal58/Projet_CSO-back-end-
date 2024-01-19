@@ -1,9 +1,19 @@
 const express = require('express');
+
+const personneController = require('../controllers/candidat');
 const router = express.Router();
-const CandidatController = require('../controllers/candidat');
 
 
+router.get('/', personneController.getAllCandidats);
 
 
-router.post("/ajouter",CandidatController.AjoutCandidat);
+router.get('/:sexe', personneController.getCandidatsBySexe);
+
+
+router.get('/id/:id', personneController.getCandidatByid);
+
+
+router.post('/ajout', personneController.AjoutCandidat);
+
+
 module.exports = router;
