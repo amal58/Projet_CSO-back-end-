@@ -57,7 +57,7 @@ exports.modifier_tessiture = async (req, res) => {
     const idChoriste = req.params.id;
     const tessiture = req.body.tessiture;
 
-    // Assurez-vous d'obtenir les détails du candidat à partir de la base de données
+   
     const existChoriste = await Choriste.findById(idChoriste);
 
     if (!existChoriste) {
@@ -105,7 +105,7 @@ exports.modifier_tessiture = async (req, res) => {
 };
 const notifierAuChefDePupitre = (nom, prenom, nouvelleTessiture) => {
 
-  cron.schedule('*/1 * * * *', () => { // Exécute toutes les minutes, vous pouvez ajuster le timing selon vos besoins
+  cron.schedule('*/1 * * * *', () => { 
     console.log(`Notification envoyée au chef de pupitre - ${nom} ${prenom} - Nouvelle tessiture : ${nouvelleTessiture}`);
   });
 };

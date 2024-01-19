@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 const Concert = require("../models/concert");
 
 exports.createConcert = (req, res, next) => {
-    // Générer l'URLQR aléatoire
+   
     const urlQR = generateRandomURL();
 
-    // Récupérer les autres champs du corps de la requête
+  
     const { date, lieu, affiche,programme } = req.body;
 
-    // Créer un nouvel objet Concert
+   
     const nouveauConcert = new Concert({
         date,
         lieu,
@@ -17,7 +17,7 @@ exports.createConcert = (req, res, next) => {
         urlQR,
     });
 
-    // Enregistrer le concert dans la base de données
+    
     nouveauConcert.save()
         .then(concertEnregistre => {
             res.status(201).json({
@@ -30,7 +30,7 @@ exports.createConcert = (req, res, next) => {
         });
 };
 
-// Fonction pour générer une chaîne de caractères aléatoire pour l'URLQR
+
 function generateRandomURL() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let randomURL = 'https:';

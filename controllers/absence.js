@@ -342,30 +342,30 @@ exports.statspresenceChoriste = async (req, res) => {
   try {
     const choristeId = await getUserIdFromRequest(req);
 
-    // Vérifiez si choristeId est défini
+
     if (!choristeId) {
       res.status(403).json({ error: 'Accès non autorisé' });
       return;
     }
 
-    // Récupérer le nombre total d'absences
+  
     const nombrePresences = await Absence.find({ choriste: choristeId }).countDocuments();
 
-    // Récupérer les répétitions absentes avec etat: true
+  
 const repetitionsPresences = await Absence.find({
   choriste: choristeId,
   repetition: { $exists: true },
   etat: true,
 }).populate('repetition');
 
-// Récupérer les concerts absents avec etat: true
+
 const concertsPresences = await Absence.find({
   choriste: choristeId,
   concert: { $exists: true },
   etat: true,
 }).populate('concert');
 
-// Récupérer la liste des concerts auxquels le choriste a participé avec etat: true
+
 const concertsParticipes = await Absence.find({
   choriste: choristeId,
   concert: { $exists: true },

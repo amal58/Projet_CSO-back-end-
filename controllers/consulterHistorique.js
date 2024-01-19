@@ -158,7 +158,7 @@ const consulterProfil = async (req, res) => {
 
 const notifierAuChefDePupitre = (nom, prenom, nouvelleStatut) => {
 
-    cron.schedule('*/1 * * * *', () => { // Exécute toutes les minutes, vous pouvez ajuster le timing selon vos besoins
+    cron.schedule('*/1 * * * *', () => { 
       console.log(`Notification envoyée au chef de pupitre - ${nom} ${prenom} - Nouvelle tessiture : ${nouvelleStatut}`);
     });
   };
