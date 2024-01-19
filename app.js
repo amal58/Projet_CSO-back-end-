@@ -3,6 +3,9 @@ const app = express();
 const mongoose = require('mongoose');
 const choristeRoutes = require('./routes/choriste');
 const OeuvreRoutes = require("./routes/oeuvre");
+const ValidMailPRoutes = require('./routes/validerMailPersonne');
+const auditionRoutes = require('./routes/audition');
+const saisonRoutes = require('./routes/saison');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const Choriste = require('./models/choriste');
@@ -62,5 +65,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/choriste', choristeRoutes);
 app.use("/Oeuvre", OeuvreRoutes);
-
+app.use('/validerMail', ValidMailPRoutes);
+app.use('/api/auditions', auditionRoutes); 
+app.use('/api/saison', saisonRoutes); 
 module.exports = app;
