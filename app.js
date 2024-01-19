@@ -36,6 +36,9 @@ const personneRoutes = require("./routes/candidat");
 const auditionC = require("./models/candidataudition.js");
 
 const choriste = require("./models/choriste.js");
+const { Absence } = require("./models/absence.js");
+
+
 const choristeRoutes = require("./routes/choriste.js");
 const concertRoutes = require('./routes/concert.js');
 const repetitionRoutes = require('./routes/repetition.js');
@@ -69,6 +72,8 @@ app.get("/admin.html", (req, res) => {
 
 
 
+
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
@@ -80,32 +85,34 @@ app.use((req, res, next) => {
 //   const exemples = [
   
 //     {
-//         candidatId: "65819ae617a62846b387f0a9",
-//         role: "choriste",
-//         login: "poutestsima@outlook.fr",
-//         historiqueStatut: [
-//           { saison: 2022, statut: "senior" },
-//           { saison: 2023, statut: "senior" },
-//         ],
-//         password: "$2b$10$Xl2HC7GKAZPk0qkvZiDHaueUBa0zYDK88OUuAaLyGjNqDbD4vCwS.",
-//         confirmationStatus: "En attente de confirmation",
-//       },
-//       {
-//         candidatId: "658193982c8735d5ce803421",
-//         role: "choriste",
-//         login: "poutestsima@outlook.com",
-//         historiqueStatut: [
-//           { saison: 2022, statut: "senior" },
-//           { saison: 2023, statut: "senior" },
-//         ],
-//         password: "$2b$10$Xl2HC7GKAZPk0qkvZiDHaueUBa0zYDK88OUuAaLyGjNqDbD4vCwS.",
-//         confirmationStatus: "En attente de confirmation",
-//       }
+//       etat: false,
+//       choriste: "658d844e2b3416e82d172df9",
+      
+//       repetition: "65a6dc7e55efc6b2053ea664",
+//     },
+//     {
+//       etat: false,
+//       choriste: "658d8d185d961dc80e060bb7",
+      
+//       repetition: "65a6dc7e55efc6b2053ea664",
+//     },
+//     {
+//       etat: true,
+//       choriste: "658d8d185d961dc80e060bba",
+      
+//       repetition: "65a6dc7e55efc6b2053ea664",
+//     },
+//     {
+//       etat: true,
+//       choriste: "658da7efe919aa6af756f5a8",
+      
+//       repetition: "65a6dc7e55efc6b2053ea664",
+//     },
 // ];
 // // Fonction pour insérer les exemples dans la base de données
 // async function insererExemples() {
 //   try {
-//     await choriste.insertMany(exemples);
+//     await  Absence.insertMany(exemples);
 //     console.log('Exemples insérés avec succès dans la base de données.');
 //   } catch (error) {
 //     console.error('Erreur lors de l\'insertion des exemples :', error);

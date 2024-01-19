@@ -10,5 +10,18 @@ router.get('/confirmation-absence/:compteId/:concertId', absenceController.confi
 router.patch('/modifychoristestate/:concertId/:urlQR', absenceController.modifyChoristeState);
 router.get('/choristesdispo/:concertId', absenceController.getChoristesDispo);
 router.get('/listerAbsencesParTessitureEtConcert/:tessiture/:concert', absenceController.listerAbsencesParTessitureEtConcert);
+
+
+router.get('/absences-concerts-repetitions/:choristeId', absenceController.getAbsencesAndConcertsAndRepetitions);
+router.get('/statistique-concert/:concertId', absenceController.statistiqueConcert);
+router.get('/statistique-repetition/:repetitionId', absenceController.statistiqueRepetition);
+router.get("/statistique-oeuvre/:oeuvreId", absenceController.statistiqueOeuvre);
+router.get('/absences-repetition', absenceController.AbsenceRepetition);
+router.get('/absences-repetition-choriste/:choristeId', absenceController.AbsenceRepetitionChoriste);
+router.get('/absences-choristes/:tessiture', absenceController.absencesChoristesParTessiture);
+router.get("/absencesRepetitionDate/:date", absenceController.absencesRepetitionDate);
+
+
 router.get('/profil', absenceController.statspresenceChoriste);
+
 module.exports = router;
