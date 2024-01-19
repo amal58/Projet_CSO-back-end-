@@ -214,11 +214,24 @@ const addProgramExcel = async (req, res) => {
     });
 
     console.log('Enregistrement du concert dans la base de données:', concert);
-
     await concert.save();
 
-    res.json({ success: true, message: 'Programme ajouté avec succès' });
-  } catch (error) {
+    const populatedConcert = await Concert.findById(concert._id)
+    .populate({
+      path: 'choriste',
+      model: 'Choriste',
+      populate: {
+        path: 'candidatId',
+        model: 'Personne',
+        select: 'cin nom prenom email',
+      },
+      select: 'role statutAcutel', // Sélectionnez les champs que vous voulez
+    })
+    .populate('programme')
+    .exec();
+  
+  res.json({ message: 'Programme ajouté avec succès', concert: populatedConcert });
+ } catch (error) {
     console.error('Error reading Excel file:', error);
 
     if (error.name === 'ValidationError') {
@@ -231,7 +244,6 @@ const addProgramExcel = async (req, res) => {
       }
     }
 
-    // Si ce n'est pas une erreur de validation personnalisée, retournez une erreur générale
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };

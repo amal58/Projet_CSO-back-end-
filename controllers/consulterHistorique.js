@@ -98,8 +98,10 @@ const consulteProfilAdmin = async (req, res) => {
         cin: updatedCandidat.cin,
         telephone: updatedCandidat.telephone,
         AnneeIntegration: updatedCandidat.createdAt.getFullYear(),
+        etat:updatedChoriste.etat ? updatedChoriste.etat : undefined,
       },
       historiqueStatut: updatedChoriste.historiqueStatut,
+
     });
   } catch (error) {
     console.error('Erreur lors de la consultation du profil et du statut actuel du choriste :', error);
@@ -140,6 +142,8 @@ const consulterProfil = async (req, res) => {
         cin: updatedCandidat.cin,
         telephone: updatedCandidat.telephone,
         AnneeIntegration: updatedCandidat.createdAt.getFullYear(),
+        etat:updatedChoriste.etat ? updatedChoriste.etat : undefined,
+
       },
       historiqueStatut: updatedChoriste.historiqueStatut,
     });

@@ -5,17 +5,17 @@ const concertSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   lieu: { type: String, required: true },
   affiche: { type: String },
-  programme: [{ type: mongoose.Schema.Types.ObjectId, ref:'Oeuvre' ,required:true}],
   choriste: [{ type: mongoose.Schema.Types.ObjectId, ref:'Choriste', required:true }],
-  
+  programme: [{ type: mongoose.Schema.Types.ObjectId, ref:'Oeuvre' ,required:true}]  
 });
 
 const concertSchemaValidation = Joi.object({
   date: Joi.date().required().min('now').message('La date doit être ultérieure à la date actuelle.'),
   lieu: Joi.string().required(),
   affiche: Joi.string(),
-  programme: Joi.array().items(Joi.string()).required(),
   choriste: Joi.array().items(Joi.string()).required(),
+  programme: Joi.array().items(Joi.string()).required(),
+
 });
 
 
