@@ -1,8 +1,6 @@
 const excel = require('exceljs');
-const Concert =require("../models/concert")
-const oeuvre=require("../models/oeuvre")
-const concert =require("../models/concert") 
-const choriste =require("../models/choriste") 
+const { Concert } =require("../models/concert")
+const mongoose = require('mongoose');
 
 const fetchConcert =(req,res)=>{
     Concert.find()
@@ -67,48 +65,57 @@ const getConcertById=(req,res)=>{
       });
   }
 
-// //modifier
-// const UpdateConcert=(req, res) => {
-//     Concert.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
-//       .then((concert) => {
-//         if (!concert) {
-//           res.status(404).json({
-//             message: "concert not found ",
-//           });
-//           return;
-//         }
-//         res.status(200).json({
-//           model: concert,
-//           message: "concert updated",
-//         });
-//       })
-//       .catch((error) =>
-//         res.status(400).json({
-//           error: error.message,
-//           message: "concert not correct",
-//         })
-//       );
-//   }
-
 const UpdateConcert = async (req, res) => {
   try {
-    const io = req.app.io; // Récupérez io à partir de req.app
+    const io = req.app.io; 
     const val = req.body ;
-    // Récupérer le nom du champ modifié
-    const champModifie = Object.keys(val)[0]; // Supposant qu'il y ait un seul champ modifié
-
-    // Récupérer la nouvelle valeur
+    const champModifie = Object.keys(val)[0]; 
     const nouvelleValeur = val[champModifie];
-    //----------------------------------------------------------------------------------------------------
-    const concert = await Concert.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
-    if (!concert) {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      console.log("ID non valide");
+      return res.status(400).json({
+        message: "ID non valide",
+      });
+    }    
+    const conc = await Concert.findOne({ _id: req.params.id});
+    if (!conc) {
       console.log("concert non trouvée");
       return res.status(404).json({
         message: "concert non trouvée",
       });
     }
+    if(champModifie=="date"){
+      const dateFromDatabase = new Date(conc.date);
+      const nouvelleDate = new Date(nouvelleValeur);
+      if (dateFromDatabase.getTime() == nouvelleDate.getTime()) {
+            res.status(200).json({
+            message: "Meme valeur a été saisi",
+  });
+}else{
+  const concert = await Concert.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
+  io.emit('notification', {
+    message: `Concert  mise à jour : ${champModifie} a été changée  ${nouvelleValeur}`
+  });
 
-    // Émettre une notification aux clients connectés
+  console.log("concert mise à jour avec succès");
+  res.status(200).json({
+    model: concert,
+    message: "concert mise à jour avec succès",
+  });
+}
+    }
+    else if (String(conc[champModifie]) === String(nouvelleValeur)) {
+      res.status(200).json({
+        message: "Meme valeur a été saisi",
+      });
+    }
+    else if(! conc[champModifie] ){
+      res.status(200).json({
+        message: "champs inexistant",
+      });
+    }
+    else{
+    const concert = await Concert.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
     io.emit('notification', {
       message: `Concert  mise à jour : ${champModifie} a été changée  ${nouvelleValeur}`
     });
@@ -118,6 +125,7 @@ const UpdateConcert = async (req, res) => {
       model: concert,
       message: "concert mise à jour avec succès",
     });
+   }
   } catch (error) {
     console.error('Erreur lors de la mise à jour du concert:', error);
     res.status(400).json({
@@ -139,9 +147,6 @@ const DeleteConcert=(req, res) => {
         });
       });
   }
-
-
-// ****************************
 
 const addProgramExcel = (req, res) => {
   try {
@@ -194,10 +199,6 @@ const addProgramExcel = (req, res) => {
     });
   }
 };
-
-
-// **************************
-
 
  module.exports={
     fetchConcert:fetchConcert,

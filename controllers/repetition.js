@@ -50,24 +50,31 @@ exports.getRepetitionbyconcert=(req, res) => {
 
 exports.UpdateRepetition = async (req, res) => {
   try {
-    const io = req.app.io; // Récupérez io à partir de req.app
+    const io = req.app.io; 
     const val = req.body ;
-    // Récupérer le nom du champ modifié
-    const champModifie = Object.keys(val)[0]; // Supposant qu'il y ait un seul champ modifié
+    const champModifie = Object.keys(val)[0]; 
 
-    // Récupérer la nouvelle valeur
     const nouvelleValeur = val[champModifie];
-    //--------------------- chercher le nom de pupitre --------------------------------------------------
     const rep = await Repetition.findOne({ _id: req.params.id});
+ 
+    if(rep[champModifie] == nouvelleValeur){
+      res.status(200).json({
+        message: "Meme valeur a été saisi",
+      });
+    }
+    else if(! rep[champModifie] ){
+      res.status(200).json({
+        message: "champs inexistant",
+      });
+    }
+    else{
     const premierChoriste = rep.choriste.length > 0 ? rep.choriste[0] : null;
     const schChoriste = await choriste.findOne({ _id: premierChoriste });
     const schPerso =await Personne.findOne({ _id: schChoriste.candidatId });
     const aud =await Audition.findOne({ candidat: schPerso._id });
     const can = await CandAud.findOne({ audition: aud._id });
     const pupitre = can.tessiture ;
-    //console.log(can)
 
-    //----------------------------------------------------------------------------------------------------
     const repetition = await Repetition.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
     if (!repetition) {
       console.log("Répétition non trouvée");
@@ -76,7 +83,6 @@ exports.UpdateRepetition = async (req, res) => {
       });
     }
 
-    // Émettre une notification aux clients connectés
     io.emit('notification', {
       message: `Répétition de pupitre ${pupitre} mise à jour : ${champModifie} a été changée  ${nouvelleValeur}`
     });
@@ -86,6 +92,7 @@ exports.UpdateRepetition = async (req, res) => {
       model: repetition,
       message: "Répétition mise à jour avec succès",
     });
+  }
   } catch (error) {
     console.error('Erreur lors de la mise à jour de la répétition:', error);
     res.status(400).json({

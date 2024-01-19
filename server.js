@@ -5,7 +5,6 @@ const socketIo = require('socket.io');
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// Ajoutez le middleware d'IO à votre application
 app.io = io;
 
 app.get('/', (req, res) => {
