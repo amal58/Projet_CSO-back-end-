@@ -66,9 +66,9 @@ const connection=async()=>{
     definition:{
       openapi:"3.0.0",
       info: {
-        title:"Todos express Api withswagger",
+        title:"CSO project express withswagger",
         version :"0.1.0",
-        description:"this is  asimple crud api application",
+        description:"this is a CSO application 2024",
       
         contact:{"name":"sirine",
         "url":"https://www.linkedin.com/in/sirine-maatali-2023811b9/",
@@ -95,7 +95,7 @@ const connection=async()=>{
         },
         403: {
           description:
-            "Forbidden request, you must login first. See /auth/login",
+            "Forbidden request, you must login first. See /login",
         },
         404: {
           description: "Object not found",
@@ -111,9 +111,10 @@ const connection=async()=>{
   
       securitySchemes: {
         bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
+          type: "apiKey",
+          in: "header",
+          name: "authorization",
+          description: "Bearer token",
         },
       },
     },

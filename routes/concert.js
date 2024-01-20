@@ -1,6 +1,7 @@
 const express=require("express")
 const router =express.Router()
 const concertController=require("../controllers/concert")
+const jwtcontro = require('../middlewares/userAuth');
 
 /**
  * @swagger
@@ -8,6 +9,7 @@ const concertController=require("../controllers/concert")
  *   name: Concert
  *   description: API de gestion des concerts
  */
+
 /**
  * @swagger
  * components:
@@ -61,7 +63,7 @@ const concertController=require("../controllers/concert")
  */
 
 
-router.get("/",concertController.fetchConcert)
+router.get("/",jwtcontro.loggedMiddleware,concertController.fetchConcert)
   
 /**
  * @swagger
@@ -89,7 +91,7 @@ router.get("/",concertController.fetchConcert)
  *         description: Erreur serveur
  */
 
-router.get("/:id",concertController.getConcertById)
+router.get("/:id",jwtcontro.loggedMiddleware,concertController.getConcertById)
   
 /**
  * @swagger
@@ -118,7 +120,7 @@ router.get("/:id",concertController.getConcertById)
 
 
 
-router.post("/",concertController.addConcert)
+router.post("/",jwtcontro.loggedMiddleware,concertController.addConcert)
 
 /**
  * @swagger
@@ -146,7 +148,7 @@ router.post("/",concertController.addConcert)
  */
 
 
-router.post("/excel", concertController.addProgramExcel);
+router.post("/excel",jwtcontro.loggedMiddleware, concertController.addProgramExcel);
 
 
 /**
@@ -184,7 +186,7 @@ router.post("/excel", concertController.addProgramExcel);
  */
 
    
-router.patch("/:id",concertController.UpdateConcert)
+router.patch("/:id",jwtcontro.loggedMiddleware,concertController.UpdateConcert)
 
 /**
  * @swagger
@@ -211,6 +213,6 @@ router.patch("/:id",concertController.UpdateConcert)
  *         description: Some server error
  */
 
-router.delete("/:id",concertController.DeleteConcert)
+router.delete("/:id",jwtcontro.loggedMiddleware,concertController.DeleteConcert)
 
 module.exports=router

@@ -181,7 +181,7 @@ const mettreAJourSeuil = async (req, res) => {
       return res.status(400).json({ error: 'Les deux seuils sont requis.' });
     }
     await AbsencePresence.mettreAJourSeuils(seuilNomine, seuilElimine);
-    return res.status(200).json({ message: 'Seuils mis à jour avec succès.' });
+    return res.status(200).json({ message: 'Seuils mis à jour avec succès. Les nouveaux valeur de seuil Elimine et Nomine sont',seuilNomine,seuilElimine });
   } catch (error) {
     console.error('Erreur lors de la mise à jour des seuils :', error);
     return res.status(500).json({ error: 'Erreur lors de la mise à jour des seuils.' });

@@ -4,21 +4,15 @@ const router =express.Router()
 
 const candAController=require("../controllers/candidatAudition")
 
+const jwtcontro = require('../middlewares/userAuth');
+
 /**
  * @swagger
  * tags:
  *   name: candidatAudition
- *   description: APII de gestion des candidatAuditions
- */
-///////////////////////////////////comme si en va déclarer tout les component utilisé 
-/**
- * @swagger
- * tags:
- *   name: candidatAudition
- *   description: API de gestion des candidatAuditions
+ *   description: CRUD de candidat audition
  */
 
-///////////////////////////////////comme si en va déclarer tout les composants utilisés 
 /**
  * @swagger
  * components:
@@ -71,23 +65,14 @@ const candAController=require("../controllers/candidatAudition")
  *         ConfirmedEmail: "infirmer"
  */
  
-//  *     CandAud:
-//  *          allOf:
-//  *              - type: object
-//  *                properties:
-//  *                  _id:
-//  *                      type: string
-//  *                      description: The auto-generated id of the task
-//  *              - $ref: '#/components/schemas/CandAud'
-//  */
-///////////////////////////////////
-
 /**
  * @swagger
  * /cand:
  *   get:
  *     summary: Liste toutes les candidatAuditions
  *     tags: [candidatAudition]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Succès
@@ -100,7 +85,7 @@ const candAController=require("../controllers/candidatAudition")
  */
 
 
-router.get("/",candAController.fetchCandAs)
+router.get("/",jwtcontro.loggedMiddleware,candAController.fetchCandAs)
 
 /**
  * @swagger
@@ -128,7 +113,7 @@ router.get("/",candAController.fetchCandAs)
  *         description: Erreur serveur
  */
   
-  router.get("/:id",candAController.getCandAById)
+  router.get("/:id",jwtcontro.loggedMiddleware,candAController.getCandAById)
   
 /**
  * @swagger
@@ -156,7 +141,7 @@ router.get("/",candAController.fetchCandAs)
  */
 
 
-  router.post("/",candAController.addCandA)
+  router.post("/",jwtcontro.loggedMiddleware,candAController.addCandA)
    
 /**
  * @swagger
@@ -192,7 +177,7 @@ router.get("/",candAController.fetchCandAs)
  *         description: Erreur serveur
  */
 
- router.patch("/:id",candAController.UpdateCandA)
+ router.patch("/:id",jwtcontro.loggedMiddleware,candAController.UpdateCandA)
 
 /**
  * @swagger
@@ -218,6 +203,6 @@ router.get("/",candAController.fetchCandAs)
  *       500:
  *         description: Some server error
  */
-router.delete("/:id",candAController.DeleteCandA)
+router.delete("/:id",jwtcontro.loggedMiddleware,candAController.DeleteCandA)
 
 module.exports=router

@@ -24,7 +24,7 @@ const processDemandesConge = async (req, res) => {
 
     }
 
-    return res.status(200).json({
+    return res.status(201).json({
         message :'traitement des demandes de congé réussi',
         choristeEnConges: await Promise.all(choristesEnCongeInactifs.map(async choriste => {
           const candidat = await Personne.findOne({ _id: choriste.candidatId });
