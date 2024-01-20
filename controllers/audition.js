@@ -30,11 +30,12 @@ exports.generateAuditions = async (req, res, next) => {
         candidat: candidats[i]._id,
       });
 
-      auditions.push({
-        date: dateAudition.toISOString(),
-        heureDebut: dateAudition.toISOString(),
-        candidat: candidats[i + 1]._id,
-      });
+      if (candidats[i + 1]) {
+        auditions.push({
+          date: dateAudition.toISOString(),
+          heureDebut: dateAudition.toISOString(),
+          candidat: candidats[i + 1]._id,
+        });}
 
       dateAudition.setTime(dateAudition.getTime() + (60 * 60 * 1000));
     }

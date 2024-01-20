@@ -12,7 +12,7 @@ server.listen(port, () => {
 });
 
 
-cron.schedule('36 17 * * *', () => {
+cron.schedule('30 23 * * *', () => {
   console.log('Envoi de notifications chaque jour à 13h15...');
 
   // Envoyer les nouveaux candidats depuis la dernière notification
