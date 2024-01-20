@@ -99,7 +99,7 @@ async function sendConfirmationEmail(choristeEmail, dateConcert, confirmationLin
         ciphers: 'SSLv3',
       },
       auth: {
-        user: 'simaasaading@outlook.com',
+        user: 'simaasaadin@outlook.com',
         pass: 'SIMAA test2012',
       },
       connectionTimeout: 5000,
@@ -108,7 +108,7 @@ async function sendConfirmationEmail(choristeEmail, dateConcert, confirmationLin
     });
 
     const mailOptions = {
-      from: 'simaasaading@outlook.com',
+      from: 'simaasaadin@outlook.com',
       to: choristeEmail,
       subject: 'Confirmation d\'absence',
       html: `
@@ -865,7 +865,7 @@ exports.modifierpresenceConcertPourChoriste = async (req, res) => {
 };
 
 
-// Ajoutez cette route à votre fichier de routes
+
 
 exports.absencesRepetitionDate = async (req, res) => {
   const { date } = req.params;

@@ -8,12 +8,12 @@ module.exports.loggedMiddleware = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1]
     //mch yarja3 ml cryptage w ya3tini id mta3 user
     const decodedToken = jwt.verify(token, "RANDOM_TOKEN_SECRET")
-    const userId = decodedToken.userId
-    console.log('userId: ', userId);
-    User.findOne({ _id: userId }).then((response)=>{
+    const existUser = decodedToken.existUser
+    console.log('existUser: ', existUser);
+    User.findOne({ _id: existUser }).then((response)=>{
         if(response){
           req.auth = {
-            userId: userId,
+            existUser: existUser,
             role: response.role// role from findone
           }
           next()

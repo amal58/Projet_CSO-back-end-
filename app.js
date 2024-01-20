@@ -11,7 +11,72 @@ const { initializeSocket } = require("./socket");
 const app = express();
 const server = http.createServer(app);
 const io = initializeSocket(server); 
+const swaggerJSDoc = require("swagger-jsdoc")
+const swaggerUi=require("swagger-ui-express")
+const options ={
+  definition:{
+    openapi: "3.0.0",
+      info:{
+        title:"Todos Express API with Swagger",
+        version:"0.1.0",
+        description:"this is a simple CRUD API application",
+        contact: {
+          name: "LogRocket",
+          url: "http://www.linkedin.com/in/simasaad",
+          email: "simaasaad897@gmail.com",
+        },
+      },
+      
+      servers: [
+        {
+          url: "http://localhost:5000/api",
+          description:"developement server",
+        },
+      ],
+      components: {
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad request. You may need to verify your information.",
+          },
+          401: {
+            description: "Unauthorized request, you need additional privileges",
+          },
+          403: {
+            description:
+              "Forbidden request, you must login first. See /auth/login",
+          },
+          404: {
+            description: "Object not found",
+          },
+          422: {
+            description:
+              "Unprocessable entry error, the request is valid but the server refused to process it",
+          },
+          500: {
+            description: "Unexpected error, maybe try again later",
+          },
+        },
+  
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
+        },
+      },
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+    },
 
+    apis: ["./routes/*.js"],
+  }
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -46,6 +111,12 @@ const absenceRoutes = require('./routes/absence.js');
 const oeuvreRoutes = require('./routes/oeuvre.js');
 const historiqueRoutes=require("./routes/consulterHistorique");
 
+const specs=swaggerJSDoc(options)
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs,{explorer:true})
+);
 
 app.use("/api/absences", absenceRoutes);
 app.use("/api/auditions", auditionRoutes);
@@ -65,7 +136,7 @@ app.use((req, res, next) => {
   console.log(`Requested: ${req.method} ${req.url}`);
   next();
 });
-// Ajoutez une route pour servir le fichier HTML
+
 app.get("/admin.html", (req, res) => {
   res.sendFile(path.join(__dirname, "admin.html"));
 });

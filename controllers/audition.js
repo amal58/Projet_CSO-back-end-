@@ -55,7 +55,7 @@ exports.generateAuditions = async (req, res, next) => {
       auth: {
 
 
-        user: 'simaasaading@outlook.com',
+        user: 'simaasaadin@outlook.com',
         pass: 'SIMAA test2012',
 
       },
@@ -76,7 +76,7 @@ exports.generateAuditions = async (req, res, next) => {
       const mailOptions = {
 
 
-        from: 'simaasaading@outlook.com',
+        from: 'simaasaadin@outlook.com',
 
         to: destinationEmail,
         subject: 'Invitation à audition',
@@ -146,7 +146,7 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
         ciphers: 'SSLv3',
       },
       auth: {
-        user: 'simaasaading@outlook.com',
+        user: 'simaasaadin@outlook.com',
 
 
         pass: 'SIMAA test2012',
@@ -165,7 +165,7 @@ exports.generateAdditionalAuditions = async (req, res, next) => {
       const candidat = await Personne.findById(audition.candidat);
       
       const mailOptions = {
-        from: 'simaasaading@outlook.com',
+        from: 'simaasaadin@outlook.com',
 
 
         to: destinationEmail,
