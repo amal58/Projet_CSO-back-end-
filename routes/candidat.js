@@ -1,7 +1,10 @@
 const express = require('express');
+
 const personneController = require('../controllers/candidat');
 const auth = require('../middlewares/auth');
+
 const router = express.Router();
+const CandidatController = require('../controllers/candidat');
 
 /**
  * @swagger
@@ -100,8 +103,7 @@ const router = express.Router();
  *                     example: Message d'erreur détaillé
  */
 
-router.get('/', personneController.getAllCandidats);
-
+router.get('/', CandidatController.getAllCandidats);
 /**
  * @swagger
  * paths:
@@ -148,8 +150,8 @@ router.get('/', personneController.getAllCandidats);
  *                     example: Message d'erreur détaillé
  */
 
-router.get('/:sexe', personneController.getCandidatsBySexe);
 
+router.get('/:sexe', CandidatController.getCandidatsBySexe);
 /**
  * @swagger
  * paths:
@@ -204,7 +206,8 @@ router.get('/:sexe', personneController.getCandidatsBySexe);
  *                     example: Message d'erreur détaillé
  */
 
-router.get('/id/:id', personneController.getCandidatByid);
+router.get('/id/:id', CandidatController.getCandidatByid);
+
 
 /**
  * @swagger
@@ -249,5 +252,10 @@ router.get('/id/:id', personneController.getCandidatByid);
  */
 
 router.post('/ajout', personneController.AjoutCandidat);
+
+
+
+
+
 
 module.exports = router;

@@ -4,7 +4,27 @@ const mongoose = require('mongoose');
 const net = require('net');
 const cron = require('node-cron');
 
- 
+
+exports.AjoutCandidat = async (req, res) => {
+  try {
+      
+      const newCandidat = new Personne(req.body);
+      await newCandidat.save();
+      res.status(201).json({
+          model: newCandidat,
+          message: "Candidat créé !",
+      });
+  } catch (error) {
+      res.status(400).json({
+          error: error.message,
+          message: "Problème lors de la création du Candidat",
+      });
+  }
+};
+
+
+
+
 exports.getAllCandidats = async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
@@ -78,7 +98,7 @@ exports.getCandidatsBySexe = async (req, res) => {
     }
   };
   // Planifiez l'envoi de notifications chaque jour à 10h00
-cron.schedule('36 17 * * *', async () => {
+cron.schedule('0 10 * * *', async () => {
   try {
     // Récupérez les nouveaux candidats ajoutés entre 10h d'hier et 10h d'aujourd'hui
     const dateDebut = new Date();
@@ -86,10 +106,10 @@ cron.schedule('36 17 * * *', async () => {
     dateDebut.setHours(10, 0, 0, 0); // 10h du matin
 
     const dateFin = new Date();
-    dateFin.setHours(17, 20, 0, 0); // 10h du matin
+    dateFin.setHours(10, 0, 0, 0); // 10h du matin
 
     const nouveauxCandidats = await Personne.find({
-      // role: 'candidat',
+
       createdAt: {
         $gte: dateDebut,
         $lt: dateFin,

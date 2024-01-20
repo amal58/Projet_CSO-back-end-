@@ -98,6 +98,7 @@ exports.generateAuditions = async (req, res, next) => {
       error: error.message,
     });
   }
+
 };
 
 
@@ -293,7 +294,6 @@ exports.getAuditionsByHeure = async (req, res) => {
     });
   }
 };
-
 
 
 

@@ -145,6 +145,7 @@ app.get("/admin.html", (req, res) => {
 
 
 
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
@@ -205,4 +206,4 @@ app.use((req, res, next) => {
 //     console.error('Erreur lors de l\'insertion des exemples :', error);
 //   }
 // }
-module.exports = { app, server, io  };
+module.exports = { app, server, io  }
