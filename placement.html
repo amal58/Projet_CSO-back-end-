@@ -1,72 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>placement sur scene</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement sur scène</title>
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #e57373;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-size: 32px;
+        }
+      
+
         .pyramid {
             text-align: center;
             margin-top: 20px;
         }
+
         .row {
             display: flex;
             justify-content: center;
         }
+
         .cell {
-            border: 1px solid rgb(181, 112, 245);
-            padding: 5px 10px;
-            margin: 0 5px;
+            border: 1px solid #ef9a9a;
+            padding: 15px;
+            margin: 10px;
+            background-color: #ffebee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            max-width: 250px;
+            text-align: left;
         }
     </style>
 </head>
 <body>
+    <header>
+        Placement sur scène
+    </header>
+
+   
+
     <div class="pyramid" id="pyramid"></div>
 
     <script>
-       let data;
+        let data;
 
-       async function fetchData() {
-          try {
-            const response = await fetch('http://localhost:5000/api/concert/ajoutplacement/65a9653c8bb8d224dbc4389d', {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            });
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
+        async function fetchData() {
+            try {
+                const response = await fetch('http://localhost:5000/api/concert/ajoutplacement/65a9653c8bb8d224dbc4389d', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                data = await response.json();
+                createPyramid(data.reponse);
+                console.log(data.reponse);
+            } catch (error) {
+                console.error('Error fetching data:', error);
             }
-            data = await response.json();
-            createPyramid(data.reponse);
-            console.log(data.reponse);
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
         }
 
         function createPyramid(data) {
-    const pyramidDiv = document.getElementById('pyramid');
-    let rows = '';
-    let rowNumber = 1;
-    let currentRow = '';
+            const pyramidDiv = document.getElementById('pyramid');
+            let rows = '';
+            let rowNumber = 1;
+            let currentRow = '';
 
-    data.forEach((array, index) => {
-        array.forEach((item) => {
-            currentRow += `<div class="cell">`;
-            Object.entries(item).forEach(([key, value]) => {
-                currentRow += `${key}: ${value}<br>`;
+            data.forEach((array, index) => {
+                array.forEach((item) => {
+                    currentRow += `<div class="cell">`;
+                    Object.entries(item).forEach(([key, value]) => {
+                        currentRow += `<strong>${key}:</strong> ${value}<br>`;
+                    });
+                    currentRow += `</div>`;
+                });
+                rows += `<div class="row" style="margin-left: ${rowNumber * 20}px">${currentRow}</div>`;
+                currentRow = '';
+                rowNumber++;
             });
-            currentRow += `</div>`;
-        });
-        rows += `<div class="row" style="margin-left: ${rowNumber * 10}px">${currentRow}</div>`;
-        currentRow = '';
-        rowNumber++;
-    });
-    pyramidDiv.innerHTML = rows;
-}
+
+            pyramidDiv.innerHTML = rows;
+        }
+
         window.onload = () => {
             fetchData();
         };
     </script>
 </body>
-
 </html>

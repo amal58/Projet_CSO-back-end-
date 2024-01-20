@@ -1,6 +1,8 @@
 const express = require ("express")
 const app= express()
 const mongoose = require('mongoose')
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 const concertRoutes=require("./routes/concert");
 const dispRoutes=require("./routes/absencepresence");
 const candARoutes=require('./routes/candidatAudition')
@@ -67,6 +69,79 @@ console.log(`manager  account has been added : ${compteManager.login}`);
   console.log(e)
 }}
 connection()
+
+const options = {
+  definition: {
+    openapi:"3.0.0",
+    info:{
+      title:"todo api with swagger",
+      version:"0.1.0",
+      description:"this is simple crud api application",
+      contact:{
+        name:"amal",
+        url:"https://www.linkedin.com/in/amal-lajili-8b637a1bb/",
+        email:"lajiliamal218@gmail.com",
+      },
+    },
+    servers:[
+      {
+        url:"http://localhost:5000/api",
+        description:"development server",
+      },
+    ],
+    components: {
+      responses: {
+        200: {
+          description: "Success",
+        },
+        400: {
+          description: "Bad request. You may need to verify your information.",
+        },
+        401: {
+          description: "Unauthorized request, you need additional privileges",
+        },
+        403: {
+          description:
+            "Forbidden request, you must login first. See /auth/login",
+        },
+        404: {
+          description: "Object not found",
+        },
+        422: {
+          description:
+            "Unprocessable entry error, the request is valid but the server refused to process it",
+        },
+        500: {
+          description: "Unexpected error, maybe try again later",
+        },
+      },
+
+      securitySchemes: {
+        radiotherapie: {
+          type: "apiKey",
+          in: "header",
+          name: "Authorization",
+          description: "Format du jeton d'authentification : Bearer <token>"
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
+
+  },
+  apis:["./routes/*.js"]
+    
+};
+const specs = swaggerJsdoc(options);
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs, { explorer: true })
+);
+
   app.use(express.json())
   app.use("/api/concert",concertRoutes)
   app.use("/api/disp",dispRoutes)

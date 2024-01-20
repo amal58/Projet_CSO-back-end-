@@ -6,7 +6,6 @@ const Conge= require('./models/conge');
 const http = require('http');
 const Choriste = require('./models/choriste');
 const Personne = require('./models/personne');
-const { log } = require("console");
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 

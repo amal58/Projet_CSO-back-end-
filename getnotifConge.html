@@ -3,25 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Notifications Choristes</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #text {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
 
     <script src="http://localhost:5000/socket.io/socket.io.js"></script>
 
-    <button onclick="clickme()">hello</button>
-    <div id="text"></div>
-    <script >
+    <div id="text">
+        <div id="text">
+            <p>La liste des congés en attente :</p>
+        </div>
+    </div>
+
+    <script>
         var name = '';
         var socket = io.connect('http://localhost:5000');
-        console.log(socket);
         let text = document.getElementById("text");
         let tab = [];
-        
+
         socket.on("new_notification", data => {
             alert(data);
             console.log(data);
         });
+
         socket.on("notif_choriste", data => {
             alert(data);
             console.log(data);
@@ -30,29 +74,26 @@
         socket.on("list", data => {
             console.log(data);
             if (tab.length < data.length) {
-                tab = []
-                
+                tab = [];
                 data.map(el => {
                     tab.push(el);
                     console.log(tab);
                 });
             }
-            renderDates(); 
+            renderDates();
         });
 
-        
         function renderDates() {
-            text.innerHTML = ''; 
-           
+            text.innerHTML = '';
             tab.map(el => {
                 var doc = document.createElement("p");
-                text.appendChild(doc); 
-                 doc.innerHTML = "user " + el.choriste.candidatId.nom + " " + el.choriste.candidatId.prenom + " dateDebutConge "+ el.dateDebutConge;
+                text.appendChild(doc);
+                doc.innerHTML = " L'Utilisateur " + el.choriste.candidatId.nom + " " + el.choriste.candidatId.prenom + " a demandé un congé à partir du " + el.dateDebutConge + " à " + el.dateFinConge ;
             });
         }
-        
+
         function clickme() {
-          
+            
         }
     </script>
 </body>

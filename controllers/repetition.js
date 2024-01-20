@@ -15,6 +15,9 @@ exports.createRepetition = async (req, res) => {
     let al=req.body.al
     let bas=req.body.bas
     let ten=req.body.ten
+console.log(sop);
+console.log(al);
+console.log(bas);
 console.log(ten);
     const exist_choriste = await Choriste.find({role:"choriste"}).populate("candidatId")
     for (let i=0;i<exist_choriste.length;i++){
@@ -80,13 +83,13 @@ if (ten==undefined &&  al==undefined && bas==undefined && sop==undefined ){
   rep.choriste.push(tabase[i].candidat)
     }}
 }
-    let response = await rep.save()
-    res.status(400).json({message:"success repetition", response})
-  } catch (error) {
-    console.log(error)
-  }
+let response = await rep.save();
+res.status(200).json({ message: "Success repetition", response });
+} catch (error) {
+console.log(error);
+res.status(500).json({ message: error });
 }
-
+};
 
 
 exports.deleteRepetition = async (req, res) => {
@@ -101,7 +104,7 @@ exports.deleteRepetition = async (req, res) => {
     res.status(200).json({ message: "Répétition supprimée avec succès" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Une erreur s'est produite lors de la suppression de la répétition" });
+    res.status(500).json({ message: "Une erreur s'est produite lors de l'ajout  de la répétition" });
   }
 };
 

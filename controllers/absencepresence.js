@@ -38,7 +38,7 @@ const demanderAbsence = async (req, res) => {
     });
 
     const demandeEnregistree = await nouvelleDemande.save();
-    res.status(201).json({ message: "Demande d'absence ajoutée avec succès", demande: demandeEnregistree });
+    res.status(200).json({ message: "Demande d'absence ajoutée avec succès", demande: demandeEnregistree });
   } catch (erreur) {
     console.error(erreur);
     res.status(500).json({ erreur: "Erreur interne du serveur lors de l'ajout de la demande d'absence" });

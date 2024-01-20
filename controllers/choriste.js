@@ -5,9 +5,8 @@ const audition = require('../models/candidatAudition');
 const personne = require('../models/personne');
 const jwt=require ("jsonwebtoken")
 const bcrypt = require ("bcryptjs");
-const { log } = require('console');
 
-////////////get all choriste (role=choriste)
+
 exports.GetAllChoristes = async (req, res) => {
     try {
       const tab = [];
@@ -32,7 +31,7 @@ exports.GetAllChoristes = async (req, res) => {
     }
   };
   
-//login choriste
+
 exports.login= async (req,res,next)=>{
 try{
     const email=req.body.email
