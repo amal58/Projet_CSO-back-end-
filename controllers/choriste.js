@@ -46,39 +46,5 @@ exports.login= async (req,res,next)=>{
     }
     }
     
-exports.AjoutChoriste = async (req, res) => {
-  try {
-    const choriste = new Choriste(req.body);
-    await choriste.validate();
-
-    await choriste.save();
-
-    res.status(201).json({
-      model: Choriste,
-      message: "Choriste créée !",
-    });
-  } catch (error) {
-    if (error instanceof mongoose.Error.ValidationError) {
-      const validationErrors = {};
-
-      for (const field in error.errors) {
-        if (error.errors.hasOwnProperty(field)) {
-          validationErrors[field] = error.errors[field].message;
-        }
-      }
-
-      res.status(400).json({
-        error: "Erreur de validation",
-        validationErrors,
-      });
-    } else {
-      console.error("Erreur lors de la création de choriste :", error.message);
-      res.status(500).json({
-        error: "Erreur lors de la création de choriste",
-      });
-    }
-  }
-};
-
 
 

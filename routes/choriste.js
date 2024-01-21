@@ -5,5 +5,4 @@ const router = express.Router();
 
 router.post("/login",ChoristeController.login)
 
-router.post("/login",ChoristeController.login)
 module.exports = router;
