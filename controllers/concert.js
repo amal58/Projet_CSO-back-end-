@@ -68,6 +68,7 @@ const getConcertById=(req,res)=>{
 const UpdateConcert = async (req, res) => {
   try {
     const io = req.app.io; 
+    const ioNotification = io.of('/notification');
     const val = req.body ;
     const champModifie = Object.keys(val)[0]; 
     const nouvelleValeur = val[champModifie];
@@ -93,7 +94,7 @@ const UpdateConcert = async (req, res) => {
   });
 }else{
   const concert = await Concert.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
-  io.emit('notification', {
+  ioNotification.emit('notification', {
     message: `Concert  mise à jour : ${champModifie} a été changée  ${nouvelleValeur}`
   });
 

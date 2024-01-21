@@ -7,6 +7,7 @@ const path = require('path');
 const saisonRoutes = require('./routes/saison');
 const Choriste = require('./models/choriste');
 const OeuvreRoutes=require("./routes/oeuvre")
+const concertRoutes=require("./routes/concert")
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -64,7 +65,7 @@ const et1swagger = {
       },
     ],
   },
-  apis: ['./routes/oeuvre.js', './routes/saison.js', './routes/audition.js' , './routes/validerMailPersonne.js','./routes/participantsRoutes.js','./routes/repetition.js','./routes/Listepresence.js'],
+  apis: ['./routes/oeuvre.js', './routes/saison.js','./routes/concert.js' ,'./routes/audition.js' , './routes/validerMailPersonne.js','./routes/participantsRoutes.js','./routes/repetition.js','./routes/Listepresence.js'],
 };
 
 
@@ -142,7 +143,7 @@ app.use('/api/choriste', choristeRoutes);
 app.use("/listePresents",routePresenceListe)
 app.use('/api/saison', saisonRoutes); 
 app.use('/api/repetitions', repetitionRoutes);
-
+app.use('/api/concert', concertRoutes);
 
 
 
