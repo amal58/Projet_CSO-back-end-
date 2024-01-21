@@ -78,12 +78,16 @@ const fetchConcert =(req,res)=>{
       const concert = new Concert(req.body);
     concert
       .save()
-      .then(() =>
+      .then(() => {
+        // Populate the 'choriste' and 'programme' fields after saving
+        return Concert.populate(concert, [{ path: 'choriste' }, { path: 'programme' }]);
+      })
+      .then((populatedConcert) => {
         res.status(201).json({
-          model: concert,
+          model: populatedConcert,
           message: "Created!",
-        })
-      )
+        });
+      })
       .catch((error) => {
         res.status(400).json({
           error: error.message,
@@ -107,24 +111,29 @@ const UpdateConcert = (req, res) => {
     .then((concert) => {
       if (!concert) {
         res.status(404).json({
-          message: "concert not found",
+          message: "Concert not found",
         });
         return;
       }
 
+      // Populate the 'choriste' and 'programme' fields after updating
+      return Concert.populate(concert, [{ path: 'choriste' }, { path: 'programme' }]);
+    })
+    .then((populatedConcert) => {
       res.status(200).json({
-        model: concert,
-        message: "concert updated",
+        model: populatedConcert,
+        message: "Updated!",
       });
     })
     .catch((error) => {
       res.status(400).json({
         error: error.message,
-        message: "concert not correct",
+        message: "Concert not updated correctly",
       });
     });
-};
-  
+  };
+
+
 //supprimer
 const DeleteConcert=(req, res) => {
     Concert.deleteOne({ _id: req.params.id })

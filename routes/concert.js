@@ -38,10 +38,10 @@ const jwtcontro = require('../middlewares/userAuth');
  *       example:
  *         date: "2023-01-01"
  *         lieu: "Sample Location"
- *         choriste: "60768d8859f6a29308c1daf9"
+ *         choriste: "6586dacb9f6a29308c1dafa1"
  *         programme:
- *           - "60768d8859f6a29308c1dafe"
- *           - "60768d8859f6a29308c1db01"
+ *           - "658449596a98fa0d592861df"
+ *           - "658449596a98fa0d592861e3"
  */
 
 

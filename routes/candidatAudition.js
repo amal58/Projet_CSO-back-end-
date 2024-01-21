@@ -61,7 +61,7 @@ const jwtcontro = require('../middlewares/userAuth');
  *         decision: "retenu"
  *         remarque: "Sample Remark"
  *         audition:
- *           _id: "60768d8859f6a29308c1daf9"
+ *           _id: "658cb90b6c0db3f30d8ee56b"
  *         ConfirmedEmail: "infirmer"
  */
  

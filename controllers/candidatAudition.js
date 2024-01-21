@@ -28,7 +28,7 @@ const fetchCandAs =(req,res)=>{
     .then((candAs) => {
       if(!candAs){
         res.status(404).json({
-          message:"task non trouve"
+          message:"candidatAudition non trouve"
         })
         return
       }
@@ -60,21 +60,24 @@ const fetchCandAs =(req,res)=>{
   
     // Si la validation réussit, enregistrez les données dans la base de données
     const candA = new CandAud(req.body);
-    candA
-      .save()
-      .then(() =>
-        res.status(201).json({
-          model: candA,
-          message: "Created!",
-        })
-      )
-      .catch((error) => {
-        res.status(400).json({
-          error: error.message,
-          message: "Données invalides",
-        });
+    candA.save()
+    .then(() => {
+      // Populate the 'audition' field after saving
+      return CandAud.populate(candA, { path: 'audition' });
+    })
+    .then((populatedCandA) => {
+      res.status(201).json({
+        model: populatedCandA,
+        message: "Created!",
       });
-  };
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: error.message,
+        message: "Invalid data",
+      });
+    });
+};
   
 
 
@@ -99,11 +102,15 @@ const UpdateCandA = (req, res) => {
         return;
       }
 
-      res.status(200).json({
-        model: candA,
-        message: "candidat audition updated",
+      return CandAud.populate(candA, { path: 'audition' });
+    })
+    .then((populatedCandA) => {
+      res.status(201).json({
+        model: populatedCandA,
+        message: "Updated!",
       });
     })
+    
     .catch((error) => {
       res.status(400).json({
         error: error.message,
