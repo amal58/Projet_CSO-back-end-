@@ -105,12 +105,21 @@ server.listen(port,()=>{
 
 app.post ("/ajouteconger/:id",jwtcontro.loggedMiddleware,jwtcontro.isChoriste, async (req, res) =>{
     try{
+        const { dateDebutConge, dateFinConge, etat } = req.body;
+
+        if (new Date(dateFinConge) <= new Date(dateDebutConge)) {
+            return res.status(400).json({ message: "Date de fin doit être supérieure à la date de début." });
+        }
+
         const conge = new Conge({
-            dateDebutConge: req.body.dateDebutConge,
-            dateFinConge: req.body.dateFinConge,
-            etat: req.body.etat,
+            dateDebutConge,
+            dateFinConge,
+            etat,
             choriste: req.params.id
-        })
+        });
+
+
+
        const resultat = await  conge.save();
        const choriste=  await Choriste.findOne({_id: req.params.id}).populate("candidatId")
        if(choriste){
@@ -177,7 +186,7 @@ schedule.scheduleJob('*/2 * * * *', async () => {
                     console.error("Erreur lors de la mise à jour du statut :", error);
                 }
                 io.emit("notif_congé", `congée de maintenant a ${elem.dateFinConge}`);
-                io.emit("notif_choriste", ` monsieur votre statut est inactif ${elem.choriste._id}`);
+                io.emit("notif_choriste", ` Cher choriste ${elem.choriste.candidatId.nom} ${elem.choriste.candidatId.prenom} votre statut est inactif ${elem.choriste._id}`);
             }
         });
     } catch (e) {
