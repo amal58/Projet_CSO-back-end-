@@ -41,6 +41,18 @@ try{
   res.status(500).json({message:"failed"})
 }
 }
+exports.isMnagerAdmin= (req,res,next)=>{
+  const role=req.user.role
+  if(role=="Manager"||role=="Admin"){
+     next()
+  }else {
+    res.status(401).json("vous n'avez pas l'acces a cette page ")
+  }
+try{
+}catch(e){
+  res.status(500).json({message:"failed"})
+}
+}
 
 exports.isChoriste= (req,res,next)=>{
   const role=req.user.role

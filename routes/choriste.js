@@ -12,7 +12,7 @@ const jwtcontro=require("../middlewares/UserAuth")
 
 /**
  * @swagger
- * /choriste/:
+ * /api/choriste/:
  *   get:
  *     summary: Récupère tous les choristes
  *     tags: [Choristes]
@@ -64,7 +64,7 @@ router.get("/", jwtcontro.loggedMiddleware,jwtcontro.isAdmin, ChoristeController
 
 /**
  * @swagger
- * /choriste/login:
+ * /api/choriste/login:
  *   post:
  *     summary: Connecte un choriste
  *     tags: [Choristes]
@@ -110,7 +110,7 @@ router.post("/login", ChoristeController.login)
 
 /**
  * @swagger
- * /choriste/modifTessiture/{id}:
+ * /api/choriste/modifTessiture/{id}:
  *   patch:
  *     summary: Modifie la tessiture d'un choriste
  *     tags: [Choristes]

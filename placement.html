@@ -33,7 +33,7 @@
         }
 
         .cell {
-            border: 1px solid #ef9a9a;
+            border: 1px solid #f3b4b4;
             padding: 15px;
             margin: 10px;
             background-color: #ffebee;
@@ -58,10 +58,12 @@
 
         async function fetchData() {
             try {
+                const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGlzdENob3Jpc3RlIjoiNjVhOTVkNjg2NjMzNzljMGNiMTk2ODI1Iiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzA1NzYyMzY3LCJleHAiOjE3MDU4NDg3Njd9.4Kt2ekFooL0MOuS_4Sge40Q6zaTt3tyYlacxnZ-p6pE";
                 const response = await fetch('http://localhost:5000/api/concert/ajoutplacement/65a9653c8bb8d224dbc4389d', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `${accessToken}`,
                     },
                 });
                 if (!response.ok) {

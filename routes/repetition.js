@@ -65,7 +65,7 @@ const jwtcontro=require("../middlewares/UserAuth")
 
 /**
  * @swagger
- * /repetitions/{id}:
+ * /api/repetitions/{id}:
  *   post:
  *     summary: Ajouter une répétition pour un concert donné
  *     tags: [Repetitions]
@@ -124,7 +124,7 @@ const jwtcontro=require("../middlewares/UserAuth")
 router.post('/:id',jwtcontro.loggedMiddleware,jwtcontro.isAdmin,repetitionController.createRepetition );
 /**
  * @swagger
- * /repetitions/{id}:
+ * /api/repetitions/{id}:
  *   delete:
  *     summary: Supprime une répétition par ID
  *     tags: [Repetitions]
@@ -151,7 +151,7 @@ router.post('/:id',jwtcontro.loggedMiddleware,jwtcontro.isAdmin,repetitionContro
 router.delete("/:id",jwtcontro.loggedMiddleware,jwtcontro.isAdmin,repetitionController.deleteRepetition );
 /**
  * @swagger
- * /repetitions/{id}:
+ * /api/repetitions/{id}:
  *   patch:
  *     summary: Met à jour partiellement une répétition par ID
  *     tags: [Repetitions]
@@ -187,7 +187,7 @@ router.delete("/:id",jwtcontro.loggedMiddleware,jwtcontro.isAdmin,repetitionCont
 router.patch("/:id",jwtcontro.loggedMiddleware,jwtcontro.isAdmin,repetitionController.updateRepetition );
 /**
  * @swagger
- * /repetitions/getid/{id}:
+ * /api/repetitions/getid/{id}:
  *   get:
  *     summary: Obtient une répétition par ID
  *     tags: [Repetitions]
@@ -218,7 +218,7 @@ router.patch("/:id",jwtcontro.loggedMiddleware,jwtcontro.isAdmin,repetitionContr
 router.get("/getid/:id",jwtcontro.loggedMiddleware,jwtcontro.isAdmin,repetitionController.getRepetitionById );
 /**
  * @swagger
- * /repetitions/getall:
+ * /api/repetitions/getall:
  *   get:
  *     summary: Récupère toutes les répétitions
  *     tags: [Repetitions]

@@ -69,7 +69,7 @@ const jwtcontro=require("../middlewares/UserAuth")
 router.post("/",absprController.AjoutDispon)
 /**
  * @swagger
- * /absencepresence/demandeAbsence:
+ * /api/absencepresence/demandeAbsence:
  *   post:
  *     summary: Ajoute une demande d'absence
  *     tags: [Absences]
@@ -116,7 +116,7 @@ router.post('/demandeAbsence', jwtcontro.loggedMiddleware,jwtcontro.isChoriste,a
 
 /**
  * @swagger
- * /absencepresence/getAllDemandeAbsence:
+ * /api/absencepresence/getAllDemandeAbsence:
  *   get:
  *     summary: Récupère toutes les demandes d'absence
  *     tags: [Absences]

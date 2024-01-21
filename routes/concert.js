@@ -47,7 +47,7 @@ router.post("/",concertController.addConcert)
 
 /**
  * @swagger
- * /concert/ajoutplacement/{id}:
+ * /api/concert/ajoutplacement/{id}:
  *   get:
  *     summary: Générer le placement pour un concert
  *     tags: [Concerts]
