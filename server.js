@@ -88,7 +88,7 @@ async function creerTacheRappel(repetition, option) {
                     if (repetitions && repetitions > 1) {
                         for (let i = 2; i <= repetitions; i++) {
                             const tempsProchainRappel = new Date(heureprgrm);
-                            tempsProchainRappel.setMinutes(tempsProchainRappel.getMinutes() + i * 15);
+                            tempsProchainRappel.setMinutes(tempsProchainRappel.getMinutes() + i * 300);
                             const job = schedule.scheduleJob(tempsProchainRappel, function () {
                                 console.log(`Rappel supplémentaire exécuté : ${message}`);
                                 ioRepetition.emit('notification', {
