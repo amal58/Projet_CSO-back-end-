@@ -83,7 +83,7 @@ router.post("/",candAController.addCandA)
  *       500:
  *         description: Internal Server Error
  */
-router.post("/AUD",jwtcontro.loggedMiddleware,jwtcontro.isMnagerAdmin,candAController.getCandidaR)
+router.post("/AUD",jwtcontro.loggedMiddleware,jwtcontro.isAdmin,candAController.getCandidaR)
 
 
 /**
@@ -110,7 +110,7 @@ router.post("/AUD",jwtcontro.loggedMiddleware,jwtcontro.isMnagerAdmin,candAContr
  *         description: Internal Server Error
  */
 
-router.post("/confirmation/:token",jwtcontro.loggedMiddleware,jwtcontro.isMnagerAdmin,candAController.confirmation)
+router.post("/confirmation/:token",jwtcontro.loggedMiddleware,jwtcontro.isAdmin,candAController.confirmation)
 
 
 

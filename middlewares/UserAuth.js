@@ -21,7 +21,7 @@ exports.isAdmin= (req,res,next)=>{
   if(role=="admin"){
      next()
   }else {
-    res.status(401).json("vous n'avez pas l'acces a cette page ")
+    res.status(401).json("vous n'avez pas l'acces a cette page vous n'etes pas admin ")
   }
 try{
 }catch(e){
@@ -34,7 +34,7 @@ exports.isMnager= (req,res,next)=>{
   if(role=="Manager"){
      next()
   }else {
-    res.status(401).json("vous n'avez pas l'acces a cette page ")
+    res.status(401).json("vous n'avez pas l'acces a cette page vous n'etes pas manager")
   }
 try{
 }catch(e){
@@ -46,7 +46,7 @@ exports.isMnagerAdmin= (req,res,next)=>{
   if(role=="Manager"||role=="Admin"){
      next()
   }else {
-    res.status(401).json("vous n'avez pas l'acces a cette page ")
+    res.status(401).json("vous n'avez pas l'acces a cette page vous n'etes pas manager ou admin")
   }
 try{
 }catch(e){
@@ -59,7 +59,7 @@ exports.isChoriste= (req,res,next)=>{
   if(role=="choriste"){
      next()
   }else {
-    res.status(401).json("vous n'avez pas l'acces a cette page ")
+    res.status(401).json("vous n'avez pas l'acces a cette page vous n'etes pas choriste ")
   }
 try{
 }catch(e){
