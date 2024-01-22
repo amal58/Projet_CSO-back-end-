@@ -13,6 +13,7 @@ const concertSchemaValidation = Joi.object({
   date: Joi.date().required().min('now').message('La date doit être ultérieure à la date actuelle.'),
   lieu: Joi.string().required(),
   affiche: Joi.string(),
+  choriste: [{ type: mongoose.Schema.Types.ObjectId, ref:'Choriste', required:true }],
   programme: Joi.array().items(Joi.string()).required(),
   urlQR: Joi.array().items(Joi.string()).required(),
 });

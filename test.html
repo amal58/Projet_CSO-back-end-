@@ -1,0 +1,38 @@
+<!-- Dans votre fichier HTML
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  // Écoutez les nouvelles nominations
+  socket.on('nouvelleNomination', (data) => {
+    const { choristeId } = data;
+    // Faites quelque chose avec la notification, par exemple, affichez une alerte
+    alert(`Attention ! Vous avez été nominé. Choriste ID : ${choristeId}`);
+  });
+</script> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Page</title>
+</head>
+<body>
+    <h1>Page de Notification D'absence</h1>
+
+    <ul id="notification-list"></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('notification', (data) => {
+            const notificationList = document.getElementById('notification-list');
+            const listItem = document.createElement('li');
+            listItem.textContent = `Nouvelle notification : ${data.message}`;
+
+            notificationList.appendChild(listItem);
+        });
+    </script>
+</body>
+</html>

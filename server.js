@@ -302,7 +302,20 @@ schedule.scheduleJob('*/2 * * * *', async () => {
     }
 });
 
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/test.html');
+});
 
+io.on('connection', (socket) => {
+       const message = "Connexion notif";
+   io.emit('notification', {message});
+
+    console.log('Nouvelle connexion socket :', socket.id);
+
+    socket.on('disconnect', () => {
+        console.log('Déconnexion socket :', socket.id);
+    });
+});
 const port =process.env.PORT|| 5000
 app.set("port",port)
 

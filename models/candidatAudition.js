@@ -23,4 +23,5 @@ const candAudSchemaValidation = Joi.object({
 });
 
 
-module.exports= mongoose.model("CandAud", candASchema);
+const CandAud = mongoose.model("CandAud", candASchema);
+module.exports = { CandAud, candAudSchemaValidation };

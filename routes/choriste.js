@@ -1,7 +1,7 @@
 const express = require('express');
 const ChoristeController = require('../controllers/choriste');
 const router = express.Router();
-const jwtcontro=require("../middlewares/UserAuth")
+const jwtcontro=require("../middlewares/userAuth")
 
 /**
  * @swagger

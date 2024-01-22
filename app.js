@@ -5,9 +5,7 @@ const swaggerUi = require('swagger-ui-express');
 const app = express();
 const path = require('path');
 const saisonRoutes = require('./routes/saison');
-const Choriste = require('./models/choriste');
 const OeuvreRoutes=require("./routes/oeuvre")
-const concertRoutes=require("./routes/concert")
 const mongoose = require('mongoose');
 const ValidMailPRoutes = require('./routes/validerMailPersonne');
 const auditionRoutes = require('./routes/audition');
@@ -21,7 +19,15 @@ const dispRoutes=require("./routes/absencepresence");
 const candARoutes=require('./routes/candidatAudition')
 const personneRoutes = require('./routes/personne');
 const abprRoutes = require('./routes/absencepresence');
+const nodemon = require("nodemon");
+const concertRoutes=require("./routes/concert");
+const chefpupitreRoutes=require("./routes/chefpupitre");
+const historiqueRoutes=require("./routes/consulterHistorique");
+const congeRoutes=require("./routes/conges");
+const loginRoutes=require("./routes/choriste")
+const AbsenceRoutes=require("./routes/resultatAbsence");
 const bcrypt=require('bcryptjs')
+const Choriste = require("./models/choriste")
 
 const et1swagger = {
   definition: {
@@ -209,7 +215,6 @@ app.use(
 );
 
   app.use(express.json())
-  app.use("/api/concert",concertRoutes)
   app.use("/api/disp",dispRoutes)
   app.use('/api/auditions', auditionRoutes); 
   app.use("/api/cand",candARoutes)
@@ -223,6 +228,12 @@ app.use('/validerMail', ValidMailPRoutes);
 app.use('/api', participantsRoutes);
 app.use("/listePresents",routePresenceListe)
 app.use('/api/saison', saisonRoutes); 
+app.use("/api/concert",concertRoutes)
+app.use("/api/chef",chefpupitreRoutes)
+app.use("/api/historique", historiqueRoutes)
+app.use("/api/conge", congeRoutes)
+app.use("/api/login", loginRoutes)
+app.use("/api/absence",AbsenceRoutes)
 
 
 module.exports=app
