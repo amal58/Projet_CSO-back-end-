@@ -1,20 +1,86 @@
-const express = require ("express")
-const app= express()
-const mongoose = require('mongoose')
-const swaggerJsdoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
-const concertRoutes=require("./routes/concert");
+const express = require("express");
+const bodyParser = require('body-parser');  
+const swaggerJSDoc = require('swagger-jsdoc');  // Add this line
+const swaggerUi = require('swagger-ui-express');
+const app = express();
+const path = require('path');
+const saisonRoutes = require('./routes/saison');
+const Choriste = require('./models/choriste');
+const OeuvreRoutes=require("./routes/oeuvre")
+const concertRoutes=require("./routes/concert")
+const mongoose = require('mongoose');
+const ValidMailPRoutes = require('./routes/validerMailPersonne');
+const auditionRoutes = require('./routes/audition');
+const routePresenceListe = require('./routes/Listepresence')
+const choristeRoutes=require("./routes/choriste");
+const repetitionRoutes = require('./routes/repetition');
+const participantsRoutes = require('./routes/participantsRoutes');
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 const dispRoutes=require("./routes/absencepresence");
 const candARoutes=require('./routes/candidatAudition')
-const auditionRoutes = require('./routes/audition');
 const personneRoutes = require('./routes/personne');
-const choristeRoutes = require('./routes/choriste');
-const Choriste = require('./models/choriste');
-const repetitionRoutes = require('./routes/repetition');
 const abprRoutes = require('./routes/absencepresence');
 const bcrypt=require('bcryptjs')
-var path = require('path');
-app.set("view engine", "ejs");
+
+const et1swagger = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Projet CSO API Documentation',
+      version: '1.0.0',
+    },
+    servers: [
+      {
+        url: 'http://localhost:5000/', 
+      },
+    ],
+    components: {
+      securitySchemes: {
+        customAuth: {
+          type: 'apiKey',
+          in: 'header',
+          name: 'Authorization',
+        },
+      },
+    },
+    security: [
+      {
+        customAuth: [],
+      },
+    ],
+    tags: [
+      {
+        name: 'Saison',
+        description: 'Opérations liées aux saisons',
+      },
+      {
+        name: 'Oeuvre',
+        description: 'Opérations liées aux oeuvres',
+      },
+      {
+        name: 'Audition',
+        description: 'Opérations liées aux audition',
+      },
+      {
+        name: 'Participants_Concert',
+        description: 'Liste participants pour un concert',
+      },
+      {
+        name: 'Envoyer_notification_urgent',
+        description: 'Envoyer notification au choristes au cas changement repetition ou concert',
+      },
+      {
+        name: 'Liste_présents_par_programme_et_par_pupitre',
+        description: 'lister les choristes présents selon le programme et le nom de pupitre',
+      },
+    ],
+  },
+  apis: ['./routes/oeuvre.js', './routes/saison.js','./routes/concert.js' ,'./routes/audition.js' , './routes/validerMailPersonne.js','./routes/participantsRoutes.js','./routes/repetition.js','./routes/Listepresence.js'],
+};
+
+const swaggerSpec = swaggerJSDoc(et1swagger)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/NotifConge', function(req, res) {
   res.sendFile(path.join(__dirname + '/getnotifConge.html'));
  });
@@ -135,7 +201,7 @@ const options = {
   apis: ["./routes/*.js", "./server.js"],
     
 };
-const specs = swaggerJsdoc(options);
+const specs = swaggerJSDoc(options);
 app.use(
   "/api-docs",
   swaggerUi.serve,
@@ -151,5 +217,12 @@ app.use(
   app.use('/api/choriste', choristeRoutes);
   app.use('/api/repetitions', repetitionRoutes);
   app.use('/api/absencepresence', abprRoutes);
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/Oeuvre", OeuvreRoutes);
+app.use('/validerMail', ValidMailPRoutes);
+app.use('/api', participantsRoutes);
+app.use("/listePresents",routePresenceListe)
+app.use('/api/saison', saisonRoutes); 
+
 
 module.exports=app
